@@ -16,25 +16,22 @@ class Knotpen2GameObject(GameObject.GameObject):
     def __init__(self, memory_object:MemoryObject.MemoryObject) -> None:
         super().__init__()
 
-        self.memory_object = memory_object
-        self.status         = "free"
-        self.focuse_dot     = None
-        self.focuse_line    = None
-        self.mouse_down     = False
-        self.actually_moved = False
+        self.memory_object   = memory_object
+        self.status          = "free"
+        self.focuse_dot      = None
+        self.focuse_line     = None
+        self.left_mouse_down = False
+        self.actually_moved  = False
 
     def handle_mouse_down(self, button, x, y): # 鼠标按下
         super().handle_mouse_down(button, x, y)
-        self.mouse_down = True
+        
+        if button == constant_config.LEFT_KEY_ID:
+            self.handle_left_mouse_down(x, y)
 
-        mouse_on_dot_id = None
-
-        dot_dict = self.memory_object.get_dot_dict() # 绘制所有节点
-        for dot_id in dot_dict:
-            x_dot, y_dot = dot_dict[dot_id]
-            if numpy.linalg.norm(numpy.array([x_dot - x, y_dot - y])) <= constant_config.CIRCLE_RADIUS + 1:
-                mouse_on_dot_id = dot_id
-                break
+    def handle_left_mouse_down(self, x, y):
+        self.left_mouse_down = True
+        mouse_on_dot_id = self.get_mouse_on_dot_id(x, y)
         
         if self.status == "free":
             if mouse_on_dot_id is not None: # 开始移动节点
@@ -49,19 +46,22 @@ class Knotpen2GameObject(GameObject.GameObject):
             self.memory_object.set_dot_position(self.focuse_dot, x, y)
             self.actually_moved = True
 
-    def handle_left_mouse_up(self, x, y):
-        self.mouse_down = False
+    def get_mouse_on_dot_id(self, x, y):
         mouse_on_dot_id = None
-
-        if self.status == "move_dot": # 移动节点结束
-            self.status = "free"
-
         dot_dict = self.memory_object.get_dot_dict() # 绘制所有节点
         for dot_id in dot_dict:
             x_dot, y_dot = dot_dict[dot_id]
             if numpy.linalg.norm(numpy.array([x_dot - x, y_dot - y])) <= constant_config.CIRCLE_RADIUS + 1:
                 mouse_on_dot_id = dot_id
                 break
+        return mouse_on_dot_id
+
+    def handle_left_mouse_up(self, x, y):
+        self.left_mouse_down = False
+        mouse_on_dot_id = self.get_mouse_on_dot_id(x, y)
+
+        if self.status == "move_dot": # 移动节点结束
+            self.status = "free"
         
         if self.status == "free": # 自由状态创建点
             if mouse_on_dot_id is None:
@@ -83,6 +83,16 @@ class Knotpen2GameObject(GameObject.GameObject):
         super().handle_mouse_up(button, x, y)
         if button == constant_config.LEFT_KEY_ID:
             self.handle_left_mouse_up(x, y)
+
+        elif button == constant_config.RIGHT_KEY_ID:
+            self.handle_right_mouse_up(x, y)
+
+    def handle_right_mouse_up(self, x, y):
+        if self.status == "free":
+            mouse_on_dot_id = self.get_mouse_on_dot_id(x, y)
+
+            if mouse_on_dot_id is not None: # 右键删除节点
+                self.memory_object.erase_dot(mouse_on_dot_id)
 
     def draw_screen(self, screen): # 绘制屏幕内容
         super().draw_screen(screen)
