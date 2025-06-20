@@ -9,11 +9,11 @@
 def pygame_interface(mouse_down_recall=None, mouse_up_recall=None, 
                      handle_key_down=None, handle_key_up=None, 
                      handle_quit=None, draw_screen=None,
-                     die_check=None):
+                     die_check=None, width=1024, height=768):
     import pygame
     pygame.init() # 初始化 Pygame
     
-    width, height = 1024, 768 # 设置窗口尺寸
+    # 设置窗口尺寸
     screen = pygame.display.set_mode((width, height))
     
     # 设置窗口标题
