@@ -17,6 +17,11 @@ class MemoryObject:
     def get_inverse_pairs(self):
         return self.inverse_pairs
     
+    def shift_position(self, dx, dy): # 所有点一起移动
+        for dot_idx in self.dot_dict:
+            x, y = self.dot_dict[dot_idx]
+            self.dot_dict[dot_idx] = (x + dx, y + dy)
+
     def set_base_dot(self, dot_idx): # 设置起始位置
         assert self.dot_dict.get(dot_idx) is not None
         self.base_dot = dot_idx
@@ -46,7 +51,6 @@ class MemoryObject:
             self.inverse_pairs[(line_idx1, line_idx2)] = True
         else:                                                      # 如果有这个逆向对要求，则删掉
             del self.inverse_pairs[(line_idx1, line_idx2)]
-
 
     def find_nearest_lines(self, x, y):
         line_pair_list = []

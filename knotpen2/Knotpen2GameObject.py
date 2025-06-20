@@ -9,7 +9,7 @@ from . import pygame_utils
 STATUS_LIST = [
     "free",        # 自由状态
     "select_dot",  # 选中了一个结点
-    "select_line", # 选中了一条边
+    "quit",        # 退出程序
     "move_dot",    # 移动一个节点
 ]
 
@@ -24,11 +24,30 @@ class Knotpen2GameObject(GameObject.GameObject):
         self.left_mouse_down = False
         self.actually_moved  = False
 
+    def handle_quit(self):
+        self.status = "quit"
+
     def handle_mouse_down(self, button, x, y): # 鼠标按下
         super().handle_mouse_down(button, x, y)
         
         if button == constant_config.LEFT_KEY_ID:
             self.handle_left_mouse_down(x, y)
+
+    def handle_key_down(self, key, mod, unicode): # 处理键盘事件
+        super().handle_key_down(key, mod, unicode)
+
+        key_name = pygame.key.name(key)
+        if key_name == 'a':
+            self.memory_object.shift_position(-constant_config.STRIDE, 0)
+
+        elif key_name == 'd':
+            self.memory_object.shift_position(+constant_config.STRIDE, 0)
+
+        elif key_name == 'w':
+            self.memory_object.shift_position(0, -constant_config.STRIDE)
+
+        elif key_name == 's':
+            self.memory_object.shift_position(0, +constant_config.STRIDE)
 
     def handle_left_mouse_down(self, x, y):
         self.left_mouse_down = True
@@ -135,3 +154,6 @@ class Knotpen2GameObject(GameObject.GameObject):
             pos_21 = dot_dict[dot_21]
             pos_22 = dot_dict[dot_22]
             pygame_utils.draw_line_on_line(screen, pos_11, pos_12, pos_21, pos_22, constant_config.BLACK)
+
+    def die_check(self):
+        return self.status == "quit"
