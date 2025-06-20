@@ -1,0 +1,5 @@
+
+CIRCLE_RADIUS = 5
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)

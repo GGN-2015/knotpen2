@@ -12,11 +12,14 @@ import pygame
 class GameObject:
     def __init__(self) -> None:
         self.quit_cnt = 0
+        self.mouse_x = 0
+        self.mouse_y = 0
 
     def draw_screen(self, screen):
         screen.fill((255, 255, 255)) # 填充白色背景
 
     def handle_mouse_down(self, button, x, y):
+        self.mouse_x, self.mouse_y = x, y
         button_names = {1: "左键", 2: "中键", 3: "右键", 4: "滚轮上滚", 5: "滚轮下滚"}
         button_name = button_names.get(button, f"未知按钮({button})")
         print(f"鼠标按下: {button_name} @ ({x}, {y})")
@@ -40,6 +43,7 @@ class GameObject:
         print(f"按键释放: {key_name}")
     
     def handle_mouse_up(self, button, x, y):
+        self.mouse_x, self.mouse_y = x, y
         button_names = {1: "左键", 2: "中键", 3: "右键"}
         if button in button_names:  # 只处理真正的按键抬起事件
             print(f"鼠标抬起: {button_names[button]} @ ({x}, {y})")
@@ -48,6 +52,9 @@ class GameObject:
         self.quit_cnt += 1
         print("尝试关闭窗口（第 %d 次）" % self.quit_cnt)
     
+    def get_mouse_pos(self): # 获得鼠标的位置
+        return self.mouse_x, self.mouse_y
+
     def die_check(self):
         if self.quit_cnt >= 3:
             print("尝试关闭窗口（第 %d 次），游戏退出" % self.quit_cnt)
