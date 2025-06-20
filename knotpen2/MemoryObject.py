@@ -10,9 +10,13 @@ class MemoryObject:
         self.dot_dict = {}
         self.line_dict = {}
         self.inverse_pairs = {}
+        self.degree = {}
 
-        self.base_dot = None # 记录起始位置
-        self.dir_dot = None  # 记录定向位置
+        self.base_dot = [] # 记录起始位置
+        self.dir_dot = []  # 记录定向位置
+
+    def get_degree(self):
+        return self.degree
 
     def get_inverse_pairs(self):
         return self.inverse_pairs
@@ -23,29 +27,22 @@ class MemoryObject:
             self.dot_dict[dot_idx] = (x + dx, y + dy)
 
     def set_base_dot(self, dot_idx): # 设置起始位置
-        if dot_idx is None:
-            self.base_dot = None
+        if dot_idx not in self.base_dot:
+            self.base_dot.append(dot_idx)
 
+            if dot_idx in self.dir_dot:
+                self.dir_dot.remove(dot_idx)
         else:
-            assert self.dot_dict.get(dot_idx) is not None
-            self.base_dot = dot_idx
+            self.base_dot.remove(dot_idx)
     
     def set_dir_dot(self, dot_idx): # 设置起始位置的下一个位置，用于确定方向
-        if dot_idx is None:
-            self.dir_dot = None # 删除已经设置的 base point
+        if dot_idx not in self.dir_dot:
+            self.dir_dot.append(dot_idx)
 
+            if dot_idx in self.base_dot:
+                self.base_dot.remove(dot_idx)
         else:
-            assert self.dot_dict.get(dot_idx) is not None
-            self.dir_dot = dot_idx
-
-    def debug_output(self): # 输出所有节点信息
-        for dot_id in self.dot_dict:
-            x, y = self.dot_dict[dot_id]
-            print("VERTEX: %10s (%5d, %5d)" % (dot_id, x, y))
-        
-        for line_id in self.line_dict:
-            dot_id_1, dot_id_2 = self.line_dict[line_id]
-            print("  LINE: %10s (%10s, %10s)" % (line_id, dot_id_1, dot_id_2))
+            self.dir_dot.remove(dot_idx)
 
     def swap_line_order(self, line_idx1, line_idx2):
         assert line_idx1 != line_idx2
@@ -94,6 +91,9 @@ class MemoryObject:
 
     def erase_line(self, line_id:str): # 删除一条边
         if self.line_dict.get(line_id) is not None:
+            frm, eto = self.line_dict[line_id]
+            self.degree[frm] -= 1
+            self.degree[eto] -= 1 # 统计度数
             del self.line_dict[line_id]
 
         inverse_pair_to_erase = []
@@ -110,18 +110,34 @@ class MemoryObject:
             self.dot_id_max += 1
         new_id = "dot_%d" % self.dot_id_max
         self.dot_dict[new_id] = (x, y)
+        self.degree[new_id] = 0
         return new_id
 
     def new_line(self, dot_id_1:str, dot_id_2:str): # 新增一条边：不包含共线检查功能
+        assert dot_id_1 != dot_id_2
+
+        if int(dot_id_1.split("_")[-1]) > int(dot_id_2.split("_")[-1]):
+            dot_id_1, dot_id_2 = dot_id_2, dot_id_1
+
+        for line_id in self.line_dict:
+            frm1, eto1 = self.line_dict[line_id]
+            if frm1 == dot_id_1 and eto1 == dot_id_2: # 找到了一个旧的一样的边
+                print("old edge found: %s" % line_id)
+                return line_id
+        
         while self.line_dict.get("line_%d" % self.line_id_max):
             self.line_id_max += 1
+
         new_id = "line_%d" % self.line_id_max
         self.line_dict[new_id] = (dot_id_1, dot_id_2)
+        self.degree[dot_id_1] += 1
+        self.degree[dot_id_2] += 1
+
+        print("create new edge: %s" % new_id)
         return new_id
 
     def erase_dot(self, dot_id:str): # 删除节点的时候，记得删除相应的边，以及边之间的逆序关系
         if self.dot_dict.get(dot_id) is not None:
-            del self.dot_dict[dot_id]
 
             if self.base_dot == dot_id: # 删除已经消失的起始点
                 self.set_base_dot(None)
@@ -138,3 +154,15 @@ class MemoryObject:
 
             for line_id in line_list_to_erase: # 删除无效线段，以及相应的边关系
                 self.erase_line(line_id)
+
+            if dot_id in self.base_dot: # 从两个 list 中删除结点
+                self.base_dot.remove(dot_id)
+
+            if dot_id in self.dir_dot:
+                self.dir_dot.remove(dot_id)
+
+            del self.dot_dict[dot_id]
+
+            assert self.degree[dot_id] == 0
+            del self.degree[dot_id]
+            

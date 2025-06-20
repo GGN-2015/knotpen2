@@ -9,6 +9,7 @@ MID_KEY_ID   = 2
 RIGHT_KEY_ID = 3
 
 WHITE = (255, 255, 255)
+GREY = (128, 128, 128)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)

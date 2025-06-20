@@ -56,7 +56,7 @@ class Knotpen2GameObject(GameObject.GameObject):
                 self.focus_dot = None # 回退到常规模式
 
             else:
-                self.memory_object.set_base_dot(None)
+                self.memory_object.set_base_dot(self.focus_dot) # 再添加一次变成取消
 
         elif key_name == 't': # set dir point
 
@@ -66,7 +66,7 @@ class Knotpen2GameObject(GameObject.GameObject):
                 self.focus_dot = None # 回退到常规模式
 
             else:
-                self.memory_object.set_dir_dot(None)
+                self.memory_object.set_dir_dot(self.focus_dot)
 
     def handle_left_mouse_down(self, x, y):
         self.left_mouse_down = True
@@ -154,14 +154,14 @@ class Knotpen2GameObject(GameObject.GameObject):
         super().draw_screen(screen)
 
         if self.memory_object.base_dot is not None: # 绘制起始点
-            base_dot_id = self.memory_object.base_dot
-            x, y = self.memory_object.dot_dict[base_dot_id]
-            pygame_utils.draw_empty_circle(screen, constant_config.BLUE, x, y, constant_config.CIRCLE_RADIUS + 3) # 起始点更大
+            for base_dot_id in self.memory_object.base_dot:
+                x, y = self.memory_object.dot_dict[base_dot_id]
+                pygame_utils.draw_empty_circle(screen, constant_config.BLUE, x, y, constant_config.CIRCLE_RADIUS + 3)
 
         if self.memory_object.dir_dot is not None: # 绘制方向点
-            dir_dot_id = self.memory_object.dir_dot
-            x, y = self.memory_object.dot_dict[dir_dot_id]
-            pygame_utils.draw_empty_circle(screen, constant_config.GREEN, x, y, constant_config.CIRCLE_RADIUS + 3) # 起始点更大
+            for dir_dot_id in self.memory_object.dir_dot:
+                x, y = self.memory_object.dot_dict[dir_dot_id]
+                pygame_utils.draw_empty_circle(screen, constant_config.GREEN, x, y, constant_config.CIRCLE_RADIUS + 3)
 
         dot_dict  = self.memory_object.get_dot_dict()
         line_dict = self.memory_object.get_line_dict()
@@ -179,7 +179,10 @@ class Knotpen2GameObject(GameObject.GameObject):
                 color = constant_config.RED
             pygame_utils.draw_empty_circle(screen, color, x, y, constant_config.CIRCLE_RADIUS)
 
-        # 重新绘制所有逆向点
+            if self.memory_object.get_degree()[dot_id] != 2:
+                pygame_utils.draw_full_circle(screen, constant_config.GREY, x, y, constant_config.CIRCLE_RADIUS - 3)
+
+        # 重新绘制所有逆向边遮挡
         for item in self.memory_object.get_inverse_pairs():
             line_id1, line_id2 = item
             dot_11, dot_12 = self.memory_object.get_line_dict()[line_id1]

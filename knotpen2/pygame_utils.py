@@ -34,6 +34,9 @@ def draw_empty_circle(screen, border_color, x, y, radius):
     pygame.draw.circle(screen, constant_config.WHITE, (x, y), radius)
     pygame.draw.circle(screen, border_color, (x, y), radius, 1)
 
+def draw_full_circle(screen, fill_color, x, y, radius):
+    pygame.draw.circle(screen, fill_color, (x, y), radius)
+
 # 把 pos_21 ~ pos_22 画在 pos_11 ~ pos_12 上面
 def draw_line_on_line(screen, pos_11, pos_12, pos_21, pos_22, line_color):
     crossing = math_utils.compute_intersection(pos_11, pos_12, pos_21, pos_22)
