@@ -1,5 +1,3 @@
-import pygame
-
 # mouse_down_recall(button, x, y): 鼠标按下回调函数
 #   button: 1=左键, 2=中键, 3=右键, 4=滚轮上滚, 5=滚轮下滚
 # mouse_up_recall(button, x, y): 鼠标抬起回调函数
@@ -12,6 +10,7 @@ def pygame_interface(mouse_down_recall=None, mouse_up_recall=None,
                      key_down_recall=None, key_up_recall=None, 
                      quit_recall=None, draw_screen=None,
                      die_check=None):
+    import pygame
     pygame.init() # 初始化 Pygame
     
     width, height = 1024, 768 # 设置窗口尺寸
@@ -76,6 +75,8 @@ def pygame_interface(mouse_down_recall=None, mouse_up_recall=None,
     pygame.quit() # 退出 Pygame
 
 if __name__ == "__main__":
+    import pygame 
+    
     # 示例：处理键盘事件的回调函数
     def handle_key_down(key, mod, unicode):
         key_name = pygame.key.name(key)
