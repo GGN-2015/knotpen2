@@ -18,7 +18,7 @@ class Knotpen2GameObject(GameObject.GameObject):
 
         self.memory_object   = memory_object
         self.status          = "free"
-        self.focuse_dot      = None
+        self.focus_dot      = None
         self.focuse_line     = None
         self.left_mouse_down = False
         self.actually_moved  = False
@@ -35,15 +35,15 @@ class Knotpen2GameObject(GameObject.GameObject):
         
         if self.status == "free":
             if mouse_on_dot_id is not None: # 开始移动节点
-                self.focuse_dot = mouse_on_dot_id
+                self.focus_dot = mouse_on_dot_id
                 self.status = "move_dot"
                 self.actually_moved = False
 
     def handle_mouse_move(self, x, y):
         super().handle_mouse_move(x, y)
 
-        if self.status == "move_dot" and self.focuse_dot is not None:
-            self.memory_object.set_dot_position(self.focuse_dot, x, y)
+        if self.status == "move_dot" and self.focus_dot is not None:
+            self.memory_object.set_dot_position(self.focus_dot, x, y)
             self.actually_moved = True
 
     def get_mouse_on_dot_id(self, x, y):
@@ -68,16 +68,22 @@ class Knotpen2GameObject(GameObject.GameObject):
                 self.memory_object.new_dot(x, y)
             
             elif not self.actually_moved: # 刚刚结束拖动的时候不可以选中
-                self.focuse_dot = mouse_on_dot_id
+                self.focus_dot = mouse_on_dot_id
                 self.status = "select_dot"
 
         elif self.status == "select_dot":
-            if mouse_on_dot_id is not None and mouse_on_dot_id != self.focuse_dot: # 选中点的前提下点击空地
-                
-                if self.focuse_dot is not None:
-                    self.memory_object.new_line(mouse_on_dot_id, self.focuse_dot)
-            self.status = "free"
-            self.focuse_dot = None
+            if mouse_on_dot_id is not None: # 选中点的前提下点击空地
+                if self.focus_dot is not None and mouse_on_dot_id != self.focus_dot:
+                    self.memory_object.new_line(mouse_on_dot_id, self.focus_dot)
+                self.status = "free"
+                self.focus_dot = None
+            else:
+                if mouse_on_dot_id is None and self.focus_dot is not None: # 传递一个新的 focus
+                    dot_id = self.memory_object.new_dot(x, y)
+                    self.memory_object.new_line(dot_id, self.focus_dot)
+                    self.status    = "select_dot"
+                    self.focus_dot = dot_id # 焦点传递
+
 
     def handle_mouse_up(self, button, x, y):
         super().handle_mouse_up(button, x, y)
@@ -109,7 +115,7 @@ class Knotpen2GameObject(GameObject.GameObject):
             x, y = dot_dict[dot_id]
 
             color = constant_config.BLACK
-            if self.status == "select_dot" and dot_id == self.focuse_dot:
+            if self.status == "select_dot" and dot_id == self.focus_dot:
                 color = constant_config.RED
 
             pygame.draw.circle(screen, constant_config.WHITE, (x, y), constant_config.CIRCLE_RADIUS)

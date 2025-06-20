@@ -33,12 +33,14 @@ class MemoryObject:
             self.dot_id_max += 1
         new_id = "dot_%d" % self.dot_id_max
         self.dot_dict[new_id] = (x, y)
+        return new_id
 
     def new_line(self, dot_id_1:str, dot_id_2:str): # 新增一条边：不包含共线检查功能
         while self.line_dict.get("line_%d" % self.line_id_max):
             self.line_id_max += 1
         new_id = "line_%d" % self.line_id_max
         self.line_dict[new_id] = (dot_id_1, dot_id_2)
+        return new_id
 
     def erase_dot(self, dot_id:str): # 删除节点的时候，记得删除相应的边
         if self.dot_dict.get(dot_id) is not None:
