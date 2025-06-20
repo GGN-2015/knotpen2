@@ -11,8 +11,19 @@ class MemoryObject:
         self.line_dict = {}
         self.inverse_pairs = {}
 
+        self.base_dot = None # 记录起始位置
+        self.dir_dot = None  # 记录定向位置
+
     def get_inverse_pairs(self):
         return self.inverse_pairs
+    
+    def set_base_dot(self, dot_idx): # 设置起始位置
+        assert self.dot_dict.get(dot_idx) is not None
+        self.base_dot = dot_idx
+    
+    def set_dir_dot(self, dot_idx): # 设置起始位置的下一个位置，用于确定方向
+        assert self.dot_dict.get(dot_idx) is not None
+        self.dir_dot = dot_idx
 
     def debug_output(self): # 输出所有节点信息
         for dot_id in self.dot_dict:
@@ -88,7 +99,7 @@ class MemoryObject:
         self.line_dict[new_id] = (dot_id_1, dot_id_2)
         return new_id
 
-    def erase_dot(self, dot_id:str): # 删除节点的时候，记得删除相应的边
+    def erase_dot(self, dot_id:str): # 删除节点的时候，记得删除相应的边，以及边之间的逆序关系
         if self.dot_dict.get(dot_id) is not None:
             del self.dot_dict[dot_id]
 
@@ -99,5 +110,14 @@ class MemoryObject:
                 if dot_id in [dot_id_1, dot_id_2]:
                     line_list_to_erase.append(line_id)
 
-            for line_id in line_list_to_erase:
+            for line_id in line_list_to_erase: # 删除无效线段
                 self.erase_line(line_id)
+
+            inverse_pair_to_erase = []
+            for item in self.inverse_pairs:
+                line_id_1, line_id_2 = item
+                if line_id_1 in line_list_to_erase or line_id_2 in line_list_to_erase:
+                    inverse_pair_to_erase.append(item)
+
+            for item in inverse_pair_to_erase: # 删除所有无效逆序处理
+                del self.inverse_pairs[item]
