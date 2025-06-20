@@ -20,7 +20,6 @@ class Knotpen2GameObject(GameObject.GameObject):
         self.memory_object   = memory_object
         self.status          = "free"
         self.focus_dot      = None
-        self.focuse_line     = None
         self.left_mouse_down = False
         self.actually_moved  = False
 
@@ -48,6 +47,26 @@ class Knotpen2GameObject(GameObject.GameObject):
 
         elif key_name == 's':
             self.memory_object.shift_position(0, +constant_config.STRIDE)
+
+        elif key_name == 'b': # set base point
+
+            if self.status == "select_dot" and self.focus_dot is not None:
+                self.memory_object.set_base_dot(self.focus_dot)
+                self.status = "free"
+                self.focus_dot = None # 回退到常规模式
+
+            else:
+                self.memory_object.set_base_dot(None)
+
+        elif key_name == 't': # set dir point
+
+            if self.status == "select_dot" and self.focus_dot is not None:
+                self.memory_object.set_dir_dot(self.focus_dot)
+                self.status = "free"
+                self.focus_dot = None # 回退到常规模式
+
+            else:
+                self.memory_object.set_dir_dot(None)
 
     def handle_left_mouse_down(self, x, y):
         self.left_mouse_down = True
@@ -83,9 +102,15 @@ class Knotpen2GameObject(GameObject.GameObject):
         if self.status == "move_dot": # 移动节点结束
             self.status = "free"
         
-        if self.status == "free": # 自由状态创建点
+        if self.status == "free":
             if mouse_on_dot_id is None:
-                self.memory_object.new_dot(x, y)
+                line_pair_list = self.memory_object.find_nearest_lines(x, y)
+
+                if len(line_pair_list) == 2: # 左键交换上下关系
+                    self.memory_object.swap_line_order(line_pair_list[0][0], line_pair_list[1][0])
+
+                elif len(line_pair_list) == 0: # 自由状态创建点
+                    self.memory_object.new_dot(x, y)
             
             elif not self.actually_moved: # 刚刚结束拖动的时候不可以选中
                 self.focus_dot = mouse_on_dot_id
@@ -119,14 +144,24 @@ class Knotpen2GameObject(GameObject.GameObject):
             if mouse_on_dot_id is not None: # 右键删除节点
                 self.memory_object.erase_dot(mouse_on_dot_id)
 
-            else: # 右键点击交叉点可以调整交叉点的重叠次序
+            else: # 右键点击可以删除线
                 line_pair_list = self.memory_object.find_nearest_lines(x, y)
 
-                if len(line_pair_list) == 2:
-                    self.memory_object.swap_line_order(line_pair_list[0][0], line_pair_list[1][0])
+                if len(line_pair_list) == 1: # 删除一个边
+                    self.memory_object.erase_line(line_pair_list[0][0])
 
     def draw_screen(self, screen): # 绘制屏幕内容
         super().draw_screen(screen)
+
+        if self.memory_object.base_dot is not None: # 绘制起始点
+            base_dot_id = self.memory_object.base_dot
+            x, y = self.memory_object.dot_dict[base_dot_id]
+            pygame_utils.draw_empty_circle(screen, constant_config.BLUE, x, y, constant_config.CIRCLE_RADIUS + 3) # 起始点更大
+
+        if self.memory_object.dir_dot is not None: # 绘制方向点
+            dir_dot_id = self.memory_object.dir_dot
+            x, y = self.memory_object.dot_dict[dir_dot_id]
+            pygame_utils.draw_empty_circle(screen, constant_config.GREEN, x, y, constant_config.CIRCLE_RADIUS + 3) # 起始点更大
 
         dot_dict  = self.memory_object.get_dot_dict()
         line_dict = self.memory_object.get_line_dict()

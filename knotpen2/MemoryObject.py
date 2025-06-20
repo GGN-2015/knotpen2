@@ -23,12 +23,20 @@ class MemoryObject:
             self.dot_dict[dot_idx] = (x + dx, y + dy)
 
     def set_base_dot(self, dot_idx): # 设置起始位置
-        assert self.dot_dict.get(dot_idx) is not None
-        self.base_dot = dot_idx
+        if dot_idx is None:
+            self.base_dot = None
+
+        else:
+            assert self.dot_dict.get(dot_idx) is not None
+            self.base_dot = dot_idx
     
     def set_dir_dot(self, dot_idx): # 设置起始位置的下一个位置，用于确定方向
-        assert self.dot_dict.get(dot_idx) is not None
-        self.dir_dot = dot_idx
+        if dot_idx is None:
+            self.dir_dot = None # 删除已经设置的 base point
+
+        else:
+            assert self.dot_dict.get(dot_idx) is not None
+            self.dir_dot = dot_idx
 
     def debug_output(self): # 输出所有节点信息
         for dot_id in self.dot_dict:
@@ -52,7 +60,7 @@ class MemoryObject:
         else:                                                      # 如果有这个逆向对要求，则删掉
             del self.inverse_pairs[(line_idx1, line_idx2)]
 
-    def find_nearest_lines(self, x, y):
+    def find_nearest_lines(self, x, y, max_dis=constant_config.CIRCLE_RADIUS + constant_config.LINE_WIDTH/2 + 1):
         line_pair_list = []
         for line_id in self.line_dict:
             dot_from, dot_to = self.line_dict[line_id]
@@ -60,19 +68,18 @@ class MemoryObject:
             pos_to   = self.dot_dict[dot_to]
             dis = math_utils.point_to_line_segment_distance((x, y), pos_from, pos_to)
 
-            if dis <= constant_config.LINE_WIDTH / 2 + 1:
+            if dis <= max_dis:
                 line_pair_list.append((line_id, dis))
         return line_pair_list
 
     def set_dot_position(self, dot_id, x, y): # 设置节点位置
         conflict = False
-
         for dot_id_now in self.dot_dict:
             if dot_id_now == dot_id:
                 continue
             
             xnow, ynow = self.dot_dict[dot_id_now]
-            if numpy.linalg.norm(numpy.array([xnow - x, ynow - y])) <= constant_config.CIRCLE_RADIUS + 1:
+            if numpy.linalg.norm(numpy.array([xnow - x, ynow - y])) <= 2*constant_config.CIRCLE_RADIUS + 1:
                 conflict =True
                 break
 
@@ -88,6 +95,15 @@ class MemoryObject:
     def erase_line(self, line_id:str): # 删除一条边
         if self.line_dict.get(line_id) is not None:
             del self.line_dict[line_id]
+
+        inverse_pair_to_erase = []
+        for item in self.inverse_pairs:
+            line_id_1, line_id_2 = item
+            if line_id_1 == line_id or line_id_2 == line_id:
+                inverse_pair_to_erase.append(item)
+
+        for item in inverse_pair_to_erase: # 删除所有无效逆序处理
+            del self.inverse_pairs[item]
 
     def new_dot(self, x:int, y:int): # 新增一个节点：不包含共线检查功能
         while self.dot_dict.get("dot_%d" % self.dot_id_max):
@@ -107,6 +123,12 @@ class MemoryObject:
         if self.dot_dict.get(dot_id) is not None:
             del self.dot_dict[dot_id]
 
+            if self.base_dot == dot_id: # 删除已经消失的起始点
+                self.set_base_dot(None)
+
+            if self.dir_dot == dot_id:
+                self.set_dir_dot(None)
+
             line_list_to_erase = []
             for line_id in self.line_dict:
                 dot_id_1, dot_id_2 = self.line_dict[line_id]
@@ -114,14 +136,5 @@ class MemoryObject:
                 if dot_id in [dot_id_1, dot_id_2]:
                     line_list_to_erase.append(line_id)
 
-            for line_id in line_list_to_erase: # 删除无效线段
+            for line_id in line_list_to_erase: # 删除无效线段，以及相应的边关系
                 self.erase_line(line_id)
-
-            inverse_pair_to_erase = []
-            for item in self.inverse_pairs:
-                line_id_1, line_id_2 = item
-                if line_id_1 in line_list_to_erase or line_id_2 in line_list_to_erase:
-                    inverse_pair_to_erase.append(item)
-
-            for item in inverse_pair_to_erase: # 删除所有无效逆序处理
-                del self.inverse_pairs[item]
