@@ -1,6 +1,8 @@
 import pygame
 import math
+import numpy
 from . import constant_config
+from . import math_utils
 
 def draw_thick_line(screen, start, end, width, color):
     """绘制有宽度的线（使用多边形）"""
@@ -31,3 +33,42 @@ def draw_thick_line(screen, start, end, width, color):
 def draw_empty_circle(screen, border_color, x, y, radius):
     pygame.draw.circle(screen, constant_config.WHITE, (x, y), radius)
     pygame.draw.circle(screen, border_color, (x, y), radius, 1)
+
+# 把 pos_21 ~ pos_22 画在 pos_11 ~ pos_12 上面
+def draw_line_on_line(screen, pos_11, pos_12, pos_21, pos_22, line_color):
+    crossing = math_utils.compute_intersection(pos_11, pos_12, pos_21, pos_22)
+    if crossing is None:
+        return
+    
+    pos_11 = numpy.array(pos_11).astype(numpy.float64)
+    pos_12 = numpy.array(pos_12).astype(numpy.float64)
+    pos_21 = numpy.array(pos_21).astype(numpy.float64)
+    pos_22 = numpy.array(pos_22).astype(numpy.float64)
+
+    dir_1 = pos_12 - pos_11
+    dir_2 = pos_22 - pos_21
+
+    dir_1 /= numpy.linalg.norm(dir_1)
+    dir_2 /= numpy.linalg.norm(dir_2)
+
+    norm_1 = numpy.array([-dir_1[1], dir_1[0]])
+    norm_2 = numpy.array([-dir_2[1], dir_2[0]])
+
+    p = []
+    for i in range(2):
+        for j in range(2):
+            d1 = 2 * i - 1 # -1 或者 +1
+            d2 = 2 * j - 1 # -1 或者 +1
+            p.append(math_utils.compute_intersection(
+                pos_11 + d1 * norm_1 * (constant_config.LINE_WIDTH / 2 + 0.5),
+                pos_12 + d1 * norm_1 * (constant_config.LINE_WIDTH / 2 + 0.5),
+                pos_21 + d2 * norm_2 * (constant_config.LINE_WIDTH / 2 + 0.5),
+                pos_22 + d2 * norm_2 * (constant_config.LINE_WIDTH / 2 + 0.5),
+            ))
+
+    if None not in p:
+        p[3], p[2] = p[2], p[3] # 修正顺序
+        pygame.draw.polygon(screen, constant_config.WHITE, p)
+
+        pygame.draw.line(screen, line_color, p[2], p[1])
+        pygame.draw.line(screen, line_color, p[0], p[3])

@@ -1,3 +1,7 @@
+import numpy
+from . import math_utils
+from . import constant_config
+
 class MemoryObject:
     def __init__(self) -> None:
         self.dot_id_max = 0
@@ -5,6 +9,10 @@ class MemoryObject:
 
         self.dot_dict = {}
         self.line_dict = {}
+        self.inverse_pairs = {}
+
+    def get_inverse_pairs(self):
+        return self.inverse_pairs
 
     def debug_output(self): # 输出所有节点信息
         for dot_id in self.dot_dict:
@@ -15,8 +23,46 @@ class MemoryObject:
             dot_id_1, dot_id_2 = self.line_dict[line_id]
             print("  LINE: %10s (%10s, %10s)" % (line_id, dot_id_1, dot_id_2))
 
+    def swap_line_order(self, line_idx1, line_idx2):
+        assert line_idx1 != line_idx2
+        assert self.line_dict.get(line_idx1) is not None
+        assert self.line_dict.get(line_idx2) is not None
+        
+        if int(line_idx1.split("_")[-1]) < int(line_idx2.split("_")[-1]): # 保证 line_idx1 > line_idx2
+            line_idx1, line_idx2 = line_idx2, line_idx1
+
+        if self.inverse_pairs.get((line_idx1, line_idx2)) is None: # 如果没有这个逆向对要求，则添加
+            self.inverse_pairs[(line_idx1, line_idx2)] = True
+        else:                                                      # 如果有这个逆向对要求，则删掉
+            del self.inverse_pairs[(line_idx1, line_idx2)]
+
+
+    def find_nearest_lines(self, x, y):
+        line_pair_list = []
+        for line_id in self.line_dict:
+            dot_from, dot_to = self.line_dict[line_id]
+            pos_from = self.dot_dict[dot_from]
+            pos_to   = self.dot_dict[dot_to]
+            dis = math_utils.point_to_line_segment_distance((x, y), pos_from, pos_to)
+
+            if dis <= constant_config.LINE_WIDTH / 2 + 1:
+                line_pair_list.append((line_id, dis))
+        return line_pair_list
+
     def set_dot_position(self, dot_id, x, y): # 设置节点位置
-        self.dot_dict[dot_id] = (x, y)
+        conflict = False
+
+        for dot_id_now in self.dot_dict:
+            if dot_id_now == dot_id:
+                continue
+            
+            xnow, ynow = self.dot_dict[dot_id_now]
+            if numpy.linalg.norm(numpy.array([xnow - x, ynow - y])) <= constant_config.CIRCLE_RADIUS + 1:
+                conflict =True
+                break
+
+        if not conflict: # 不允许点重合
+            self.dot_dict[dot_id] = (x, y)
 
     def get_dot_dict(self) -> dict: # 获得节点表
         return self.dot_dict

@@ -87,10 +87,10 @@ class Knotpen2GameObject(GameObject.GameObject):
 
     def handle_mouse_up(self, button, x, y):
         super().handle_mouse_up(button, x, y)
-        if button == constant_config.LEFT_KEY_ID:
+        if button == constant_config.LEFT_KEY_ID: # 点击左键可以添加结点
             self.handle_left_mouse_up(x, y)
 
-        elif button == constant_config.RIGHT_KEY_ID:
+        elif button == constant_config.RIGHT_KEY_ID: # 右键单击可以删除结点
             self.handle_right_mouse_up(x, y)
 
     def handle_right_mouse_up(self, x, y):
@@ -100,16 +100,22 @@ class Knotpen2GameObject(GameObject.GameObject):
             if mouse_on_dot_id is not None: # 右键删除节点
                 self.memory_object.erase_dot(mouse_on_dot_id)
 
+            else: # 右键点击交叉点可以调整交叉点的重叠次序
+                line_pair_list = self.memory_object.find_nearest_lines(x, y)
+
+                if len(line_pair_list) == 2:
+                    self.memory_object.swap_line_order(line_pair_list[0][0], line_pair_list[1][0])
+
     def draw_screen(self, screen): # 绘制屏幕内容
         super().draw_screen(screen)
 
-        dot_dict = self.memory_object.get_dot_dict()
+        dot_dict  = self.memory_object.get_dot_dict()
         line_dict = self.memory_object.get_line_dict()
         for line_id in line_dict:
             dot_from, dot_to = line_dict[line_id]
             pos_from = dot_dict[dot_from]
             pos_to   = dot_dict[dot_to]
-            pygame_utils.draw_thick_line(screen, pos_from, pos_to, 3, constant_config.BLACK)
+            pygame_utils.draw_thick_line(screen, pos_from, pos_to, constant_config.LINE_WIDTH, constant_config.BLACK)
 
         for dot_id in dot_dict: # 绘制所有节点
             x, y = dot_dict[dot_id]
@@ -118,3 +124,14 @@ class Knotpen2GameObject(GameObject.GameObject):
             if self.status == "select_dot" and dot_id == self.focus_dot:
                 color = constant_config.RED
             pygame_utils.draw_empty_circle(screen, color, x, y, constant_config.CIRCLE_RADIUS)
+
+        # 重新绘制所有逆向点
+        for item in self.memory_object.get_inverse_pairs():
+            line_id1, line_id2 = item
+            dot_11, dot_12 = self.memory_object.get_line_dict()[line_id1]
+            dot_21, dot_22 = self.memory_object.get_line_dict()[line_id2]
+            pos_11 = dot_dict[dot_11]
+            pos_12 = dot_dict[dot_12]
+            pos_21 = dot_dict[dot_21]
+            pos_22 = dot_dict[dot_22]
+            pygame_utils.draw_line_on_line(screen, pos_11, pos_12, pos_21, pos_22, constant_config.BLACK)
