@@ -4,6 +4,7 @@ import numpy
 from . import GameObject
 from . import MemoryObject
 from . import constant_config
+from . import pygame_utils
 
 STATUS_LIST = [
     "free",        # 自由状态
@@ -84,7 +85,6 @@ class Knotpen2GameObject(GameObject.GameObject):
                     self.status    = "select_dot"
                     self.focus_dot = dot_id # 焦点传递
 
-
     def handle_mouse_up(self, button, x, y):
         super().handle_mouse_up(button, x, y)
         if button == constant_config.LEFT_KEY_ID:
@@ -109,7 +109,7 @@ class Knotpen2GameObject(GameObject.GameObject):
             dot_from, dot_to = line_dict[line_id]
             pos_from = dot_dict[dot_from]
             pos_to   = dot_dict[dot_to]
-            pygame.draw.line(screen, constant_config.BLACK, pos_from, pos_to, 1)
+            pygame_utils.draw_thick_line(screen, pos_from, pos_to, 3, constant_config.BLACK)
 
         for dot_id in dot_dict: # 绘制所有节点
             x, y = dot_dict[dot_id]
@@ -117,6 +117,4 @@ class Knotpen2GameObject(GameObject.GameObject):
             color = constant_config.BLACK
             if self.status == "select_dot" and dot_id == self.focus_dot:
                 color = constant_config.RED
-
-            pygame.draw.circle(screen, constant_config.WHITE, (x, y), constant_config.CIRCLE_RADIUS)
-            pygame.draw.circle(screen, color, (x, y), constant_config.CIRCLE_RADIUS, 1)
+            pygame_utils.draw_empty_circle(screen, color, x, y, constant_config.CIRCLE_RADIUS)
