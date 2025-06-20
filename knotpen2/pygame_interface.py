@@ -1,15 +1,15 @@
-# mouse_down_recall(button, x, y): 鼠标按下回调函数
+# handle_mouse_down(button, x, y): 鼠标按下回调函数
 #   button: 1=左键, 2=中键, 3=右键, 4=滚轮上滚, 5=滚轮下滚
-# mouse_up_recall(button, x, y): 鼠标抬起回调函数
+# handle_mouse_up(button, x, y): 鼠标抬起回调函数
 # handle_key_down(key, mod, unicode): 键盘按键按下回调函数
 # handle_key_up(key, mod): 键盘按键释放回调函数
 # handle_quit(): 页面关闭回调函数，返回页面是否要继续运行
 # draw_screen(screen): 用于绘制屏幕内容
 # die_check(): 检测游戏当前是否应该被关闭, True: 是, False: 否
-def pygame_interface(mouse_down_recall=None, mouse_up_recall=None, 
+def pygame_interface(handle_mouse_down=None, handle_mouse_up=None, 
                      handle_key_down=None, handle_key_up=None, 
                      handle_quit=None, draw_screen=None,
-                     die_check=None, width=1024, height=768):
+                     die_check=None, handle_mouse_move=None, width=1024, height=768):
     import pygame
     pygame.init() # 初始化 Pygame
     
@@ -37,19 +37,24 @@ def pygame_interface(mouse_down_recall=None, mouse_up_recall=None,
                 if handle_quit is not None:
                     handle_quit()# 调用退出回调函数
 
+            elif event.type == pygame.MOUSEMOTION: # 鼠标移动事件
+                x, y = event.pos
+                if handle_mouse_move is not None:
+                    handle_mouse_move(x, y)
+
             elif event.type == pygame.MOUSEBUTTONDOWN: # 检测鼠标按下
                 x, y = event.pos
                 button = event.button
                 
-                if mouse_down_recall is not None:
-                    mouse_down_recall(button, x, y)
+                if handle_mouse_down is not None:
+                    handle_mouse_down(button, x, y)
             
             elif event.type == pygame.MOUSEBUTTONUP: # 检测鼠标抬起
                 x, y = event.pos
                 button = event.button
                 
-                if mouse_up_recall is not None:
-                    mouse_up_recall(button, x, y)
+                if handle_mouse_up is not None:
+                    handle_mouse_up(button, x, y)
 
             elif event.type == pygame.KEYDOWN: # 检测键盘按键按下
                 key = event.key

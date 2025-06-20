@@ -1,5 +1,8 @@
 
 CIRCLE_RADIUS = 5
 
+LEFT_KEY_ID = 1
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+RED = (255, 0, 0)

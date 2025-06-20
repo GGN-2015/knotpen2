@@ -1,8 +1,8 @@
 import pygame
 
-# mouse_down_recall(button, x, y): 鼠标按下回调函数
+# handle_mouse_down(button, x, y): 鼠标按下回调函数
 #   button: 1=左键, 2=中键, 3=右键, 4=滚轮上滚, 5=滚轮下滚
-# mouse_up_recall(button, x, y): 鼠标抬起回调函数
+# handle_mouse_up(button, x, y): 鼠标抬起回调函数
 # handle_key_down(key, mod, unicode): 键盘按键按下回调函数
 # handle_key_up(key, mod): 键盘按键释放回调函数
 # handle_quit(): 页面关闭回调函数，返回页面是否要继续运行
@@ -61,3 +61,7 @@ class GameObject:
             return True # 窗口已经死了
         else:
             return False # 窗口还没死
+        
+    def handle_mouse_move(self, x, y): # 鼠标移动事件
+        self.mouse_x, self.mouse_y = x, y
+        # print(f"鼠标移动：({x}, {y})")

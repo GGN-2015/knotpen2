@@ -15,6 +15,9 @@ class MemoryObject:
             dot_id_1, dot_id_2 = self.line_dict[line_id]
             print("  LINE: %10s (%10s, %10s)" % (line_id, dot_id_1, dot_id_2))
 
+    def set_dot_position(self, dot_id, x, y): # 设置节点位置
+        self.dot_dict[dot_id] = (x, y)
+
     def get_dot_dict(self) -> dict: # 获得节点表
         return self.dot_dict
 
