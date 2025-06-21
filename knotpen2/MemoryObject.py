@@ -6,6 +6,17 @@ from . import constant_config
 
 class MemoryObject:
     def __init__(self, auto_load=True) -> None:
+        self.clear()
+        self.empty_info = self.get_all_info()
+
+        if auto_load and os.path.isfile(constant_config.AUTOSAVE_FILE): # 自动加载存档
+            print("正在加载自动保存的存档 ...")
+            try:
+                self.load_object(constant_config.AUTOSAVE_FILE)
+            except:
+                print("加载失败，自动存档文件故障")
+
+    def clear(self): # 初始化为空白状态
         self.dot_id_max = 0
         self.line_id_max = 0
 
@@ -17,12 +28,6 @@ class MemoryObject:
         self.base_dot = [] # 记录起始位置
         self.dir_dot = []  # 记录定向位置
 
-        if auto_load and os.path.isfile(constant_config.AUTOSAVE_FILE): # 自动加载存档
-            print("正在加载自动保存的存档 ...")
-            try:
-                self.load_object(constant_config.AUTOSAVE_FILE)
-            except:
-                print("加载失败，自动存档文件故障")
 
     def split_line_at(self, line_id, x, y):
         assert self.line_dict.get(line_id) is not None
@@ -49,12 +54,22 @@ class MemoryObject:
             "dir_dot": self.dir_dot,
         }
     
-    def auto_delete_duplicate(self):
+    def get_all_auto_save(self):
         arr = []
         for file in os.listdir(constant_config.AUTOSAVE_FOLDER):
             if file != os.path.basename(constant_config.AUTOSAVE_FILE):
                 arr.append(file)
         arr = sorted(arr)
+        return arr
+
+    def load_last_auto_save(self):
+        arr = self.get_all_auto_save()
+        if len(arr) >= 1:
+            lastfile = os.path.join(constant_config.AUTOSAVE_FOLDER, arr[-1])
+            self.load_object(lastfile)
+
+    def auto_delete_duplicate(self):
+        arr = self.get_all_auto_save()
         if len(arr) >= 2:
             lastfile = os.path.join(constant_config.AUTOSAVE_FOLDER, arr[-1]) # 倒数第一个
             nextfile = os.path.join(constant_config.AUTOSAVE_FOLDER, arr[-2]) # 倒数第二个
@@ -66,15 +81,16 @@ class MemoryObject:
                 except:
                     pass
 
-    def auto_backup(self):
-        print("正在自动保存...")
-        filename = math_utils.get_formatted_datetime() + ".json"
-        folder = constant_config.AUTOSAVE_FOLDER
-        filepath = os.path.join(folder, filename)
-        self.dump_object(filepath) # 保存一个备份文件，每隔一段时间自动保存一次
+    def auto_backup(self): # 自动保存时，不允许保持空白状态，但是退出时的自动保存可以保存空白状态
+        if self.get_all_info() != self.empty_info: 
+            print("正在自动保存...")
+            filename = math_utils.get_formatted_datetime() + ".json"
+            folder = constant_config.AUTOSAVE_FOLDER
+            filepath = os.path.join(folder, filename)
+            self.dump_object(filepath) # 保存一个备份文件，每隔一段时间自动保存一次
 
-        self.auto_delete_duplicate() # 自动删除重复的
-        print("保存成功")
+            self.auto_delete_duplicate() # 自动删除重复的
+            print("保存成功")
 
     def dump_object(self, filepath:str):
         folder = os.path.dirname(os.path.abspath(filepath)) # 创建文件路径

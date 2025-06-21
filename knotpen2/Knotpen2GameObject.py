@@ -24,6 +24,8 @@ class Knotpen2GameObject(GameObject.GameObject):
         self.left_mouse_down = False
         self.actually_moved  = False
         self.last_click      = -1          # 上次鼠标左键抬起的时刻
+        self.last_c_down     = -1          # 上次键盘按下 c 键
+        self.last_r_down     = -1          # 键盘上一次按下按键 r 的时刻
         self.last_backup     = time.time() # 上次自动保存时间
 
     def handle_quit(self):
@@ -46,15 +48,6 @@ class Knotpen2GameObject(GameObject.GameObject):
         if key_name == 'a':
             self.memory_object.shift_position(-constant_config.STRIDE, 0)
 
-        elif key_name == 'd':
-            self.memory_object.shift_position(+constant_config.STRIDE, 0)
-
-        elif key_name == 'w':
-            self.memory_object.shift_position(0, -constant_config.STRIDE)
-
-        elif key_name == 's':
-            self.memory_object.shift_position(0, +constant_config.STRIDE)
-
         elif key_name == 'b': # set base point
 
             if self.status == "select_dot" and self.focus_dot is not None:
@@ -65,6 +58,23 @@ class Knotpen2GameObject(GameObject.GameObject):
             else:
                 self.memory_object.set_base_dot(self.focus_dot) # 再添加一次变成取消
 
+        elif key_name == 'c':
+            if time.time() - self.last_c_down < constant_config.DOUBLE_CLICK_TIME:
+                self.memory_object.auto_backup()
+                self.memory_object.clear()
+            self.last_c_down = time.time()
+
+        elif key_name == 'd':
+            self.memory_object.shift_position(+constant_config.STRIDE, 0)
+
+        elif key_name == 'r':
+            if time.time() - self.last_r_down < constant_config.DOUBLE_CLICK_TIME:
+                self.memory_object.load_last_auto_save()
+            self.last_r_down = time.time()
+
+        elif key_name == 's':
+            self.memory_object.shift_position(0, +constant_config.STRIDE)
+
         elif key_name == 't': # set dir point
             if self.status == "select_dot" and self.focus_dot is not None:
                 self.memory_object.set_dir_dot(self.focus_dot)
@@ -74,6 +84,9 @@ class Knotpen2GameObject(GameObject.GameObject):
             else:
                 self.memory_object.set_dir_dot(self.focus_dot)
         
+        elif key_name == 'w':
+            self.memory_object.shift_position(0, -constant_config.STRIDE)
+
         elif key_name == 'delete' or key_name == 'backspace':
             if self.status == "select_dot" and self.focus_dot is not None: # 删除节点并回退到正常模式
                 self.memory_object.erase_dot(self.focus_dot)
