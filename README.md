@@ -48,3 +48,17 @@
   - 图片中会标出所有的交叉点处的弧线编号
   - 文本文件中会以四元组的形式输出一个 pd_code
   - 文本文件以及图片文件会被存储到 knotpen2/knotpen2/answer 文件夹中
+
+
+## 如何引用
+```text
+@misc{knotpen2,
+  author = {Guo, Guannan},
+  title = {Knotpen2: A GUI Based Link PD Notation Calculator},
+  year = {2025},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {https://github.com/GGN-2015/knotpen2},
+  note = {Access Date: 你的访问日期}
+}
+```
