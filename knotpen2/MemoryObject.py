@@ -17,12 +17,22 @@ class MemoryObject:
         self.base_dot = [] # 记录起始位置
         self.dir_dot = []  # 记录定向位置
 
-        if auto_load and os.path.isfile(constant_config.AUTOSAVE): # 自动加载存档
+        if auto_load and os.path.isfile(constant_config.AUTOSAVE_FILE): # 自动加载存档
             print("正在加载自动保存的存档 ...")
             try:
-                self.load_object(constant_config.AUTOSAVE)
+                self.load_object(constant_config.AUTOSAVE_FILE)
             except:
-                print("加载失败")
+                print("加载失败，自动存档文件故障")
+
+    def split_line_at(self, line_id, x, y):
+        assert self.line_dict.get(line_id) is not None
+
+        dot_id = self.new_dot(x, y)
+        from_id, to_id = self.line_dict[line_id]
+
+        self.erase_line(line_id)
+        self.new_line(from_id, dot_id) # 拆分一个条边
+        self.new_line(dot_id, to_id)
 
     def get_degree(self):
         return self.degree
@@ -39,18 +49,45 @@ class MemoryObject:
             "dir_dot": self.dir_dot,
         }
     
+    def auto_delete_duplicate(self):
+        arr = []
+        for file in os.listdir(constant_config.AUTOSAVE_FOLDER):
+            if file != os.path.basename(constant_config.AUTOSAVE_FILE):
+                arr.append(file)
+        arr = sorted(arr)
+        if len(arr) >= 2:
+            lastfile = os.path.join(constant_config.AUTOSAVE_FOLDER, arr[-1]) # 倒数第一个
+            nextfile = os.path.join(constant_config.AUTOSAVE_FOLDER, arr[-2]) # 倒数第二个
+
+            if open(lastfile).read() == open(nextfile).read():
+                try:
+                    os.remove(lastfile)
+                    print("由于没有修改，因此最后一次自动保存被删除")
+                except:
+                    pass
+
+    def auto_backup(self):
+        print("正在自动保存...")
+        filename = math_utils.get_formatted_datetime() + ".json"
+        folder = constant_config.AUTOSAVE_FOLDER
+        filepath = os.path.join(folder, filename)
+        self.dump_object(filepath) # 保存一个备份文件，每隔一段时间自动保存一次
+
+        self.auto_delete_duplicate() # 自动删除重复的
+        print("保存成功")
+
     def dump_object(self, filepath:str):
         folder = os.path.dirname(os.path.abspath(filepath)) # 创建文件路径
         os.makedirs(folder, exist_ok=True)
         assert os.path.isdir(folder)
 
         with open(filepath, "w") as fp:
-            json.dump(self.get_all_info(), fp)
+            fp.write(repr(self.get_all_info())) # 这种序列化方式有点不安全
 
     def load_object(self, filepath:str):
         assert os.path.isfile(filepath)
         with open(filepath, "r") as fp:
-            obj = json.load(fp)
+            obj = eval(fp.read()) # 这种序列化方式有点不安全
         self.dot_id_max = obj["dot_id_max"]
         self.line_id_max = obj["line_id_max"]
         self.dot_dict = obj["dot_dict"]

@@ -1,4 +1,5 @@
 import math
+import datetime
 
 def ccw(A, B, C):
     return (B[0] - A[0]) * (C[1] - A[1]) - (B[1] - A[1]) * (C[0] - A[0])
@@ -93,3 +94,8 @@ def point_to_line_segment_distance(point, line_start, line_end):
     distance = math.hypot(point[0] - projection[0], point[1] - projection[1])
     
     return distance
+
+def get_formatted_datetime() -> str:
+    now = datetime.datetime.now()
+    formatted = now.strftime("%Y-%m-%d_%H-%M-%S")
+    return formatted

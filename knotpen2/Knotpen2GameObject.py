@@ -1,5 +1,6 @@
 import pygame
 import numpy
+import time
 
 from . import GameObject
 from . import MemoryObject
@@ -19,15 +20,17 @@ class Knotpen2GameObject(GameObject.GameObject):
 
         self.memory_object   = memory_object
         self.status          = "free"
-        self.focus_dot      = None
+        self.focus_dot       = None
         self.left_mouse_down = False
         self.actually_moved  = False
+        self.last_click      = -1          # 上次鼠标左键抬起的时刻
+        self.last_backup     = time.time() # 上次自动保存时间
 
     def handle_quit(self):
         print("自动保存中，请不要关闭窗口 ...")
-        self.memory_object.dump_object(constant_config.AUTOSAVE) # 自动保存
+        self.memory_object.dump_object(constant_config.AUTOSAVE_FILE) # 自动保存
         print("自动保存成功")
-        
+
         self.status = "quit"
 
     def handle_mouse_down(self, button, x, y): # 鼠标按下
@@ -63,7 +66,6 @@ class Knotpen2GameObject(GameObject.GameObject):
                 self.memory_object.set_base_dot(self.focus_dot) # 再添加一次变成取消
 
         elif key_name == 't': # set dir point
-
             if self.status == "select_dot" and self.focus_dot is not None:
                 self.memory_object.set_dir_dot(self.focus_dot)
                 self.status = "free"
@@ -71,6 +73,14 @@ class Knotpen2GameObject(GameObject.GameObject):
 
             else:
                 self.memory_object.set_dir_dot(self.focus_dot)
+        
+        elif key_name == 'delete':
+            if self.status == "select_dot" and self.focus_dot is not None: # 删除节点并回退到正常模式
+                self.memory_object.erase_dot(self.focus_dot)
+                self.status = "free"
+                self.focus_dot = None # 回退到常规模式
+
+
 
     def handle_left_mouse_down(self, x, y):
         self.left_mouse_down = True
@@ -115,6 +125,9 @@ class Knotpen2GameObject(GameObject.GameObject):
 
                 elif len(line_pair_list) == 0: # 自由状态创建点
                     self.memory_object.new_dot(x, y)
+
+                elif len(line_pair_list) == 1 and time.time() - self.last_click < constant_config.DOUBLE_CLICK_TIME:
+                    self.memory_object.split_line_at(line_pair_list[0][0], x, y)
             
             elif not self.actually_moved: # 刚刚结束拖动的时候不可以选中
                 self.focus_dot = mouse_on_dot_id
@@ -132,6 +145,8 @@ class Knotpen2GameObject(GameObject.GameObject):
                     self.memory_object.new_line(dot_id, self.focus_dot)
                     self.status    = "select_dot"
                     self.focus_dot = dot_id # 焦点传递
+        
+        self.last_click = time.time() # 设置上次鼠标左键抬起的时刻
 
     def handle_mouse_up(self, button, x, y):
         super().handle_mouse_up(button, x, y)
@@ -153,9 +168,18 @@ class Knotpen2GameObject(GameObject.GameObject):
 
                 if len(line_pair_list) == 1: # 删除一个边
                     self.memory_object.erase_line(line_pair_list[0][0])
+        
+        elif self.status == "select_dot": # 退出节点选择模式
+            self.status = "free"
 
     def draw_screen(self, screen): # 绘制屏幕内容
         super().draw_screen(screen)
+
+        time_now = time.time()
+        if time_now - self.last_backup > constant_config.BACKUP_TIME:     # 自动保存
+            self.memory_object.auto_backup()                              # 保存一个时间戳对应的文件
+            self.memory_object.dump_object(constant_config.AUTOSAVE_FILE) # 保存一个 auto_save
+            self.last_backup = time_now
 
         if self.memory_object.base_dot is not None: # 绘制起始点
             for base_dot_id in self.memory_object.base_dot:
