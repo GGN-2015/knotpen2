@@ -25,6 +25,7 @@ class Knotpen2GameObject(GameObject.GameObject):
         self.actually_moved  = False
         self.last_click      = -1          # 上次鼠标左键抬起的时刻
         self.last_c_down     = -1          # 上次键盘按下 c 键
+        self.last_l_down     = -1          # 上次键盘按下 l 键
         self.last_r_down     = -1          # 键盘上一次按下按键 r 的时刻
         self.last_backup     = time.time() # 上次自动保存时间
 
@@ -40,6 +41,10 @@ class Knotpen2GameObject(GameObject.GameObject):
         
         if button == constant_config.LEFT_KEY_ID:
             self.handle_left_mouse_down(x, y)
+
+    def output_answer(self):
+        print("正在检查扭结合法性...")
+        print("此功能尚未实现!")
 
     def handle_key_down(self, key, mod, unicode): # 处理键盘事件
         super().handle_key_down(key, mod, unicode)
@@ -66,6 +71,11 @@ class Knotpen2GameObject(GameObject.GameObject):
 
         elif key_name == 'd':
             self.memory_object.shift_position(+constant_config.STRIDE, 0)
+
+        elif key_name == 'l':
+            if time.time() - self.last_l_down < constant_config.DOUBLE_CLICK_TIME:
+                self.output_answer()
+            self.last_l_down = time.time()
 
         elif key_name == 'r':
             if time.time() - self.last_r_down < constant_config.DOUBLE_CLICK_TIME:
