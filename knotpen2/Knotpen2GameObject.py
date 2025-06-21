@@ -24,6 +24,10 @@ class Knotpen2GameObject(GameObject.GameObject):
         self.actually_moved  = False
 
     def handle_quit(self):
+        print("自动保存中，请不要关闭窗口 ...")
+        self.memory_object.dump_object(constant_config.AUTOSAVE) # 自动保存
+        print("自动保存成功")
+        
         self.status = "quit"
 
     def handle_mouse_down(self, button, x, y): # 鼠标按下

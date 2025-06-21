@@ -1,3 +1,6 @@
+import os
+DIRNOW = os.path.dirname(os.path.abspath(__file__))
+AUTOSAVE = os.path.join(DIRNOW, "auto_save.json") # 自动保存位置
 
 CIRCLE_RADIUS = 10
 LINE_WIDTH = 8

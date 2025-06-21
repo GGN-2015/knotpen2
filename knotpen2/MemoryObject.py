@@ -1,9 +1,11 @@
 import numpy
+import os
+import json
 from . import math_utils
 from . import constant_config
 
 class MemoryObject:
-    def __init__(self) -> None:
+    def __init__(self, auto_load=True) -> None:
         self.dot_id_max = 0
         self.line_id_max = 0
 
@@ -15,8 +17,48 @@ class MemoryObject:
         self.base_dot = [] # 记录起始位置
         self.dir_dot = []  # 记录定向位置
 
+        if auto_load and os.path.isfile(constant_config.AUTOSAVE): # 自动加载存档
+            print("正在加载自动保存的存档 ...")
+            try:
+                self.load_object(constant_config.AUTOSAVE)
+            except:
+                print("加载失败")
+
     def get_degree(self):
         return self.degree
+    
+    def get_all_info(self) -> dict: # 获取对象的完整信息
+        return {
+            "dot_id_max": self.dot_id_max,
+            "line_id_max": self.line_id_max,
+            "dot_dict": self.dot_dict,
+            "line_dict": self.line_dict,
+            "inverse_pairs": self.inverse_pairs,
+            "degree": self.degree,
+            "base_dot": self.base_dot,
+            "dir_dot": self.dir_dot,
+        }
+    
+    def dump_object(self, filepath:str):
+        folder = os.path.dirname(os.path.abspath(filepath)) # 创建文件路径
+        os.makedirs(folder, exist_ok=True)
+        assert os.path.isdir(folder)
+
+        with open(filepath, "w") as fp:
+            json.dump(self.get_all_info(), fp)
+
+    def load_object(self, filepath:str):
+        assert os.path.isfile(filepath)
+        with open(filepath, "r") as fp:
+            obj = json.load(fp)
+        self.dot_id_max = obj["dot_id_max"]
+        self.line_id_max = obj["line_id_max"]
+        self.dot_dict = obj["dot_dict"]
+        self.line_dict = obj["line_dict"]
+        self.inverse_pairs = obj["inverse_pairs"]
+        self.degree = obj["degree"]
+        self.base_dot = obj["base_dot"]
+        self.dir_dot = obj["dir_dot"]
 
     def get_inverse_pairs(self):
         return self.inverse_pairs
