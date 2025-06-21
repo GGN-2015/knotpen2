@@ -74,13 +74,11 @@ class Knotpen2GameObject(GameObject.GameObject):
             else:
                 self.memory_object.set_dir_dot(self.focus_dot)
         
-        elif key_name == 'delete':
+        elif key_name == 'delete' or key_name == 'backspace':
             if self.status == "select_dot" and self.focus_dot is not None: # 删除节点并回退到正常模式
                 self.memory_object.erase_dot(self.focus_dot)
                 self.status = "free"
                 self.focus_dot = None # 回退到常规模式
-
-
 
     def handle_left_mouse_down(self, x, y):
         self.left_mouse_down = True
