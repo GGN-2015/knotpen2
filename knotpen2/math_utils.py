@@ -19,15 +19,42 @@ def segments_intersect(line1, line2):
 
     # 处理共线情况和端点相交
     if ccw1 == 0 and on_segment(A, B, C):
-        return C
+        return C, calculate_t(A, B, C), 0
     if ccw2 == 0 and on_segment(A, B, D):
-        return D
+        return D, calculate_t(A, B, D), 1
     if ccw3 == 0 and on_segment(C, D, A):
-        return A
+        return A, 0, calculate_t(C, D, A)
     if ccw4 == 0 and on_segment(C, D, B):
-        return B
+        return B, 1, calculate_t(C, D, B)
 
-    return None
+    return None, None, None
+
+def calculate_t(A, B, P):
+    """
+    计算点 P 在线段 AB 上的参数 t，满足 P = A + t*(B-A)
+    
+    参数:
+    A, B, P -- 二维点，格式为元组 (x, y)
+    
+    返回:
+    t -- 实数参数，若 A=B 则返回 0
+    """
+    # 检查 A 和 B 是否为同一点
+    if A == B:
+        return 0.0  # 若 A=B，线段退化为点，t 定义为 0
+    
+    xA, yA = A
+    xB, yB = B
+    xP, yP = P
+    
+    # 优先使用 x 坐标计算 t（避免垂直线段的除零问题）
+    if xB != xA:
+        t = (xP - xA) / (xB - xA)
+    else:
+        # 若线段垂直，则使用 y 坐标计算
+        t = (yP - yA) / (yB - yA)
+    
+    return t
 
 def compute_intersection(A, B, C, D):
     """计算两线段的交点坐标"""
@@ -46,9 +73,9 @@ def compute_intersection(A, B, C, D):
     if 0 <= t <= 1 and 0 <= u <= 1:
         x = x1 + t * (x2 - x1)
         y = y1 + t * (y2 - y1)
-        return (x, y)
+        return (x, y), t, u # t是第一条线段上的参数, u 是第二条线段上的参数
     else:
-        return None
+        return None, None, None
 
 def on_segment(A, B, C):
     """检查点C是否在线段AB上"""

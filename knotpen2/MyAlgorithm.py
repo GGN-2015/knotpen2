@@ -119,3 +119,13 @@ class MyAlgorithm:
             
             assert block_list[i][0] == base_val # 调整正确的顺序
             assert block_list[i][1] == dir_val
+
+        # 计算新的编号：Ci_Nj 表示一个节点位于连通分量 i、第 j 个节点
+        dot_id_to_new_id = {}
+        for i in range(len(block_list)):
+            for j in range(len(block_list[i])):
+                dot_id_to_new_id[block_list[i][j]] = "C%7d_N%7d" % (i, j)
+
+        # 定位所有交叉点的两重身份：(c1, n1, t1), (c2, n2, t2)
+        # n1 表示交叉点所在的弧线，位于 c1 连通分支上第 n1 个节点后面的一段弧线
+        # t1 表示他在这段弧线上的坐标 \in (0, 1)

@@ -39,7 +39,7 @@ def draw_full_circle(screen, fill_color, x, y, radius):
 
 # 把 pos_21 ~ pos_22 画在 pos_11 ~ pos_12 上面
 def draw_line_on_line(screen, pos_11, pos_12, pos_21, pos_22, line_color):
-    crossing = math_utils.compute_intersection(pos_11, pos_12, pos_21, pos_22)
+    crossing, _, _ = math_utils.segments_intersect((pos_11, pos_12), (pos_21, pos_22))
     if crossing is None:
         return
     
@@ -62,12 +62,13 @@ def draw_line_on_line(screen, pos_11, pos_12, pos_21, pos_22, line_color):
         for j in range(2):
             d1 = 2 * i - 1 # -1 或者 +1
             d2 = 2 * j - 1 # -1 或者 +1
-            p.append(math_utils.compute_intersection(
+            pos, _, _ = math_utils.compute_intersection(
                 pos_11 + d1 * norm_1 * (constant_config.LINE_WIDTH / 2 + 0.5),
                 pos_12 + d1 * norm_1 * (constant_config.LINE_WIDTH / 2 + 0.5),
                 pos_21 + d2 * norm_2 * (constant_config.LINE_WIDTH / 2 + 0.5),
                 pos_22 + d2 * norm_2 * (constant_config.LINE_WIDTH / 2 + 0.5),
-            ))
+            )
+            p.append(pos)
 
     if None not in p:
         p[3], p[2] = p[2], p[3] # 修正顺序

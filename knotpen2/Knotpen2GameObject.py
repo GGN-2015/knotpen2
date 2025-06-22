@@ -46,7 +46,7 @@ class Knotpen2GameObject(GameObject.GameObject):
         self.last_backup     = time.time() # 上次自动保存时间
         self.notice_node     = []          # 用红色标出一些节点编号
 
-    @log_error.log_errors
+    
     def handle_quit(self):
         self.leave_message("自动保存中，请不要关闭窗口 ...", constant_config.YELLOW)
         self.memory_object.dump_object(constant_config.AUTOSAVE_FILE) # 自动保存
@@ -54,7 +54,7 @@ class Knotpen2GameObject(GameObject.GameObject):
 
         self.status = "quit"
 
-    @log_error.log_errors
+    
     def handle_mouse_down(self, button, x, y): # 鼠标按下
         super().handle_mouse_down(button, x, y)
         
@@ -85,7 +85,7 @@ class Knotpen2GameObject(GameObject.GameObject):
             return
         self.algo.solve_pd_code(adj_list, block_list, baseL, dirL)
 
-    @log_error.log_errors
+    
     def handle_key_down(self, key, mod, unicode): # 处理键盘事件
         super().handle_key_down(key, mod, unicode)
 
@@ -143,7 +143,7 @@ class Knotpen2GameObject(GameObject.GameObject):
                 self.status = "free"
                 self.focus_dot = None # 回退到常规模式
 
-    @log_error.log_errors
+    
     def handle_left_mouse_down(self, x, y):
         self.left_mouse_down = True
         mouse_on_dot_id = self.get_mouse_on_dot_id(x, y)
@@ -154,7 +154,7 @@ class Knotpen2GameObject(GameObject.GameObject):
                 self.status = "move_dot"
                 self.actually_moved = False
 
-    @log_error.log_errors
+    
     def handle_mouse_move(self, x, y):
         super().handle_mouse_move(x, y)
 
@@ -211,7 +211,7 @@ class Knotpen2GameObject(GameObject.GameObject):
         
         self.last_click = time.time() # 设置上次鼠标左键抬起的时刻
 
-    @log_error.log_errors
+    
     def handle_mouse_up(self, button, x, y):
         super().handle_mouse_up(button, x, y)
         if button == constant_config.LEFT_KEY_ID: # 点击左键可以添加结点
@@ -237,7 +237,7 @@ class Knotpen2GameObject(GameObject.GameObject):
         elif self.status == "select_dot": # 退出节点选择模式
             self.status = "free"
 
-    @log_error.log_errors
+    
     def draw_screen(self, screen): # 绘制屏幕内容
         super().draw_screen(screen)
 
@@ -304,6 +304,6 @@ class Knotpen2GameObject(GameObject.GameObject):
             text_now = self.get_small_text(dot_id.split("_")[-1], color)
             screen.blit(text_now, (posx - constant_config.CIRCLE_RADIUS + 1, posy - constant_config.CIRCLE_RADIUS + 1))
 
-    @log_error.log_errors
+    
     def die_check(self):
         return self.status == "quit"
