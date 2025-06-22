@@ -122,6 +122,8 @@ class MyAlgorithm:
             assert block_list[i][1] == dir_val
 
         # 计算新的编号：Ci_Nj 表示一个节点位于连通分量 i、第 j 个节点
+        # 这里的 nid 能够反应前进方向，但是并不是最终的弧线编号，而只是一个节点编号
+        # debug 中：block_list 的计算为检测到异常
         dot_id_to_new_id = {}
         new_id_to_dot_id = {}
         for i in range(len(block_list)):
@@ -143,6 +145,10 @@ class MyAlgorithm:
                 return n2 == length-1
             
             else:
+                if n2 == 0:
+                    assert n1 == 1 or n1 == length-1
+                    return n1 == 1
+
                 assert abs(n1 - n2) == 1
                 return n2 == n1-1
 
@@ -163,7 +169,7 @@ class MyAlgorithm:
                 if d21 in [d11, d12] or d22 in [d11, d12]: # 如果有交集，就跑路
                     continue
 
-                p11 = dot_dict[d11] # 找到四个点的空间坐标
+                p11 = dot_dict[d11] # 找到四个点的空间坐标，现在的顺序还是 line_dict 中的顺序，这里面的顺序一般来说都不对
                 p12 = dot_dict[d12]
                 p21 = dot_dict[d21]
                 p22 = dot_dict[d22]
@@ -173,22 +179,21 @@ class MyAlgorithm:
                 nid21 = dot_id_to_new_id[d21]
                 nid22 = dot_id_to_new_id[d22]
 
-                if nid11[1] > nid12[1]: # 先把编号小的 swap 到前面
-                    p11, p12 = p12, p11
-                    nid11, nid12 = nid12, nid11
-                    
-                if nid21[1] > nid22[1]: # 先把编号小的 swap 到前面
-                    p21, p22 = p22, p21
-                    nid21, nid22 = nid22, nid21
-
                 # 注意：n-1 在 0 的前面
+                # 把编号小的 swap 到前面的目的是，保证 check_after 的正确性，因为 check_after 只考虑 nid11[1] == 0 的情况
                 if check_after(nid11, nid12, block_list): # 调整顺序，使得顺序服从原始顺序
+                    d11, d12 = d12, d11
                     p11,   p12   =   p12,   p11
                     nid11, nid12 = nid12, nid11
 
                 if check_after(nid21, nid22, block_list): # 调整顺序，使得顺序服从原始顺序
+                    d21, d22 = d22, d21
                     p21,   p22   =   p22,   p21
                     nid21, nid22 = nid22, nid21
+
+                # 保证 nid11 在 nid12 前面， 保证 nid21 在 nid22 前面
+                assert check_after(nid12, nid11, block_list)
+                assert check_after(nid22, nid21, block_list)
 
                 # t1 是线段在 p11, p12 上的参数 
                 # t2 是线段在 p21, p22 上的参数
@@ -244,7 +249,16 @@ class MyAlgorithm:
 
             # 我们需要判断 line_id_1 和 lind_id_2 谁在下面
             # line_1_under_line_2 = True 表示 line_1 在 line_2 下面
-            line_1_under_line_2 = xor((line_id_1 < line_id_2), (line_id_1, line_id_2) in invsps or (line_id_2, line_id_1) in invsps)
+            # 计算时发现了错误
+            line_1_under_line_2 = xor(
+                (int(line_id_1.split("_")[-1]) < int(line_id_2.split("_")[-1])), # 按照数值大小排序，而不是按照字符串字典序
+                (invsps.get((line_id_1, line_id_2)) is not None) or (invsps.get((line_id_2, line_id_1)) is not None))
+            print(
+                "line_1_under_line_2:",
+                self.memory_object.get_line_dict()[line_id_1],
+                self.memory_object.get_line_dict()[line_id_2],
+                line_1_under_line_2
+            )
 
             if not line_1_under_line_2: # 交换，使得 line_1 总是在 line_2 下面
                 nid11, nid21 = nid21, nid11
@@ -304,7 +318,10 @@ class MyAlgorithm:
         for pd_code_term in pd_code_final:
             for i in range(4):
                 pd_code_term["X"][i] = tup_to_real_id[pd_code_term["X"][i]]
-            pd_code_to_show.append(pd_code_term["X"])
+
+            clock_wise = pd_code_term["X"]
+            anti_clock_wise = [clock_wise[0]] + clock_wise[1:][::-1]
+            pd_code_to_show.append(anti_clock_wise)
         
         # 返回最终 pd_code
         return sorted(pd_code_to_show), pd_code_final
