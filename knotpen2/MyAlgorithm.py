@@ -263,25 +263,25 @@ class MyAlgorithm:
             pos21 = self.memory_object.get_dot_dict()[dot_id_21]
 
             # 条件成立，说明 pos21 在 pos11 的左侧
-            if not check_left_turn(np.array(pos11) - np.array(pos), np.array(pos21) - np.array(pos)):
+            if check_left_turn(np.array(pos11) - np.array(pos), np.array(pos21) - np.array(pos)):
                 pd_code_raw.append({"X":[
                     (bid1, aid1),
-                    (bid2, (aid2 + 1) % len(parts[bid2])), # 需要考虑最后一条 arc
-                    (bid1, (aid1 + 1) % len(parts[bid1])),
                     (bid2, aid2),
+                    (bid1, (aid1 + 1) % len(parts[bid1])),
+                    (bid2, (aid2 + 1) % len(parts[bid2])), # 需要考虑最后一条 arc
                 ], "dir":[
                     np_point_to_tuple(np.array(pos11) - np.array(pos)), # 记录第一个 index 对应的方向和第二个 index 对应的方向，用于未来显示
-                    np_point_to_tuple(-(np.array(pos21) - np.array(pos)))
+                    np_point_to_tuple(np.array(pos21) - np.array(pos))
                 ], "pos": pos})
             else:
                 pd_code_raw.append({"X":[
                     (bid1, aid1),
-                    (bid2, aid2),
-                    (bid1, (aid1 + 1) % len(parts[bid1])), # 需要考虑最后一条 arc
                     (bid2, (aid2 + 1) % len(parts[bid2])),
+                    (bid1, (aid1 + 1) % len(parts[bid1])), # 需要考虑最后一条 arc
+                    (bid2, aid2),
                 ], "dir":[
                     np_point_to_tuple(np.array(pos11) - np.array(pos)), # 记录第一个 index 对应的方向和第二个 index 对应的方向，用于未来显示
-                    np_point_to_tuple(np.array(pos21) - np.array(pos))
+                    np_point_to_tuple(-(np.array(pos21) - np.array(pos)))
                 ], "pos": pos})
         
         # 程序运行到这里已经获得了可用的 pd_code_raw 了
@@ -307,4 +307,4 @@ class MyAlgorithm:
             pd_code_to_show.append(pd_code_term["X"])
         
         # 返回最终 pd_code
-        return pd_code_to_show, pd_code_final
+        return sorted(pd_code_to_show), pd_code_final

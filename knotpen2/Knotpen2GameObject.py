@@ -343,8 +343,8 @@ class Knotpen2GameObject(GameObject.GameObject):
             for term in pd_code_final_info: # 按照指定方向绘制四个整数
                 x    = term["X"]
                 pos  = term["pos"]
-                dir0 = mul(unit(term["dir"][0]), constant_config.CIRCLE_RADIUS * 1.5 + 1)
-                dir1 = mul(unit(term["dir"][1]), constant_config.CIRCLE_RADIUS * 1.5 + 1)
+                dir0 = mul(unit(term["dir"][0]), constant_config.CIRCLE_RADIUS * 2.5 + 1)
+                dir1 = mul(unit(term["dir"][1]), constant_config.CIRCLE_RADIUS * 2.5 + 1)
                 dir2 = mul(dir0, -1)
                 dir3 = mul(dir1, -1)
                 dirs = [dir0, dir1, dir2, dir3]
