@@ -13,7 +13,7 @@ STRIDE = 50
 
 # 字体文件加载目录
 FONT_TTF = os.path.join(DIRNOW, "font", "SourceHanSansSC-VF.ttf")
-MAX_MESSAGE_CNT = 10
+MAX_MESSAGE_CNT = 40
 MESSAGE_SIZE = 18
 SMALL_TEXT_SIZE = 12
 def MESSAGE_POSITION(i:int):

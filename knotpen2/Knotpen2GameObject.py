@@ -65,8 +65,13 @@ class Knotpen2GameObject(GameObject.GameObject):
         if replace and len(self.msg_txt) >= 1: # 替换最后一条消息
             self.msg_txt = self.msg_txt[:-1]
 
-        self.msg_txt.append(self.font.render("%d: %s" % (self.msg_line_id, s), True, color))
-        self.msg_line_id += 1
+        text_now = "%d: %s" % (self.msg_line_id, s)
+        print(text_now)
+
+        self.msg_txt.append(self.font.render(text_now, True, color))
+
+        if not replace: # 替换最后一条消息的时候，不需要增加 id
+            self.msg_line_id += 1
 
         while len(self.msg_txt) > constant_config.MAX_MESSAGE_CNT:
             self.msg_txt = self.msg_txt[1:]
@@ -83,7 +88,7 @@ class Knotpen2GameObject(GameObject.GameObject):
         if not suc:
             self.leave_message(msg, constant_config.RED)
             return
-        self.algo.solve_pd_code(adj_list, block_list, baseL, dirL)
+        self.algo.solve_pd_code(adj_list, block_list, baseL, dirL, self.leave_message)
 
     
     def handle_key_down(self, key, mod, unicode): # 处理键盘事件

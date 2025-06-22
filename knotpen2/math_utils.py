@@ -19,13 +19,13 @@ def segments_intersect(line1, line2):
 
     # 处理共线情况和端点相交
     if ccw1 == 0 and on_segment(A, B, C):
-        return C, calculate_t(A, B, C), 0
+        return C, calculate_t(A, B, C), 0.0
     if ccw2 == 0 and on_segment(A, B, D):
-        return D, calculate_t(A, B, D), 1
+        return D, calculate_t(A, B, D), 1.0
     if ccw3 == 0 and on_segment(C, D, A):
-        return A, 0, calculate_t(C, D, A)
+        return A, 0.0, calculate_t(C, D, A)
     if ccw4 == 0 and on_segment(C, D, B):
-        return B, 1, calculate_t(C, D, B)
+        return B, 1.0, calculate_t(C, D, B)
 
     return None, None, None
 
