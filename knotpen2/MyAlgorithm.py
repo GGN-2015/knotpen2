@@ -31,27 +31,24 @@ class MyAlgorithm:
                     adj_list[dot].append(dot_id_1)
         return adj_list
 
+    def __dfs(self, vis, adj_list, dot_now, block_now):
+        vis[dot_now] = True
+        block_now.append(dot_now)
+
+        for dot_next in adj_list[dot_now]:
+            if vis.get(dot_next) is not True:
+                self.__dfs(vis, adj_list, dot_next, block_now)
+
     def get_connected_components(self): # 获取每个联通分支的 base 和 dir 点
         vis = {}
-        queue = collections.deque()
         adj_list = self.get_adj_list() # 获取邻接表
         block_list = [] # 记录所有连通分支的信息
         for dot_id in self.memory_object.get_dot_dict():
             if vis.get(dot_id) is True: # 避免重复 bfs 同一个节点
                 continue
-            block_now = [dot_id]
-            vis[dot_id] = True
-            queue.append(dot_id)
-
-            while len(queue) > 0: # BFS
-                node_now = queue.popleft()
-                for next_dot in adj_list[node_now]:
-                    if vis.get(next_dot) is not True:
-                        block_now.append(next_dot)
-                        vis[next_dot] = True
-                        queue.append(next_dot)
-            
-            block_list.append(block_now) # 记录当前连通分支
+            block_now = []
+            self.__dfs(vis, adj_list, dot_id, block_now)
+            block_list.append(block_now)
         return adj_list, block_list
     
     def check_base_dir(self, adj_list, block_list): # 检查每个连通分支是否有 base 和 dir 以及他们是否相邻
@@ -71,9 +68,9 @@ class MyAlgorithm:
 
                 if node_now in self.memory_object.dir_dot: # 记录所有 dir_dot
                     block_id_to_dir_dot[i].append(node_now)
-        
+
         for i in range(len(block_list)): # 返回检查到的错误信息
-            rep    = block_list[i][0]
+            rep     = block_list[i][0]
             rep_num = int(rep.split("_")[-1]) # 代表元
 
             if len(block_id_to_base_dot[i]) == 0:
@@ -117,7 +114,7 @@ class MyAlgorithm:
 
             if block_list[i][1] != dir_val: # 这说明 dir_val 在最后
                 block_list[i] = block_list[i][::-1] # 先反转
-                block_list[i] = block_list[i][-1] + block_list[i][:-1] # 再把最后一个挪到最前面
-
+                block_list[i] = [block_list[i][-1]] + block_list[i][:-1] # 再把最后一个挪到最前面
+            
             assert block_list[i][0] == base_val # 调整正确的顺序
-            assert block_list[i][0] == dir_val
+            assert block_list[i][1] == dir_val
