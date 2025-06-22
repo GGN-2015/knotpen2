@@ -97,3 +97,27 @@ class MyAlgorithm:
                 return False, "起始点 %d 与方向点 %d 在同一连通分支但并不相邻" % (base_num, dirx_num), None, None, [base, dirx]
         
         return True, "", block_id_to_base_dot, block_id_to_dir_dot, [] # 没有检查到错误
+
+    # 计算 pd_code
+    # 这个程序可能很慢将来再考虑优化问题
+    def solve_pd_code(self, adj_list, block_list, baseL, dirL):
+        
+        for i in range(len(block_list)):
+            base_val = baseL[i][0]
+            dir_val  = dirL[i][0]
+
+            find = None
+            for j in range(len(block_list[i])): # 找到 base 所在的位置
+                if block_list[i][j] == base_val:
+                    find = j
+                    break
+            assert find is not None
+
+            block_list[i] = block_list[i][find:] + block_list[i][:find]
+
+            if block_list[i][1] != dir_val: # 这说明 dir_val 在最后
+                block_list[i] = block_list[i][::-1] # 先反转
+                block_list[i] = block_list[i][-1] + block_list[i][:-1] # 再把最后一个挪到最前面
+
+            assert block_list[i][0] == base_val # 调整正确的顺序
+            assert block_list[i][0] == dir_val

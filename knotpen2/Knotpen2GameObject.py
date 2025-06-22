@@ -80,6 +80,7 @@ class Knotpen2GameObject(GameObject.GameObject):
         if not suc:
             self.leave_message(msg, constant_config.RED)
             return
+        self.algo.solve_pd_code(adj_list, block_list, baseL, dirL)
 
     def handle_key_down(self, key, mod, unicode): # 处理键盘事件
         super().handle_key_down(key, mod, unicode)
