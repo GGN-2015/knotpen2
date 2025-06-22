@@ -6,7 +6,7 @@ from . import MyAlgorithm
 
 def test_main():
     pygame.init()
-    
+
     mo   = MemoryObject.MemoryObject()
     algo = MyAlgorithm.MyAlgorithm(mo)
     k2go = Knotpen2GameObject.Knotpen2GameObject(mo, algo)

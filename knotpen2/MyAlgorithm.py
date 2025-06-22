@@ -99,6 +99,7 @@ class MyAlgorithm:
     # 这个程序可能很慢将来再考虑优化问题
     def solve_pd_code(self, adj_list, block_list, baseL, dirL):
         
+        # 调整 block_list 到正确的顺序：base_node -> dir_node -> ...
         for i in range(len(block_list)):
             base_val = baseL[i][0]
             dir_val  = dirL[i][0]

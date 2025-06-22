@@ -3,6 +3,8 @@ DIRNOW = os.path.dirname(os.path.abspath(__file__))
 AUTOSAVE_FOLDER = os.path.join(DIRNOW, "auto_save")
 AUTOSAVE_FILE = os.path.join(AUTOSAVE_FOLDER, "auto_save.json") # 自动保存位置
 
+ERROR_LOG_FOLDER = os.path.join(DIRNOW, "error_log")
+
 CIRCLE_RADIUS = 10
 LINE_WIDTH = 8
 
