@@ -263,7 +263,7 @@ class MyAlgorithm:
             pos21 = self.memory_object.get_dot_dict()[dot_id_21]
 
             # 条件成立，说明 pos21 在 pos11 的左侧
-            if check_left_turn(np.array(pos11) - np.array(pos), np.array(pos21) - np.array(pos)):
+            if not check_left_turn(np.array(pos11) - np.array(pos), np.array(pos21) - np.array(pos)):
                 pd_code_raw.append({"X":[
                     (bid1, aid1),
                     (bid2, (aid2 + 1) % len(parts[bid2])), # 需要考虑最后一条 arc

@@ -27,9 +27,16 @@ class MemoryObject:
 
         self.base_dot = [] # 记录起始位置
         self.dir_dot = []  # 记录定向位置
+        self.pd_code_final = None # 用于确定 pd_code 渲染信息，任何操作都会导致这个 info 被清空
 
+    def set_pd_code_final_info(self, new_info): # 记录这个 final_info
+        self.pd_code_final = new_info
+
+    def get_pd_code_final_info(self):
+        return self.pd_code_final
 
     def split_line_at(self, line_id, x, y):
+        self.pd_code_final = None
         assert self.line_dict.get(line_id) is not None
 
         dot_id = self.new_dot(x, y)
@@ -115,11 +122,17 @@ class MemoryObject:
         return self.inverse_pairs
     
     def shift_position(self, dx, dy): # 所有点一起移动
+        # 需要注意的是，这里需要移动 self.pd_code_final，因为这种移动不会破坏拓扑性质
+        if self.pd_code_final is not None:
+            for term in self.pd_code_final:
+                term["pos"] = (term["pos"][0] + dx, term["pos"][1] + dy)
+
         for dot_idx in self.dot_dict:
             x, y = self.dot_dict[dot_idx]
             self.dot_dict[dot_idx] = (x + dx, y + dy)
 
     def set_base_dot(self, dot_idx): # 设置起始位置
+        self.pd_code_final = None
         if dot_idx not in self.base_dot:
             self.base_dot.append(dot_idx)
 
@@ -129,6 +142,7 @@ class MemoryObject:
             self.base_dot.remove(dot_idx)
     
     def set_dir_dot(self, dot_idx): # 设置起始位置的下一个位置，用于确定方向
+        self.pd_code_final = None
         if dot_idx not in self.dir_dot:
             self.dir_dot.append(dot_idx)
 
@@ -138,6 +152,7 @@ class MemoryObject:
             self.dir_dot.remove(dot_idx)
 
     def swap_line_order(self, line_idx1, line_idx2):
+        self.pd_code_final = None
         assert line_idx1 != line_idx2
         assert self.line_dict.get(line_idx1) is not None
         assert self.line_dict.get(line_idx2) is not None
@@ -163,6 +178,7 @@ class MemoryObject:
         return line_pair_list
 
     def set_dot_position(self, dot_id, x, y): # 设置节点位置
+        self.pd_code_final = None
         conflict = False
         for dot_id_now in self.dot_dict:
             if dot_id_now == dot_id:
@@ -183,6 +199,7 @@ class MemoryObject:
         return self.line_dict
 
     def erase_line(self, line_id:str): # 删除一条边
+        self.pd_code_final = None
         if self.line_dict.get(line_id) is not None:
             frm, eto = self.line_dict[line_id]
             self.degree[frm] -= 1
@@ -199,6 +216,7 @@ class MemoryObject:
             del self.inverse_pairs[item]
 
     def new_dot(self, x:int, y:int): # 新增一个节点：不包含共线检查功能
+        self.pd_code_final = None
         while self.dot_dict.get("dot_%d" % self.dot_id_max):
             self.dot_id_max += 1
         new_id = "dot_%d" % self.dot_id_max
@@ -207,6 +225,7 @@ class MemoryObject:
         return new_id
 
     def new_line(self, dot_id_1:str, dot_id_2:str): # 新增一条边：不包含共线检查功能
+        self.pd_code_final = None
         assert dot_id_1 != dot_id_2
 
         if int(dot_id_1.split("_")[-1]) > int(dot_id_2.split("_")[-1]):
@@ -230,6 +249,7 @@ class MemoryObject:
         return new_id
 
     def erase_dot(self, dot_id:str): # 删除节点的时候，记得删除相应的边，以及边之间的逆序关系
+        self.pd_code_final = None
         if self.dot_dict.get(dot_id) is not None:
 
             if self.base_dot == dot_id: # 删除已经消失的起始点
