@@ -1,5 +1,6 @@
 from . import MemoryObject
 from . import math_utils
+import numpy as np
 
 class MyAlgorithm:
     def __init__(self, memory_object:MemoryObject.MemoryObject) -> None:
@@ -122,9 +123,11 @@ class MyAlgorithm:
 
         # 计算新的编号：Ci_Nj 表示一个节点位于连通分量 i、第 j 个节点
         dot_id_to_new_id = {}
+        new_id_to_dot_id = {}
         for i in range(len(block_list)):
             for j in range(len(block_list[i])):
                 dot_id_to_new_id[block_list[i][j]] = (i, j)
+                new_id_to_dot_id[(i, j)] = block_list[i][j] # 这个过程必须是可逆的
 
         # 检查 nid1 是否位于 nid2 的后面的一个
         # 要求 nid1 和 nid2 必须在同一个连通分支上且相邻，否则会报错
@@ -165,7 +168,7 @@ class MyAlgorithm:
                 p21 = dot_dict[d21]
                 p22 = dot_dict[d22]
 
-                nid11 = dot_id_to_new_id[d11] # 找到四个新编号
+                nid11 = dot_id_to_new_id[d11] # 找到四个新编号，新编号是 bid 和 bdid 的二元组
                 nid12 = dot_id_to_new_id[d12]
                 nid21 = dot_id_to_new_id[d21]
                 nid22 = dot_id_to_new_id[d22]
@@ -197,8 +200,111 @@ class MyAlgorithm:
                 assert 0 < float(t1) < 1
                 assert 0 < float(t2) < 1 # 这说明有结点位于其他结点上面，可能会导致错误
 
-                crossing_list.append((pos, p11, t1, p21, t2)) # 使用五元组描述所有找到的交叉点
+                crossing_list.append((pos, nid11, t1, nid21, t2, line_id_1, line_id_2)) # 使用七元组描述所有找到的交叉点
         
-        leave_msg("找到了 %d 个交叉点" % len(crossing_list))
+        leave_msg("总计找到了 %d 个交叉点" % len(crossing_list))
 
         # 考虑交叉点所在的弧线段，并给所有弧线段进行编号
+        parts = [[] for _ in range(len(block_list))] # 为每一个连通分支，记录它上面有哪些交点
+        for crossing_index, crossing in enumerate(crossing_list):
+            pos, nid11, t1, nid21, t2, _, _ = crossing             # 拿出一个交叉点来
+            parts[nid11[0]].append((nid11[1], t1, crossing_index, 0)) # 这样可以确定出两个半交点
+            parts[nid21[0]].append((nid21[1], t2, crossing_index, 1)) # 我们可以为每个半交点计算出，它所在的连通分支以及它是第几个
+
+        cid_half_id_to_bid_arc_id = {}
+        for bid in range(len(block_list)): # 对所有分界点进行排序
+            parts[bid] = sorted(parts[bid])
+            leave_msg("连通分支 %d 被分割成了 %d 段" % (bid, len(parts[bid])))
+
+            for arc_id, half_crossing in enumerate(parts[bid]):
+                _, _, cid, half_id = half_crossing
+                cid_half_id_to_bid_arc_id[(cid, half_id)] = (bid, arc_id)
+
+        def xor(x:bool, y:bool): # 异或运算
+            return x != y
+
+        invsps = self.memory_object.get_inverse_pairs()
+
+        def check_left_turn(vec1, vec2): # 检查 vec1 到 vec2 是否是左转
+            x1, y1 = vec1
+            x2, y2 = vec2
+            return x1 * y2 - x2 * y1 > 0
+
+        def np_point_to_tuple(np_point:np.ndarray):
+            assert np_point.shape == (2, )
+            return (float(np_point[0]), float(np_point[1]))
+
+        # 为每一个交叉点生成字符串形式的 pd_code_raw
+        pd_code_raw = []
+        for cid in range(len(crossing_list)):
+            pos, nid11, t1, nid21, t2, line_id_1, line_id_2  = crossing_list[cid]
+
+            bid1, aid1 = cid_half_id_to_bid_arc_id[(cid, 0)]
+            bid2, aid2 = cid_half_id_to_bid_arc_id[(cid, 1)]
+
+            # 我们需要判断 line_id_1 和 lind_id_2 谁在下面
+            # line_1_under_line_2 = True 表示 line_1 在 line_2 下面
+            line_1_under_line_2 = xor((line_id_1 < line_id_2), (line_id_1, line_id_2) in invsps or (line_id_2, line_id_1) in invsps)
+
+            if not line_1_under_line_2: # 交换，使得 line_1 总是在 line_2 下面
+                nid11, nid21 = nid21, nid11
+                t1, t2 = t2, t1
+                line_id_1, line_id_2 = line_id_2, line_id_1
+                bid1, bid2 = bid2, bid1
+                aid1, aid2 = aid2, aid1
+                line_1_under_line_2 = True
+
+            # 于是我们知道 line_1 总是在 line_2 下面
+            dot_id_11 = new_id_to_dot_id[nid11]
+            dot_id_21 = new_id_to_dot_id[nid21]
+
+            # 获得原始位置向量
+            pos11 = self.memory_object.get_dot_dict()[dot_id_11]
+            pos21 = self.memory_object.get_dot_dict()[dot_id_21]
+
+            # 条件成立，说明 pos21 在 pos11 的左侧
+            if check_left_turn(np.array(pos11) - np.array(pos), np.array(pos21) - np.array(pos)):
+                pd_code_raw.append({"X":[
+                    (bid1, aid1),
+                    (bid2, (aid2 + 1) % len(parts[bid2])), # 需要考虑最后一条 arc
+                    (bid1, (aid1 + 1) % len(parts[bid1])),
+                    (bid2, aid2),
+                ], "dir":[
+                    np_point_to_tuple(np.array(pos11) - np.array(pos)), # 记录第一个 index 对应的方向和第二个 index 对应的方向，用于未来显示
+                    np_point_to_tuple(-(np.array(pos21) - np.array(pos)))
+                ], "pos": pos})
+            else:
+                pd_code_raw.append({"X":[
+                    (bid1, aid1),
+                    (bid2, aid2),
+                    (bid1, (aid1 + 1) % len(parts[bid1])), # 需要考虑最后一条 arc
+                    (bid2, (aid2 + 1) % len(parts[bid2])),
+                ], "dir":[
+                    np_point_to_tuple(np.array(pos11) - np.array(pos)), # 记录第一个 index 对应的方向和第二个 index 对应的方向，用于未来显示
+                    np_point_to_tuple(np.array(pos21) - np.array(pos))
+                ], "pos": pos})
+        
+        # 程序运行到这里已经获得了可用的 pd_code_raw 了
+        # 我们需要借助排序进一步计算得到具有统一编号的 pd_code
+        item_list = []
+        for crossing in pd_code_raw: # 拿出所有编号来
+            for term in crossing["X"]:
+                if term not in item_list:
+                    item_list.append(term)
+
+        item_list = sorted(item_list)
+        tup_to_real_id = {}
+        for idx, val in enumerate(item_list): # 为每一个弧线段赋予一个最终的有效整数 id
+            tup_to_real_id[val] = idx + 1
+
+        # 经过这一次处理后得到的 pd_code 将是最终的 pd_code
+        # 我们首先对 pd_code_raw 进行一次深拷贝
+        pd_code_final = eval(repr(pd_code_raw))
+        pd_code_to_show = []
+        for pd_code_term in pd_code_final:
+            for i in range(4):
+                pd_code_term["X"][i] = tup_to_real_id[pd_code_term["X"][i]]
+            pd_code_to_show.append(pd_code_term["X"])
+        
+        # 返回最终 pd_code
+        return pd_code_to_show, pd_code_final

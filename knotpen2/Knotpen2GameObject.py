@@ -2,13 +2,14 @@ import pygame
 import numpy
 import time
 import functools
+import os
 
 from . import GameObject
 from . import MemoryObject
 from . import MyAlgorithm
 from . import constant_config
 from . import pygame_utils
-from . import log_error
+from . import math_utils
 
 STATUS_LIST = [
     "free",        # 自由状态
@@ -76,6 +77,18 @@ class Knotpen2GameObject(GameObject.GameObject):
         while len(self.msg_txt) > constant_config.MAX_MESSAGE_CNT:
             self.msg_txt = self.msg_txt[1:]
 
+    def save_answer(self, s:str):
+        os.makedirs(constant_config.ANSWER_FOLDER, exist_ok=True)
+        foldername  = os.path.basename(constant_config.ANSWER_FOLDER) # 文件夹名称
+        outter_name = os.path.basename(os.path.dirname(constant_config.ANSWER_FOLDER))
+        filename    = math_utils.get_formatted_datetime() + ".txt"
+        filepath    = os.path.join(constant_config.ANSWER_FOLDER, filename)
+
+        with open(filepath, "w") as fp:
+            fp.write(s)
+
+        return "%s/%s/%s" % (outter_name, foldername, filename)
+
     def output_answer(self):
         self.leave_message("开始计算 PD_CODE", constant_config.YELLOW)
         degree_check_list = self.algo.degree_check()
@@ -88,8 +101,11 @@ class Knotpen2GameObject(GameObject.GameObject):
         if not suc:
             self.leave_message(msg, constant_config.RED)
             return
-        self.algo.solve_pd_code(adj_list, block_list, baseL, dirL, self.leave_message)
+        pd_code_to_show, pd_code_final = self.algo.solve_pd_code(adj_list, block_list, baseL, dirL, self.leave_message)
 
+        filename = self.save_answer(str(pd_code_to_show))
+        self.leave_message("PD_CODE 计算成功", constant_config.GREEN)
+        self.leave_message("保存在 %s" % filename, constant_config.GREEN)
     
     def handle_key_down(self, key, mod, unicode): # 处理键盘事件
         super().handle_key_down(key, mod, unicode)
@@ -100,13 +116,11 @@ class Knotpen2GameObject(GameObject.GameObject):
 
         elif key_name == 'b': # set base point
 
-            if self.status == "select_dot" and self.focus_dot is not None:
-                self.memory_object.set_base_dot(self.focus_dot)
-                self.status = "free"
-                self.focus_dot = None # 回退到常规模式
-
-            else:
-                self.memory_object.set_base_dot(self.focus_dot) # 再添加一次变成取消
+            if self.status == "select_dot":
+                if self.focus_dot is not None:
+                    self.memory_object.set_base_dot(self.focus_dot)
+                    self.status = "free"
+                    self.focus_dot = None # 回退到常规模式
 
         elif key_name == 'c':
             if time.time() - self.last_c_down < constant_config.DOUBLE_CLICK_TIME:
@@ -131,13 +145,11 @@ class Knotpen2GameObject(GameObject.GameObject):
             self.memory_object.shift_position(0, +constant_config.STRIDE)
 
         elif key_name == 't': # set dir point
-            if self.status == "select_dot" and self.focus_dot is not None:
-                self.memory_object.set_dir_dot(self.focus_dot)
-                self.status = "free"
-                self.focus_dot = None # 回退到常规模式
-
-            else:
-                self.memory_object.set_dir_dot(self.focus_dot)
+            if self.status == "select_dot":
+                if self.focus_dot is not None:
+                    self.memory_object.set_dir_dot(self.focus_dot)
+                    self.status = "free"
+                    self.focus_dot = None # 回退到常规模式
         
         elif key_name == 'w':
             self.memory_object.shift_position(0, -constant_config.STRIDE)

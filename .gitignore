@@ -3,6 +3,7 @@ knotpen2/font/*
 emb_python.zip
 emb_python/*
 knotpen2/error_log/*.log
+knotpen2/answer/*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
