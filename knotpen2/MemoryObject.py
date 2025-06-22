@@ -59,6 +59,7 @@ class MemoryObject:
             "degree": self.degree,
             "base_dot": self.base_dot,
             "dir_dot": self.dir_dot,
+            "pd_code_final": self.pd_code_final,
         }
     
     def get_all_auto_save(self):
@@ -117,6 +118,7 @@ class MemoryObject:
         self.degree = obj["degree"]
         self.base_dot = obj["base_dot"]
         self.dir_dot = obj["dir_dot"]
+        self.pd_code_final = obj["pd_code_final"]
 
     def get_inverse_pairs(self):
         return self.inverse_pairs
