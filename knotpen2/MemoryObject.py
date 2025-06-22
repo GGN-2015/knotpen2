@@ -83,14 +83,12 @@ class MemoryObject:
 
     def auto_backup(self): # 自动保存时，不允许保持空白状态，但是退出时的自动保存可以保存空白状态
         if self.get_all_info() != self.empty_info: 
-            print("正在自动保存...")
             filename = math_utils.get_formatted_datetime() + ".json"
             folder = constant_config.AUTOSAVE_FOLDER
             filepath = os.path.join(folder, filename)
             self.dump_object(filepath) # 保存一个备份文件，每隔一段时间自动保存一次
 
             self.auto_delete_duplicate() # 自动删除重复的
-            print("保存成功")
 
     def dump_object(self, filepath:str):
         folder = os.path.dirname(os.path.abspath(filepath)) # 创建文件路径

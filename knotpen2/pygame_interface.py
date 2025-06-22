@@ -9,7 +9,7 @@
 def pygame_interface(handle_mouse_down=None, handle_mouse_up=None, 
                      handle_key_down=None, handle_key_up=None, 
                      handle_quit=None, draw_screen=None,
-                     die_check=None, handle_mouse_move=None, width=1024, height=768):
+                     die_check=None, handle_mouse_move=None, width=1920, height=1080):
     import pygame
     pygame.init() # 初始化 Pygame
     
@@ -18,9 +18,6 @@ def pygame_interface(handle_mouse_down=None, handle_mouse_up=None,
     
     # 设置窗口标题
     pygame.display.set_caption("knotpen2")
-    
-    # 设置字体，用于显示鼠标坐标
-    font = pygame.font.SysFont(None, 36)
     
     # 主循环控制变量
     running = True
