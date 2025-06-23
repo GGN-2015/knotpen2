@@ -9,9 +9,12 @@
 def pygame_interface(handle_mouse_down=None, handle_mouse_up=None, 
                      handle_key_down=None, handle_key_up=None, 
                      handle_quit=None, draw_screen=None,
-                     die_check=None, handle_mouse_move=None, width=1920, height=1080):
+                     die_check=None, handle_mouse_move=None, width=1720, height=980):
     import pygame
     pygame.init() # 初始化 Pygame
+
+    pygame.key.stop_text_input()  # 禁用输入法
+    pygame.event.set_blocked(pygame.TEXTINPUT) # 禁用文本输入模式
     
     # 设置窗口尺寸
     screen = pygame.display.set_mode((width, height))
@@ -30,7 +33,6 @@ def pygame_interface(handle_mouse_down=None, handle_mouse_up=None,
         # 处理事件
         for event in pygame.event.get():
             if event.type == pygame.QUIT: # 检测退出事件
-
                 if handle_quit is not None:
                     handle_quit()# 调用退出回调函数
 
