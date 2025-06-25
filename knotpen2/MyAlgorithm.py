@@ -225,11 +225,6 @@ class MyAlgorithm:
                 _, _, cid, half_id = half_crossing
                 cid_half_id_to_bid_arc_id[(cid, half_id)] = (bid, arc_id)
 
-        def xor(x:bool, y:bool): # 异或运算
-            return x != y
-
-        invsps = self.memory_object.get_inverse_pairs()
-
         def check_left_turn(vec1, vec2): # 检查 vec1 到 vec2 是否是左转
             x1, y1 = vec1
             x2, y2 = vec2
@@ -247,18 +242,7 @@ class MyAlgorithm:
             bid1, aid1 = cid_half_id_to_bid_arc_id[(cid, 0)]
             bid2, aid2 = cid_half_id_to_bid_arc_id[(cid, 1)]
 
-            # 我们需要判断 line_id_1 和 lind_id_2 谁在下面
-            # line_1_under_line_2 = True 表示 line_1 在 line_2 下面
-            # 计算时发现了错误
-            line_1_under_line_2 = xor(
-                (int(line_id_1.split("_")[-1]) < int(line_id_2.split("_")[-1])), # 按照数值大小排序，而不是按照字符串字典序
-                (invsps.get((line_id_1, line_id_2)) is not None) or (invsps.get((line_id_2, line_id_1)) is not None))
-            print(
-                "line_1_under_line_2:",
-                self.memory_object.get_line_dict()[line_id_1],
-                self.memory_object.get_line_dict()[line_id_2],
-                line_1_under_line_2
-            )
+            line_1_under_line_2 = self.memory_object.check_line_under(line_id_1, line_id_2)
 
             if not line_1_under_line_2: # 交换，使得 line_1 总是在 line_2 下面
                 nid11, nid21 = nid21, nid11

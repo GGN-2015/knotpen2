@@ -217,6 +217,23 @@ class MemoryObject:
         for item in inverse_pair_to_erase: # 删除所有无效逆序处理
             del self.inverse_pairs[item]
 
+    # 检查两条线段之间的上下关系（两条线段不一定相交）
+    def check_line_under(self, line_id_1:str, line_id_2:str) -> bool:
+        def xor(x:bool, y:bool): # 异或运算
+            return x != y
+        
+        invsps = self.get_inverse_pairs()
+
+        # 我们需要判断 line_id_1 和 lind_id_2 谁在下面
+        # line_1_under_line_2 = True 表示 line_1 在 line_2 下面
+        # 计算时发现了错误
+        line_1_under_line_2 = xor(
+            (int(line_id_1.split("_")[-1]) < int(line_id_2.split("_")[-1])), # 按照数值大小排序，而不是按照字符串字典序
+            (invsps.get((line_id_1, line_id_2)) is not None) or (invsps.get((line_id_2, line_id_1)) is not None))
+        
+        return line_1_under_line_2
+
+
     def new_dot(self, x:int, y:int): # 新增一个节点：不包含共线检查功能
         self.pd_code_final = None
         while self.dot_dict.get("dot_%d" % self.dot_id_max):

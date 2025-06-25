@@ -102,9 +102,12 @@ class Knotpen2GameObject(GameObject.GameObject):
         pd_code_to_show, pd_code_final = self.algo.solve_pd_code(adj_list, block_list, baseL, dirL, self.leave_message)
         self.memory_object.set_pd_code_final_info(pd_code_final)
 
+        # 保存文本文件的 PD_CODE
         filename = self.save_answer(str(pd_code_to_show))
         self.leave_message("PD_CODE 计算成功", constant_config.GREEN)
         self.leave_message("保存在 %s" % filename, constant_config.GREEN)
+
+        # 根据 block_list 计算节点的前驱后继关系
     
     def handle_key_down(self, key, mod, unicode): # 处理键盘事件
         super().handle_key_down(key, mod, unicode)

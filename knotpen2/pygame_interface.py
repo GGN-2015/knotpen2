@@ -9,13 +9,23 @@
 def pygame_interface(handle_mouse_down=None, handle_mouse_up=None, 
                      handle_key_down=None, handle_key_up=None, 
                      handle_quit=None, draw_screen=None,
-                     die_check=None, handle_mouse_move=None, width=1720, height=980):
+                     die_check=None, handle_mouse_move=None, width=None, height=None):
     import pygame
     pygame.init() # 初始化 Pygame
 
     pygame.key.stop_text_input()  # 禁用输入法
     pygame.event.set_blocked(pygame.TEXTINPUT) # 禁用文本输入模式
     
+    # 获取屏幕分辨率
+    desktop_sizes = pygame.display.get_desktop_sizes()
+    primary_width, primary_height = desktop_sizes[0] # 获取主屏幕分辨率
+
+    if width is None:
+        width = primary_width - 100
+
+    if height is None:
+        height = primary_height - 100
+
     # 设置窗口尺寸
     screen = pygame.display.set_mode((width, height))
     
