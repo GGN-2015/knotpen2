@@ -180,7 +180,6 @@ class MyAlgorithm:
                 nid22 = dot_id_to_new_id[d22]
 
                 # 注意：n-1 在 0 的前面
-                # 把编号小的 swap 到前面的目的是，保证 check_after 的正确性，因为 check_after 只考虑 nid11[1] == 0 的情况
                 if check_after(nid11, nid12, block_list): # 调整顺序，使得顺序服从原始顺序
                     d11, d12 = d12, d11
                     p11,   p12   =   p12,   p11
