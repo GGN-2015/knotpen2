@@ -99,7 +99,10 @@ class Knotpen2GameObject(GameObject.GameObject):
         if not suc:
             self.leave_message(msg, constant_config.RED)
             return
-        pd_code_to_show, pd_code_final = self.algo.solve_pd_code(adj_list, block_list, baseL, dirL, self.leave_message)
+        # pd_code_to_show 中记录的是最终计算得到的 pd_code
+        # pd_code_final 中记录的是用于在屏幕上显示 pd_code 弧线编号的相关信息
+        # parts 记录的是每个连通分量上的交叉点构成的序列，parts 对连通分量的处理顺序与 block_list 一致
+        pd_code_to_show, pd_code_final, parts = self.algo.solve_pd_code(adj_list, block_list, baseL, dirL, self.leave_message)
         self.memory_object.set_pd_code_final_info(pd_code_final)
 
         # 保存文本文件的 PD_CODE
@@ -107,7 +110,9 @@ class Knotpen2GameObject(GameObject.GameObject):
         self.leave_message("PD_CODE 计算成功", constant_config.GREEN)
         self.leave_message("保存在 %s" % filename, constant_config.GREEN)
 
-        # 根据 block_list 计算节点的前驱后继关系
+        # 生成 svg 文件格式的扭结图片        
+        svg_filename = filename.split("/")[-1].replace(".txt", ".svg")
+        self.algo.calculate_svg(block_list, parts, svg_filename)
     
     def handle_key_down(self, key, mod, unicode): # 处理键盘事件
         super().handle_key_down(key, mod, unicode)

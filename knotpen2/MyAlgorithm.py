@@ -211,9 +211,18 @@ class MyAlgorithm:
         # 考虑交叉点所在的弧线段，并给所有弧线段进行编号
         parts = [[] for _ in range(len(block_list))] # 为每一个连通分支，记录它上面有哪些交点
         for crossing_index, crossing in enumerate(crossing_list):
-            pos, nid11, t1, nid21, t2, _, _ = crossing             # 拿出一个交叉点来
-            parts[nid11[0]].append((nid11[1], t1, crossing_index, 0)) # 这样可以确定出两个半交点
-            parts[nid21[0]].append((nid21[1], t2, crossing_index, 1)) # 我们可以为每个半交点计算出，它所在的连通分支以及它是第几个
+            pos, nid11, t1, nid21, t2, line_id_1, line_id_2 = crossing  # 拿出一个交叉点来
+
+            line_1_under_line_2 = self.memory_object.check_line_under(line_id_1, line_id_2)
+            if line_1_under_line_2: # 记录当前交叉点是在上半部分还是在下半部分
+                tag_1 = "below"
+                tag_2 = "above"
+            else:
+                tag_1 = "above"
+                tag_2 = "below"
+
+            parts[nid11[0]].append((nid11[1], t1, crossing_index, 0, tag_1)) # 这样可以确定出两个半交点
+            parts[nid21[0]].append((nid21[1], t2, crossing_index, 1, tag_2)) # 我们可以为每个半交点计算出，它所在的连通分支以及它是第几个
 
         cid_half_id_to_bid_arc_id = {}
         for bid in range(len(block_list)): # 对所有分界点进行排序
@@ -221,7 +230,7 @@ class MyAlgorithm:
             leave_msg("连通分支 %d 被分割成了 %d 段" % (bid, len(parts[bid])))
 
             for arc_id, half_crossing in enumerate(parts[bid]):
-                _, _, cid, half_id = half_crossing
+                _, _, cid, half_id, _ = half_crossing
                 cid_half_id_to_bid_arc_id[(cid, half_id)] = (bid, arc_id)
 
         def check_left_turn(vec1, vec2): # 检查 vec1 到 vec2 是否是左转
@@ -307,4 +316,22 @@ class MyAlgorithm:
             pd_code_to_show.append(anti_clock_wise)
         
         # 返回最终 pd_code
-        return sorted(pd_code_to_show), pd_code_final
+        return sorted(pd_code_to_show), pd_code_final, parts
+    
+    # block_list 记录了每个连通分支的控制点
+    # parts 记录了每个连通分支的交叉点的位置
+    def calculate_svg(self, block_list, parts, svg_filename:str):
+        # 根据 block_list 计算节点的前驱后继关系
+        # 这里的节点以 dot_id 的形式记录（即节点的默认编号）
+        get_next_dot = {}
+        get_last_dot = {}
+        for i in range(len(block_list)):
+            for j in range(len(block_list[i])):
+                item_now = block_list[i][j]
+                item_last = block_list[i][j-1] # 这样的话，当 j = 0 时，恰好是正确的
+
+                get_next_dot[item_last] = item_now
+                get_last_dot[item_now] = item_last
+        
+        # 未完待续：绘制 svg 图像
+        assert False
