@@ -7,7 +7,5 @@ SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 # 切换到脚本所在目录
 cd "$SCRIPT_DIR" || exit
 
-# 输出当前目录进行验证
-echo "当前目录: $(pwd)"
-# 需要有 pygame, numpy
-python3 -m knotpen2
+rm -rf ./knotpen2/answer/*
+rm -rf ./knotpen2/auto_save/*
