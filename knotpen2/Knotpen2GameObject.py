@@ -10,6 +10,7 @@ from . import MyAlgorithm
 from . import constant_config
 from . import pygame_utils
 from . import math_utils
+from . import svg_to_png
 
 STATUS_LIST = [
     "free",        # 自由状态
@@ -128,6 +129,10 @@ class Knotpen2GameObject(GameObject.GameObject):
         svg_return_name = self.save_svg_answer(svg_filename, svg_text)
         self.leave_message("扭结图像生成成功", constant_config.GREEN)
         self.leave_message("保存在 %s" % svg_return_name, constant_config.GREEN)
+
+        # 将文件转化为 png 格式
+        svg_filepath = os.path.join(constant_config.ANSWER_FOLDER, svg_filename)
+        svg_to_png.svg_to_png(svg_filepath)
     
     def handle_key_down(self, key, mod, unicode): # 处理键盘事件
         super().handle_key_down(key, mod, unicode)
