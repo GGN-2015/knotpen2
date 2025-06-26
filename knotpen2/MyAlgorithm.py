@@ -350,9 +350,28 @@ class MyAlgorithm:
                 ))
             return arc_list
 
+        def get_new_tag(base:str, old_tag:str) -> str:
+            assert old_tag in ["below", "above"]
+            assert base in ["l", "r", "L", "R"]
+            base = base.upper()
+            if old_tag == "below": # 小写字母表示需要缩短，大写字母表示不需要缩短
+                return base.lower()
+            else:
+                return base
+
         def get_arc_list_between_two_crossing(bid:int, begin_arc, end_arc): # 绘制两个交叉点之间的所有弧线段
             nid1, t1, _, _, tag1 = begin_arc
             nid2, t2, _, _, tag2 = end_arc
+
+            if nid1 == nid2: # 位于同一个线段的两个交叉点，不需要计算中间节点
+                return [
+                    (
+                        (block_list[bid][nid1], get_next_dot[block_list[bid][nid1]], t1),
+                        (block_list[bid][nid1], get_next_dot[block_list[bid][nid1]], (t1 + t2) / 2),
+                        (block_list[bid][nid2], get_next_dot[block_list[bid][nid2]], t2),
+                        get_new_tag(tag1) + get_new_tag(tag2)
+                    )
+                ]
 
             all_interger_index = [] # 获取两个交叉点之间的所有整数编号
             index_now = nid1
@@ -362,15 +381,6 @@ class MyAlgorithm:
                 if index_now == nid2:
                     break
             
-            def get_new_tag(base:str, old_tag:str) -> str:
-                assert old_tag in ["below", "above"]
-                assert base in ["l", "r", "L", "R"]
-                base = base.upper()
-                if old_tag == "below": # 小写字母表示需要缩短，大写字母表示不需要缩短
-                    return base.lower()
-                else:
-                    return base
-
             arc_list = []
             if len(all_interger_index) == 1: # 只有一个节点位于两者之间的情况
                 new_tag_1 = get_new_tag("L", tag1)
@@ -415,7 +425,7 @@ class MyAlgorithm:
 
             return arc_list
 
-        # 未完待续：绘制 svg 图像, 特殊处理没有交叉点的连通分支
+        # 绘制 svg 图像, 特殊处理没有交叉点的连通分支
         arc_list = []
         for i in range(len(parts)):
             if len(parts[i]) == 0: # 这说明这个连通分支没有任何交点
