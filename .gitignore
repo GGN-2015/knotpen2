@@ -4,6 +4,7 @@ emb_python.zip
 emb_python/*
 knotpen2/error_log/*.log
 knotpen2/answer/*.txt
+knotpen2/answer/*.svg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

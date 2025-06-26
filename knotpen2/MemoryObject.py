@@ -178,6 +178,39 @@ class MemoryObject:
             if dis <= max_dis:
                 line_pair_list.append((line_id, dis))
         return line_pair_list
+    
+    # 计算一个插值位置
+    def get_interpos(self, dot_id_1, dot_id_2, rate:float, shrink_mode=None):
+        x1, y1 = self.dot_dict[dot_id_1]
+        x2, y2 = self.dot_dict[dot_id_2]
+
+        if shrink_mode is not None: # 留出一小部分的空白区域
+            # 计算线长度
+            length = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
+
+            # 计算差距比例
+            delta_rate = constant_config.CIRCLE_RADIUS / length / 2
+
+            if shrink_mode == "l":
+                rate += delta_rate
+            elif shrink_mode == "r":
+                rate -= delta_rate
+
+        rate = min(max(rate, 0.0), 1.0) # 限制范围
+        return (x1 + (x2 - x1) * rate, y1 + (y2 - y1) * rate)
+
+    def get_view_box(self): # 计算所有节点的包围盒
+        xmin =  + math_utils.math.inf
+        xmax =  - math_utils.math.inf
+        ymin =  + math_utils.math.inf
+        ymax =  - math_utils.math.inf
+        for dot_id in self.dot_dict:
+            xpos, ypos = self.dot_dict[dot_id]
+            xmin = min(xmin, xpos)
+            ymin = min(ymin, ypos)
+            xmax = max(xmax, xpos)
+            ymax = max(ymax, ypos)
+        return (xmin, ymin, xmax, ymax)
 
     def set_dot_position(self, dot_id, x, y): # 设置节点位置
         self.pd_code_final = None

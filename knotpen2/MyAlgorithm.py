@@ -1,6 +1,8 @@
 from . import MemoryObject
 from . import math_utils
+from . import constant_config
 import numpy as np
+import os
 
 class MyAlgorithm:
     def __init__(self, memory_object:MemoryObject.MemoryObject) -> None:
@@ -51,7 +53,7 @@ class MyAlgorithm:
             self.__dfs(vis, adj_list, dot_id, block_now)
             block_list.append(block_now)
         return adj_list, block_list
-    
+
     def check_base_dir(self, adj_list, block_list): # 检查每个连通分支是否有 base 和 dir 以及他们是否相邻
         block_id_to_base_dot = {}
         block_id_to_dir_dot = {}
@@ -70,6 +72,9 @@ class MyAlgorithm:
                 if node_now in self.memory_object.dir_dot: # 记录所有 dir_dot
                     block_id_to_dir_dot[i].append(node_now)
 
+        if len(self.memory_object.get_dot_dict()) <= 2:
+            return False, "你至少要放置 3 个节点才能计算 PD_CODE", None, None, []
+    
         for i in range(len(block_list)): # 返回检查到的错误信息
             rep     = block_list[i][0]
             rep_num = int(rep.split("_")[-1]) # 代表元
@@ -320,7 +325,7 @@ class MyAlgorithm:
     
     # block_list 记录了每个连通分支的控制点
     # parts 记录了每个连通分支的交叉点的位置
-    def calculate_svg(self, block_list, parts, svg_filename:str):
+    def calculate_svg(self, block_list, parts):
         # 根据 block_list 计算节点的前驱后继关系
         # 这里的节点以 dot_id 的形式记录（即节点的默认编号）
         get_next_dot = {}
@@ -333,5 +338,129 @@ class MyAlgorithm:
                 get_next_dot[item_last] = item_now
                 get_last_dot[item_now] = item_last
         
-        # 未完待续：绘制 svg 图像
-        assert False
+        # 为某个指定的连通分支计算其 arc_list
+        def get_arc_list_for_zero_crossing_connected_component(bid: int):
+            arc_list = []
+            for item in block_list[bid]:
+                arc_list.append((
+                    (get_last_dot[item], item, 0.5), # 为所有节点输出一个四元组
+                    (item, get_next_dot[item], 0.0),
+                    (item, get_next_dot[item], 0.5),
+                    "LR", ## LR, 表示两端都不需要缩短
+                ))
+            return arc_list
+
+        def get_arc_list_between_two_crossing(bid:int, begin_arc, end_arc): # 绘制两个交叉点之间的所有弧线段
+            nid1, t1, _, _, tag1 = begin_arc
+            nid2, t2, _, _, tag2 = end_arc
+
+            all_interger_index = [] # 获取两个交叉点之间的所有整数编号
+            index_now = nid1
+            while True:
+                index_now = (index_now + 1) % len(block_list[bid]) # 编号循环
+                all_interger_index.append(index_now)
+                if index_now == nid2:
+                    break
+            
+            def get_new_tag(base:str, old_tag:str) -> str:
+                assert old_tag in ["below", "above"]
+                assert base in ["l", "r", "L", "R"]
+                base = base.upper()
+                if old_tag == "below": # 小写字母表示需要缩短，大写字母表示不需要缩短
+                    return base.lower()
+                else:
+                    return base
+
+            arc_list = []
+            if len(all_interger_index) == 1: # 只有一个节点位于两者之间的情况
+                new_tag_1 = get_new_tag("L", tag1)
+                new_tag_2 = get_new_tag("R", tag2)
+                arc_list.append((
+                    (block_list[bid][nid1], block_list[bid][all_interger_index[0]],  t1),
+                    (block_list[bid][nid1], block_list[bid][all_interger_index[0]], 1.0),
+                    (block_list[bid][nid2], get_next_dot[block_list[bid][nid2]],  t2),
+                    new_tag_1 + new_tag_2
+                ))
+            else: # 说明不只有一个节点位于两者之间，因此需要单独考虑最前端和最后段
+                new_tag_1 = get_new_tag("L", tag1)
+                new_tag_2 = get_new_tag("R", tag2)
+                arc_list.append((
+                    (block_list[bid][nid1], block_list[bid][all_interger_index[0]],  t1),
+                    (block_list[bid][nid1], block_list[bid][all_interger_index[0]], 1.0),
+                    (block_list[bid][all_interger_index[0]], get_next_dot[block_list[bid][all_interger_index[0]]],  0.5),
+                    new_tag_1 + "R"
+                ))
+
+                for idx, item in enumerate(all_interger_index):
+                    if idx == 0: # 跳过第一个元素
+                        continue
+                    if idx == len(all_interger_index) - 1: # 跳过最后一个元素
+                        continue
+                    item_last = all_interger_index[idx - 1]
+                    item_now  = item
+                    item_next = all_interger_index[idx + 1] # 下一个元素
+                    arc_list.append((
+                        (block_list[bid][item_last], block_list[bid][item_now], 0.5),
+                        (block_list[bid][item_now], block_list[bid][item_next], 0.0),
+                        (block_list[bid][item_now], block_list[bid][item_next], 0.5),
+                        "LR"
+                    ))
+
+                arc_list.append((
+                    (get_last_dot[block_list[bid][all_interger_index[-1]]], block_list[bid][all_interger_index[-1]], 0.5),
+                    (block_list[bid][all_interger_index[-1]], block_list[bid][nid2], 0.0), # 中间的点是一个整数位置点
+                    (block_list[bid][nid2], get_next_dot[block_list[bid][nid2]],  t2),
+                    "L" + new_tag_2,
+                ))
+
+            return arc_list
+
+        # 未完待续：绘制 svg 图像, 特殊处理没有交叉点的连通分支
+        arc_list = []
+        for i in range(len(parts)):
+            if len(parts[i]) == 0: # 这说明这个连通分支没有任何交点
+                arc_list += get_arc_list_for_zero_crossing_connected_component(i)
+            else:
+                # 执行到这个分支说明当前 parts[i] 中至少有一个交点
+                for j in range(len(parts[i])):
+                    begin_arc = parts[i][j-1] # 需要注意的是，当 j = 0 时，这里 j - 1 等于 -1
+                    end_arc = parts[i][j]
+                    arc_list += get_arc_list_between_two_crossing(i, begin_arc, end_arc)
+
+        # 生成一个 SVG 二次曲线
+        def create_svg_path(pos_from, pos_mid, pos_to, status) -> str:
+            shrink_1 = status[0]
+            shrink_2 = status[1]
+            xfrom, yftom = self.memory_object.get_interpos(pos_from[0], pos_from[1], pos_from[2], shrink_1)
+            xmid,  ymid  = self.memory_object.get_interpos(pos_mid [0], pos_mid [1], pos_mid [2])
+            xto,   yto   = self.memory_object.get_interpos(pos_to  [0], pos_to  [1], pos_to  [2], shrink_2)
+            return "    " + '<path d="M %f %f Q %f %f, %f %f" fill="none" stroke="%s" stroke-width="%d" />' % (
+                xfrom, yftom,
+                xmid, ymid,
+                xto, yto,
+                constant_config.SVG_STROKE_COLOR,
+                constant_config.SVG_STROKE_WIDTH,
+            )
+
+        # 基于 arc_list 生成 svg 图像文本格式
+        def generate_svg_text_based_on_arc_list(arc_list) -> str:
+            xmin, ymin, xmax, ymax = self.memory_object.get_view_box()
+            xmin -= constant_config.CIRCLE_RADIUS
+            ymin -= constant_config.CIRCLE_RADIUS
+            xmax += constant_config.CIRCLE_RADIUS
+            ymax += constant_config.CIRCLE_RADIUS
+
+            header = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="%d %d %d %d">' % (xmin, ymin, xmax, ymax)
+            footer = '</svg>'
+            svg_path_list = [header]
+
+            for term in arc_list:
+                pos_from, pos_mid, pos_to, status = term
+                svg_path_list.append(create_svg_path(pos_from, pos_mid, pos_to, status))
+
+            svg_path_list.append(footer)
+            return "\n".join(svg_path_list)
+        
+        # 不负责存储
+        svg_text = generate_svg_text_based_on_arc_list(arc_list)
+        return svg_text

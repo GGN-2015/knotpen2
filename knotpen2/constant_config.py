@@ -12,6 +12,10 @@ LINE_WIDTH = 8
 BACKUP_TIME = 180 # 每三分钟自动保存一次，如果和上次自动保存内容完全一致，则删除最新的自动保存
 STRIDE = 50
 
+# SVG 绘图属性
+SVG_STROKE_COLOR = "black"
+SVG_STROKE_WIDTH = 3
+
 # 字体文件加载目录
 FONT_TTF = os.path.join(DIRNOW, "font", "SourceHanSansSC-VF.ttf")
 MAX_MESSAGE_CNT = 40
