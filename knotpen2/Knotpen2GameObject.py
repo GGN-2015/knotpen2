@@ -133,6 +133,7 @@ class Knotpen2GameObject(GameObject.GameObject):
         # 将文件转化为 png 格式
         svg_filepath = os.path.join(constant_config.ANSWER_FOLDER, svg_filename)
         svg_to_png.svg_to_png(svg_filepath)
+        self.leave_message("保存在 %s" % svg_return_name[:-4] + ".png", constant_config.GREEN)
     
     def handle_key_down(self, key, mod, unicode): # 处理键盘事件
         super().handle_key_down(key, mod, unicode)
