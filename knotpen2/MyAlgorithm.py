@@ -369,7 +369,7 @@ class MyAlgorithm:
                         (block_list[bid][nid1], get_next_dot[block_list[bid][nid1]], t1),
                         (block_list[bid][nid1], get_next_dot[block_list[bid][nid1]], (t1 + t2) / 2),
                         (block_list[bid][nid2], get_next_dot[block_list[bid][nid2]], t2),
-                        get_new_tag(tag1) + get_new_tag(tag2)
+                        get_new_tag("l", tag1) + get_new_tag("r", tag2)
                     )
                 ]
 
