@@ -12,10 +12,6 @@ LINE_WIDTH = 8
 BACKUP_TIME = 180 # 每三分钟自动保存一次，如果和上次自动保存内容完全一致，则删除最新的自动保存
 STRIDE = 50
 
-# SVG 绘图属性
-SVG_STROKE_COLOR = "black"
-SVG_STROKE_WIDTH = 3
-
 # 字体文件加载目录
 FONT_TTF = os.path.join(DIRNOW, "font", "SourceHanSansSC-VF.ttf")
 MAX_MESSAGE_CNT = 40
@@ -24,6 +20,11 @@ SMALL_TEXT_SIZE = 14
 def MESSAGE_POSITION(i:int):
     return (10 , 10 + (MESSAGE_SIZE + 2) * i)
 
+# SVG 绘图属性
+SVG_STROKE_COLOR = "black"
+SVG_STROKE_WIDTH = 3
+SVG_FONT_SIZE = SMALL_TEXT_SIZE
+SVG_TEXT_DELTA_Y = 15 # 对 SVG 文件中的文字位置进行微调
 
 DOUBLE_CLICK_TIME = 0.25 # 双击时两次点击的最大间隔
 

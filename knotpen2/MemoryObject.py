@@ -32,7 +32,7 @@ class MemoryObject:
     def set_pd_code_final_info(self, new_info): # 记录这个 final_info
         self.pd_code_final = new_info
 
-    def get_pd_code_final_info(self):
+    def get_pd_code_final_info(self) -> dict|None:
         return self.pd_code_final
 
     def split_line_at(self, line_id, x, y):
@@ -330,4 +330,42 @@ class MemoryObject:
 
             assert self.degree[dot_id] == 0
             del self.degree[dot_id]
+    
+    def get_number_position_pairs(self) -> list:
+        def unit(pair_x_y): # 单位化一个向量
+            x, y = pair_x_y
+            length = (x ** 2 + y ** 2) ** 0.5 # 计算长度
+            return (x / length, y / length)
+
+        def mul(pair_x_y, r): # 倍长一个向量
+            x, y = pair_x_y
+            return (x * r, y * r)
+        
+        def add(pair_x_y1, pair_x_y2):
+            x1, y1 = pair_x_y1
+            x2, y2 = pair_x_y2
+            return (x1 + x2, y1 + y2)
+
+        # 一个小偏移量，用于让显示更加自然
+        delta_pos = (-constant_config.SMALL_TEXT_SIZE/2, -constant_config.SMALL_TEXT_SIZE/2)
+
+        pd_code_final_info = self.get_pd_code_final_info()
+        if pd_code_final_info is None:
+            assert False
+        
+        arr = []
+        for term in pd_code_final_info: # 按照指定方向绘制四个整数
+            x    = term["X"]
+            pos  = term["pos"]
+            dir0 = mul(unit(term["dir"][0]), constant_config.CIRCLE_RADIUS * 1.7 + 1)
+            dir1 = mul(unit(term["dir"][1]), constant_config.CIRCLE_RADIUS * 1.7 + 1)
+            dir2 = mul(dir0, -1)
+            dir3 = mul(dir1, -1)
+            dirs = [dir0, dir1, dir2, dir3]
+
+            for i in range(4):
+                pos_to_show = add(add(dirs[i], pos), delta_pos)
+                arr.append((str(x[i]), pos_to_show))
+
+        return arr
             

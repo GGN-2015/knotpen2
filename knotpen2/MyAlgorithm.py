@@ -325,7 +325,8 @@ class MyAlgorithm:
     
     # block_list 记录了每个连通分支的控制点
     # parts 记录了每个连通分支的交叉点的位置
-    def calculate_svg(self, block_list, parts):
+    # need_number 指出了是否需要在生成的 svg 图片中引入弧线的数字编号
+    def calculate_svg(self, block_list, parts, need_number=True):
         # 根据 block_list 计算节点的前驱后继关系
         # 这里的节点以 dot_id 的形式记录（即节点的默认编号）
         get_next_dot = {}
@@ -453,24 +454,27 @@ class MyAlgorithm:
             )
 
         # 基于 arc_list 生成 svg 图像文本格式
-        def generate_svg_text_based_on_arc_list(arc_list) -> str:
+        def generate_svg_text_based_on_arc_list(arc_list) -> list:
             xmin, ymin, xmax, ymax = self.memory_object.get_view_box()
             xmin -= constant_config.CIRCLE_RADIUS
             ymin -= constant_config.CIRCLE_RADIUS
             xmax += constant_config.CIRCLE_RADIUS
             ymax += constant_config.CIRCLE_RADIUS
-
-            header = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="%d %d %d %d">' % (xmin, ymin, xmax, ymax)
-            footer = '</svg>'
-            svg_path_list = [header]
-
+            svg_path_list = []
             for term in arc_list:
                 pos_from, pos_mid, pos_to, status = term
                 svg_path_list.append(create_svg_path(pos_from, pos_mid, pos_to, status))
-
-            svg_path_list.append(footer)
-            return "\n".join(svg_path_list)
+            return svg_path_list
         
-        # 不负责存储
-        svg_text = generate_svg_text_based_on_arc_list(arc_list)
-        return svg_text
+        # 不负责存储，仅仅负责计算
+        xmin, ymin, xmax, ymax = self.memory_object.get_view_box()
+        header = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="%d %d %d %d">' % (xmin, ymin, xmax, ymax)
+        footer = '</svg>'
+        svg_text_list = [header] + generate_svg_text_based_on_arc_list(arc_list)
+
+        if need_number: # 添加数字
+            for txt, pos in self.memory_object.get_number_position_pairs():
+                svg_text_list.append(f'    <text x="{pos[0]}" y="{pos[1] + constant_config.SVG_TEXT_DELTA_Y}" font-size="{constant_config.SVG_FONT_SIZE}" fill="red">{txt}</text>\n')
+
+        svg_text_list.append(footer)
+        return "\n".join(svg_text_list)
