@@ -321,6 +321,7 @@ class MyAlgorithm:
             pd_code_to_show.append(anti_clock_wise)
         
         # 返回最终 pd_code
+        print(pd_code_final)
         return sorted(pd_code_to_show), pd_code_final, parts
     
     # block_list 记录了每个连通分支的控制点

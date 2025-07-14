@@ -331,7 +331,8 @@ class MemoryObject:
             assert self.degree[dot_id] == 0
             del self.degree[dot_id]
     
-    def get_number_position_pairs(self) -> list:
+    # merge 的功能：如果两个相同的数字挨得太近，那就把他们合并成一个数字，并放在中点位置
+    def get_number_position_pairs(self, merge=True) -> list:
         def unit(pair_x_y): # 单位化一个向量
             x, y = pair_x_y
             length = (x ** 2 + y ** 2) ** 0.5 # 计算长度
@@ -367,5 +368,27 @@ class MemoryObject:
                 pos_to_show = add(add(dirs[i], pos), delta_pos)
                 arr.append((str(x[i]), pos_to_show))
 
-        return arr
+        if merge:
+            new_arr = []
+            num_to_pos_dict = {}
             
+            for txt, pos in arr: # 统计每种数值出现的每一个位置
+                if num_to_pos_dict.get(txt) is None:
+                    num_to_pos_dict[txt] = []
+                num_to_pos_dict[txt].append(pos)
+
+            for txt in num_to_pos_dict: # 每个数值，必须出现且恰好出现两次
+                assert len(num_to_pos_dict[txt]) == 2
+
+            for txt in num_to_pos_dict:
+                pos1 = num_to_pos_dict[txt][0]
+                pos2 = num_to_pos_dict[txt][1]
+
+                if numpy.linalg.norm(numpy.array([pos1[0] - pos2[0], pos1[1] - pos2[1]])) <= 2.5 * constant_config.SMALL_TEXT_SIZE:
+                    new_arr.append((txt, ((pos1[0] + pos2[0]) / 2, (pos1[1] + pos2[1]) / 2)))
+                else:
+                    new_arr.append((txt, pos1))
+                    new_arr.append((txt, pos2))
+            arr = new_arr # 覆盖
+        return arr
+    
