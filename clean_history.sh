@@ -9,3 +9,6 @@ cd "$SCRIPT_DIR" || exit
 
 rm -rf ./knotpen2/answer/*
 rm -rf ./knotpen2/auto_save/*
+
+# 删除构建的所有 pyc
+rm -rf ./knotpen2/__pycache__/*.pyc
