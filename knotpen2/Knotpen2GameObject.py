@@ -122,11 +122,18 @@ class Knotpen2GameObject(GameObject.GameObject):
         self.leave_message("PD_CODE 计算成功", constant_config.GREEN)
         self.leave_message("保存在 %s" % filename, constant_config.GREEN)
 
-        # 生成 svg 文件格式的扭结图片        
-        svg_filename = filename.split("/")[-1].replace(".txt", ".svg")
-        svg_text = self.algo.calculate_svg(block_list, parts)
+        # 生成 svg 文件格式的扭结图片（不带有弧线编号信息）
+        svg_filename = filename.split("/")[-1].replace(".txt", ".nonum.svg")
+        svg_text = self.algo.calculate_svg(block_list, parts, False)
         svg_return_name = self.save_svg_answer(svg_filename, svg_text)
-        self.leave_message("扭结图像生成成功", constant_config.GREEN)
+        self.leave_message("扭结图像（不带弧线编号信息）生成成功", constant_config.GREEN)
+        self.leave_message("保存在 %s" % svg_return_name, constant_config.GREEN)
+
+        # 生成 svg 文件格式的扭结图片（带有弧线编号信息）
+        svg_filename = filename.split("/")[-1].replace(".txt", ".num.svg")
+        svg_text = self.algo.calculate_svg(block_list, parts, True)
+        svg_return_name = self.save_svg_answer(svg_filename, svg_text)
+        self.leave_message("扭结图像（带弧线编号信息）生成成功", constant_config.GREEN)
         self.leave_message("保存在 %s" % svg_return_name, constant_config.GREEN)
     
     def handle_key_down(self, key, mod, unicode): # 处理键盘事件
