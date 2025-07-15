@@ -5,6 +5,9 @@ import sys
 PROGRAM_EXE_PATH = os.path.dirname(os.path.abspath(sys.argv[0]))
 print("当前可执行文件所在路径为:", PROGRAM_EXE_PATH)
 
+# 图标位置
+PYGAME_ICON_PATH = os.path.join(PROGRAM_EXE_PATH, "logo.ico")
+
 APP_NAME = "knotpen2"
 
 DIRNOW = os.path.dirname(os.path.abspath(__file__))

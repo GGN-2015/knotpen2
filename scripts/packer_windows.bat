@@ -11,7 +11,7 @@ rem 删除上一次构建时的缓存文件
 rmdir /s /q build
 rmdir /s /q dist
 
-..\emb_python\Scripts\pyinstaller.exe -i logo.ico -F --add-data font\SourceHanSansSC-VF.ttf:font\ test_main.py -n main.exe
+..\emb_python\Scripts\pyinstaller.exe -i logo.ico -F --add-data font\SourceHanSansSC-VF.ttf:font\ --add-data logo.ico:. test_main.py -n main.exe
 
 rem 构建压缩文件
 mkdir dist\knotpen2

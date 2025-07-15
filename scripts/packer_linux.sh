@@ -11,4 +11,5 @@ cd "../knotpen2"
 # 输出当前目录进行验证
 echo "当前目录: $(pwd)"
 
-pyinstaller -i logo.ico -F --add-data './font/SourceHanSansSC-VF.ttf:./font/' test_main.py
+# 做 linux 下的打包
+pyinstaller -i logo.ico -F --add-data './font/SourceHanSansSC-VF.ttf:./font/' --add-data 'logo.ico:.' test_main.py -n main

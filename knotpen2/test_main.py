@@ -3,7 +3,7 @@ import os
 import traceback
 
 DIRNOW = os.path.dirname(os.path.abspath(__file__))
-import sys; sys.path=[DIRNOW] + sys.path; print(sys.path); 
+import sys; sys.path=[DIRNOW] + sys.path;
 
 # 相对导入
 import constant_config
@@ -13,8 +13,18 @@ import ClassBinder
 import MemoryObject
 import MyAlgorithm
 
+def set_pygame_icon(icon_path:str):
+    # 加载图标图像（确保图像文件存在）
+    try:
+        icon = pygame.image.load(icon_path)  # 替换为你的图标文件路径
+        pygame.display.set_icon(icon)
+    except pygame.error:
+        print("无法加载图标图像，请检查文件路径和格式！")
+
 def test_main():
     pygame.init()
+    set_pygame_icon(constant_config.PYGAME_ICON_PATH)
+
     mo   = MemoryObject.MemoryObject()
     algo = MyAlgorithm.MyAlgorithm(mo)
     k2go = Knotpen2GameObject.Knotpen2GameObject(mo, algo)
