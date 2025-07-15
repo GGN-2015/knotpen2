@@ -1,10 +1,15 @@
 import os
+import myxdg
+
+APP_NAME = "knotpen2"
+APP_DATA_FOLDER = myxdg.get_data_dir(APP_NAME)
+
 DIRNOW = os.path.dirname(os.path.abspath(__file__))
-AUTOSAVE_FOLDER = os.path.join(DIRNOW, "auto_save")
+AUTOSAVE_FOLDER = os.path.join(APP_DATA_FOLDER, "auto_save")
 AUTOSAVE_FILE = os.path.join(AUTOSAVE_FOLDER, "auto_save.json") # 自动保存位置
 
-ANSWER_FOLDER = os.path.join(DIRNOW, "answer")
-ERROR_LOG_FOLDER = os.path.join(DIRNOW, "error_log")
+ANSWER_FOLDER = os.path.join(APP_DATA_FOLDER, "answer")
+ERROR_LOG_FOLDER = os.path.join(APP_DATA_FOLDER, "error_log")
 
 CIRCLE_RADIUS = 12
 LINE_WIDTH = 8

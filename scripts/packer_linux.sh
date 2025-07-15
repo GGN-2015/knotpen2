@@ -6,15 +6,9 @@ SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 
 # 切换到脚本所在目录
 cd "$SCRIPT_DIR" || exit
+cd "../knotpen2"
 
 # 输出当前目录进行验证
 echo "当前目录: $(pwd)"
 
-# 清理本地缓存和自动保存
-echo "清理本地缓存和自动保存 ..."
-bash clean_history.sh
-
-# 生成 zip 打包
-echo "正在生成 zip 压缩包 ..."
-cd ..
-zip -r knotpen2.zip knotpen2/
+pyinstaller -i logo.ico -F --add-data './font/SourceHanSansSC-VF.ttf:./font/' test_main.py
