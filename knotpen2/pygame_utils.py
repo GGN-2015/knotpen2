@@ -1,8 +1,10 @@
 import pygame
 import math
 import numpy
-from . import constant_config
-from . import math_utils
+
+# 相对导入
+import constant_config
+import math_utils
 
 def draw_thick_line(screen, start, end, width, color):
     """绘制有宽度的线（使用多边形）"""

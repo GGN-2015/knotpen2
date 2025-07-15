@@ -1,3 +1,5 @@
+import pygame
+
 # handle_mouse_down(button, x, y): 鼠标按下回调函数
 #   button: 1=左键, 2=中键, 3=右键, 4=滚轮上滚, 5=滚轮下滚
 # handle_mouse_up(button, x, y): 鼠标抬起回调函数
@@ -10,7 +12,6 @@ def pygame_interface(handle_mouse_down=None, handle_mouse_up=None,
                      handle_key_down=None, handle_key_up=None, 
                      handle_quit=None, draw_screen=None,
                      die_check=None, handle_mouse_move=None, width=None, height=None):
-    import pygame
     pygame.init() # 初始化 Pygame
 
     pygame.key.stop_text_input()  # 禁用输入法

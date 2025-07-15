@@ -4,12 +4,13 @@ import time
 import functools
 import os
 
-from . import GameObject
-from . import MemoryObject
-from . import MyAlgorithm
-from . import constant_config
-from . import pygame_utils
-from . import math_utils
+# 相对导入
+import GameObject
+import MemoryObject
+import MyAlgorithm
+import constant_config
+import pygame_utils
+import math_utils
 
 STATUS_LIST = [
     "free",        # 自由状态

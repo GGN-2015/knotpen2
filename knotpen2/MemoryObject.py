@@ -1,8 +1,9 @@
 import numpy
 import os
-import json
-from . import math_utils
-from . import constant_config
+
+# 相对导入
+import math_utils
+import constant_config
 
 class MemoryObject:
     def __init__(self, auto_load=True) -> None:

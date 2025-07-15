@@ -1,8 +1,10 @@
 import os
 import time
 import traceback
-from . import constant_config
 from functools import wraps
+
+# 相对导入
+import constant_config
 
 def log_errors(func):
     """捕获函数异常并将完整堆栈信息保存到日志文件"""

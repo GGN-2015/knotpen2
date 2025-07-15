@@ -1,5 +1,7 @@
-from . import GameObject
-from . import pygame_interface
+
+# 相对导入
+import GameObject
+import pygame_interface
 
 class ClassBinder:
     def __init__(self, game_object:GameObject.GameObject) -> None:
