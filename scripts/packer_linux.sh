@@ -20,3 +20,5 @@ mkdir dist/knotpen2
 cp ../README.md dist/knotpen2/README.md
 cp dist/main dist/knotpen2/main
 zip -r dist/knotpen2.zip dist/knotpen2/
+
+mv dist/knotpen2.zip dist/knotpen2_linux_x86-64.zip

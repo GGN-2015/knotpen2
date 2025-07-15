@@ -18,3 +18,6 @@ mkdir dist\knotpen2
 copy dist\main.exe dist\knotpen2\main.exe
 copy ..\README.md dist\knotpen2\README.md
 ..\emb_python\python.exe ..\scripts\pyzip.py dist\knotpen2
+
+cd dist
+ren knotpen2.zip knotpen2_win32_x86-64.zip
