@@ -5,9 +5,6 @@ import sys
 PROGRAM_EXE_PATH = os.path.dirname(os.path.abspath(sys.argv[0]))
 print("当前可执行文件所在路径为:", PROGRAM_EXE_PATH)
 
-# 图标位置
-PYGAME_ICON_PATH = os.path.join(PROGRAM_EXE_PATH, "logo.ico")
-
 APP_NAME = "knotpen2"
 
 DIRNOW = os.path.dirname(os.path.abspath(__file__))
@@ -22,6 +19,9 @@ LINE_WIDTH = 8
 
 BACKUP_TIME = 180 # 每三分钟自动保存一次，如果和上次自动保存内容完全一致，则删除最新的自动保存
 STRIDE = 50
+
+# 图标位置
+PYGAME_ICON_PATH = os.path.join(DIRNOW, "logo.ico")
 
 # 字体文件加载目录
 FONT_TTF = os.path.join(DIRNOW, "font", "SourceHanSansSC-VF.ttf")

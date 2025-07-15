@@ -6,9 +6,10 @@ SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 
 # 切换到脚本所在目录
 cd "$SCRIPT_DIR" || exit
-cd "../knotpen2"
+bash clean_history.sh
 
 # 输出当前目录进行验证
+cd "../knotpen2"
 echo "当前目录: $(pwd)"
 
 # 做 linux 下的打包
