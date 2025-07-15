@@ -14,3 +14,9 @@ echo "当前目录: $(pwd)"
 
 # 做 linux 下的打包
 pyinstaller -i logo.ico -F --add-data './font/SourceHanSansSC-VF.ttf:./font/' --add-data 'logo.ico:.' test_main.py -n main
+
+# 压缩成压缩包
+mkdir dist/knotpen2
+cp ../README.md dist/knotpen2/README.md
+cp dist/main dist/knotpen2/main
+zip -r dist/knotpen2.zip dist/knotpen2
