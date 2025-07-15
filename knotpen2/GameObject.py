@@ -15,6 +15,9 @@ class GameObject:
         self.mouse_x = 0
         self.mouse_y = 0
 
+    def get_window_caption(self) -> str:
+        return "GameObject::get_window_caption"
+
     def draw_screen(self, screen):
         screen.fill((255, 255, 255)) # 填充白色背景
 

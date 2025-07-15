@@ -17,5 +17,6 @@ class ClassBinder:
             handle_quit=self.game_object.handle_quit,
             draw_screen=self.game_object.draw_screen,
             die_check=self.game_object.die_check,
-            handle_mouse_move=self.game_object.handle_mouse_move
+            handle_mouse_move=self.game_object.handle_mouse_move,
+            caption=self.game_object.get_window_caption()
         )

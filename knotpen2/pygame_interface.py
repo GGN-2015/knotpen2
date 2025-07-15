@@ -11,7 +11,7 @@ import pygame
 def pygame_interface(handle_mouse_down=None, handle_mouse_up=None, 
                      handle_key_down=None, handle_key_up=None, 
                      handle_quit=None, draw_screen=None,
-                     die_check=None, handle_mouse_move=None, width=None, height=None):
+                     die_check=None, handle_mouse_move=None, width=None, height=None, caption=""):
     pygame.init() # 初始化 Pygame
 
     pygame.key.stop_text_input()  # 禁用输入法
@@ -31,7 +31,7 @@ def pygame_interface(handle_mouse_down=None, handle_mouse_up=None,
     screen = pygame.display.set_mode((width, height))
     
     # 设置窗口标题
-    pygame.display.set_caption("knotpen2")
+    pygame.display.set_caption(caption)
     
     # 主循环控制变量
     running = True

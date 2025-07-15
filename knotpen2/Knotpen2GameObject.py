@@ -25,7 +25,7 @@ class Knotpen2GameObject(GameObject.GameObject):
 
         self.font    = pygame.font.Font(constant_config.FONT_TTF, constant_config.MESSAGE_SIZE)
         self.msg_txt = [
-            self.font.render("0: 欢迎使用 knotpen2", True, constant_config.BLACK)
+            self.font.render("0: 欢迎使用 %s" % self.get_window_caption(), True, constant_config.BLACK)
         ]
         self.msg_line_id = 1
 
@@ -48,6 +48,9 @@ class Knotpen2GameObject(GameObject.GameObject):
         self.last_backup     = time.time() # 上次自动保存时间
         self.notice_node     = []          # 用红色标出一些节点编号
     
+    def get_window_caption(self) -> str:
+        return constant_config.APP_NAME + "_" + constant_config.APP_VERSION
+
     def handle_quit(self):
         self.leave_message("自动保存中，请不要关闭窗口 ...", constant_config.YELLOW)
         self.memory_object.dump_object(constant_config.AUTOSAVE_FILE) # 自动保存
