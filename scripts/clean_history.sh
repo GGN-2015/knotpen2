@@ -15,3 +15,4 @@ rm -rf ../knotpen2/auto_save/*
 rm -rf ../knotpen2/__pycache__/*.pyc
 rm -rf ../knotpen2/build
 rm -rf ../knotpen2/dist
+rm -rf ../knotpen2/*.spec
