@@ -19,4 +19,4 @@ pyinstaller -i logo.ico -F --add-data './font/SourceHanSansSC-VF.ttf:./font/' --
 mkdir dist/knotpen2
 cp ../README.md dist/knotpen2/README.md
 cp dist/main dist/knotpen2/main
-zip -r dist/knotpen2.zip dist/knotpen2
+zip -r dist/knotpen2.zip dist/knotpen2/
