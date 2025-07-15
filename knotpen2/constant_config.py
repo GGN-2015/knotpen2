@@ -1,15 +1,18 @@
 import os
-import myxdg
+import sys
+
+# 当前程序执行路径为
+PROGRAM_EXE_PATH = os.path.dirname(os.path.abspath(sys.argv[0]))
+print("当前可执行文件所在路径为:", PROGRAM_EXE_PATH)
 
 APP_NAME = "knotpen2"
-APP_DATA_FOLDER = myxdg.get_data_dir(APP_NAME)
 
 DIRNOW = os.path.dirname(os.path.abspath(__file__))
-AUTOSAVE_FOLDER = os.path.join(APP_DATA_FOLDER, "auto_save")
+AUTOSAVE_FOLDER = os.path.join(PROGRAM_EXE_PATH, "auto_save")
 AUTOSAVE_FILE = os.path.join(AUTOSAVE_FOLDER, "auto_save.json") # 自动保存位置
 
-ANSWER_FOLDER = os.path.join(APP_DATA_FOLDER, "answer")
-ERROR_LOG_FOLDER = os.path.join(APP_DATA_FOLDER, "error_log")
+ANSWER_FOLDER = os.path.join(PROGRAM_EXE_PATH, "answer") # 答案存储位置
+ERROR_LOG_FOLDER = os.path.join(PROGRAM_EXE_PATH, "error_log")
 
 CIRCLE_RADIUS = 12
 LINE_WIDTH = 8
