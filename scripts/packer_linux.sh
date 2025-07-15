@@ -6,7 +6,6 @@ SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 
 # 切换到脚本所在目录
 cd "$SCRIPT_DIR" || exit
-bash clean_history.sh
 
 # 输出当前目录进行验证
 cd "../knotpen2"

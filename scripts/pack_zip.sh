@@ -15,6 +15,6 @@ echo "清理本地缓存和自动保存 ..."
 bash clean_history.sh
 
 # 生成 zip 打包
-echo "正在生成 zip 压缩包 ..."
+echo "正在生成整环境 zip 压缩包 ..."
 cd ../..
 zip -r knotpen2.zip knotpen2/

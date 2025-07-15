@@ -15,6 +15,7 @@ if [ -z "$linux_installer_path" ]; then
 fi
 
 # 构建 linux 下的目标文件
+rm -rf dist # 删除上次构建的结果
 mkdir -p dist
 bash packer_linux.sh
 cp ../knotpen2/dist/knotpen2_linux_x86-64.zip dist

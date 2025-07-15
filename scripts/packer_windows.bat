@@ -5,7 +5,7 @@ echo %~dp0
 cd ../knotpen2
 
 rem 输出当前目录进行验证
-echo 当前目录: %CD%
+echo current directory: %CD%
 
 rem 删除上一次构建时的缓存文件
 rmdir /s /q build
