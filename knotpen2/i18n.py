@@ -7,10 +7,10 @@ localedir = constant_config.LOCALE_DIR
 assert os.path.isdir(localedir)
 
 # 域名
-domain = 'knotpen2'
+domain = constant_config.APP_NAME
 
 # 当前语言状态
-current_locale = "zh_CN"
+current_locale = constant_config.LANG_CODE_SET[0]
 _raw = lambda x: x  # 默认使用原始字符串(不翻译)
 
 # 默认语言目录
