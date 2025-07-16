@@ -5,6 +5,7 @@ import functools
 import os
 
 # 相对导入
+import i18n
 from i18n import _
 import GameObject
 import MemoryObject
@@ -45,6 +46,7 @@ class Knotpen2GameObject(GameObject.GameObject):
         self.last_click      = -1          # 上次鼠标左键抬起的时刻
         self.last_c_down     = -1          # 上次键盘按下 c 键
         self.last_l_down     = -1          # 上次键盘按下 l 键
+        self.last_n_down     = -1          # 上次键盘按下 n 键
         self.last_r_down     = -1          # 键盘上一次按下按键 r 的时刻
         self.last_backup     = time.time() # 上次自动保存时间
         self.notice_node     = []          # 用红色标出一些节点编号
@@ -176,6 +178,11 @@ class Knotpen2GameObject(GameObject.GameObject):
             if time.time() - self.last_l_down < constant_config.DOUBLE_CLICK_TIME:
                 self.output_answer()
             self.last_l_down = time.time()
+
+        elif key_name == 'n': # 切换语言
+            if time.time() - self.last_n_down < constant_config.DOUBLE_CLICK_TIME:
+                i18n.set_next_language(self.leave_message)
+            self.last_n_down = time.time()
 
         elif key_name == 'r':
             if time.time() - self.last_r_down < constant_config.DOUBLE_CLICK_TIME:

@@ -22,6 +22,7 @@ STRIDE = 50
 
 # i18n 文件夹位置
 LOCALE_DIR = os.path.join(PROGRAM_EXE_PATH, "i18n", "locales")
+LANG_CODE_SET = ['zh_CN', 'en_US'] # 可以使用的所有语言翻译
 
 # 图标位置
 PYGAME_ICON_PATH = os.path.join(DIRNOW, "logo.ico")
