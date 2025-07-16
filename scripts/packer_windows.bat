@@ -18,6 +18,7 @@ mkdir dist\knotpen2
 copy dist\main.exe dist\knotpen2\main.exe
 copy ..\README.md dist\knotpen2\README.md
 xcopy ..\img dist\knotpen2\img /E /I /Y
+xcopy i18n dist\knotpen2\i18n /E /I /Y
 ..\emb_python\python.exe ..\scripts\pyzip.py dist\knotpen2
 
 cd dist

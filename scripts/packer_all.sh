@@ -7,13 +7,6 @@ SCRIPT_DIR="$(dirname "$SCRIPT_PATH")"
 # 切换到脚本所在目录
 cd "$SCRIPT_DIR" || exit
 
-# 检查工具是否存在
-linux_installer_path=$(which pyinstaller 2>/dev/null)
-if [ -z "$linux_installer_path" ]; then
-    echo "没有找到 linux 下的打包工具"
-    exit 1
-fi
-
 # 构建 i18n mo 文件
 bash ../knotpen2/i18n/compile_po.sh
 

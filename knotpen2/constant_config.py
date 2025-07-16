@@ -21,7 +21,7 @@ BACKUP_TIME = 180 # 每三分钟自动保存一次，如果和上次自动保存
 STRIDE = 50
 
 # i18n 文件夹位置
-LOCALE_DIR = os.path.join(DIRNOW, "i18n", "locales")
+LOCALE_DIR = os.path.join(PROGRAM_EXE_PATH, "i18n", "locales")
 
 # 图标位置
 PYGAME_ICON_PATH = os.path.join(DIRNOW, "logo.ico")

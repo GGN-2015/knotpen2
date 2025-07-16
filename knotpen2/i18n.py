@@ -11,13 +11,16 @@ localedir = constant_config.LOCALE_DIR
 domain = 'knotpen2'
 
 # 获取系统语言
+# def get_lang_variable():
+#     """获取环境变量 LANG 的值"""
+#     lang_value = os.getenv('LANG')
+#     if lang_value is not None and lang_value.startswith("zh_"):
+#         return "zh_CN"
+#     else:
+#         return "en_US"
+
 def get_lang_variable():
-    """获取环境变量 LANG 的值"""
-    lang_value = os.getenv('LANG')
-    if lang_value is not None and lang_value.startswith("zh_"):
-        return "zh_CN"
-    else:
-        return "en_US"
+    return "en_US"
 
 # 设置当前环境的语言
 current_locale = get_lang_variable()
