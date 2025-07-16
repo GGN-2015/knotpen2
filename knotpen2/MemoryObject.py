@@ -1,6 +1,6 @@
 import numpy
 import os
-from gettext import gettext as _
+from i18n import _
 
 # 相对导入
 import math_utils

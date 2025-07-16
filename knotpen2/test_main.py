@@ -1,12 +1,12 @@
 import pygame
 import os
 import traceback
-from gettext import gettext as _
 
 DIRNOW = os.path.dirname(os.path.abspath(__file__))
 import sys; sys.path=[DIRNOW] + sys.path;
 
 # 相对导入
+from i18n import _
 import constant_config
 import error_log
 import Knotpen2GameObject

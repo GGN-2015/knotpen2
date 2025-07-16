@@ -20,6 +20,9 @@ LINE_WIDTH = 8
 BACKUP_TIME = 180 # 每三分钟自动保存一次，如果和上次自动保存内容完全一致，则删除最新的自动保存
 STRIDE = 50
 
+# i18n 文件夹位置
+LOCALE_DIR = os.path.join(DIRNOW, "i18n", "locales")
+
 # 图标位置
 PYGAME_ICON_PATH = os.path.join(DIRNOW, "logo.ico")
 
@@ -37,7 +40,7 @@ SVG_STROKE_WIDTH = 3
 SVG_FONT_SIZE = SMALL_TEXT_SIZE
 SVG_TEXT_DELTA_Y = 15 # 对 SVG 文件中的文字位置进行微调
 ARROW_SIZE = 5 # SVG 图片中箭头的大小
-SVG_EXPAND_RATIO = 3 # 放大倍数
+SVG_EXPAND_RATIO = 1 # 放大倍数
 
 DOUBLE_CLICK_TIME = 0.25 # 双击时两次点击的最大间隔
 

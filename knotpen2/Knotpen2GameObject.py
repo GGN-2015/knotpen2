@@ -3,9 +3,9 @@ import numpy
 import time
 import functools
 import os
-from gettext import gettext as _
 
 # 相对导入
+from i18n import _
 import GameObject
 import MemoryObject
 import MyAlgorithm

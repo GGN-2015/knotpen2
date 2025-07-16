@@ -1,7 +1,8 @@
 import numpy as np
-from gettext import gettext as _
+
 
 # 相对导入
+from i18n import _
 import MemoryObject
 import math_utils
 import constant_config
@@ -212,12 +213,11 @@ class MyAlgorithm:
                 assert 0 < float(t2) < 1 # 这说明有结点位于其他结点上面，可能会导致错误
 
                 crossing_list.append((pos, nid11, t1, nid21, t2, line_id_1, line_id_2)) # 使用七元组描述所有找到的交叉点
-        
-        from gettext import gettext as _
+
         leave_msg(_("总计找到了 %d 个交叉点") % len(crossing_list))
 
         # 考虑交叉点所在的弧线段，并给所有弧线段进行编号
-        parts = [[] for _ in range(len(block_list))] # 为每一个连通分支，记录它上面有哪些交点
+        parts = [[] for ignored in range(len(block_list))] # 为每一个连通分支，记录它上面有哪些交点
         for crossing_index, crossing in enumerate(crossing_list):
             pos, nid11, t1, nid21, t2, line_id_1, line_id_2 = crossing  # 拿出一个交叉点来
 
@@ -235,11 +235,10 @@ class MyAlgorithm:
         cid_half_id_to_bid_arc_id = {}
         for bid in range(len(block_list)): # 对所有分界点进行排序
             parts[bid] = sorted(parts[bid])
-            from gettext import gettext as _
             leave_msg(_("连通分支 {bid} 被分割成了 {pts} 段").format(bid=bid, pts=len(parts[bid])))
 
             for arc_id, half_crossing in enumerate(parts[bid]):
-                _, _, cid, half_id, _ = half_crossing
+                ignored, ignored, cid, half_id, ignored = half_crossing
                 cid_half_id_to_bid_arc_id[(cid, half_id)] = (bid, arc_id)
 
         def check_left_turn(vec1, vec2): # 检查 vec1 到 vec2 是否是左转
@@ -365,8 +364,8 @@ class MyAlgorithm:
                 return base
 
         def get_arc_list_between_two_crossing(bid:int, begin_arc, end_arc): # 绘制两个交叉点之间的所有弧线段
-            nid1, t1, _, _, tag1 = begin_arc
-            nid2, t2, _, _, tag2 = end_arc
+            nid1, t1, ignored, ignored, tag1 = begin_arc
+            nid2, t2, ignored, ignored, tag2 = end_arc
 
             if nid1 == nid2: # 位于同一个线段的两个交叉点，不需要计算中间节点
                 return [
