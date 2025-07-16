@@ -19,5 +19,5 @@ rm -rf dist # 删除上次构建的结果
 mkdir -p dist
 bash packer_linux.sh
 cp ../knotpen2/dist/knotpen2_linux_x86-64.zip dist
-wine packer_windows.bat
+WINEDEBUG=-all wine packer_windows.bat # 使用 WINEDEBUG=-all  禁用 wine 日志
 cp ../knotpen2/dist/knotpen2_win32_x86-64.zip dist
