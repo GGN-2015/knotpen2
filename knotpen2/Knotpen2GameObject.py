@@ -3,6 +3,7 @@ import numpy
 import time
 import functools
 import os
+from gettext import gettext as _
 
 # 相对导入
 import GameObject
@@ -25,7 +26,7 @@ class Knotpen2GameObject(GameObject.GameObject):
 
         self.font    = pygame.font.Font(constant_config.FONT_TTF, constant_config.MESSAGE_SIZE)
         self.msg_txt = [
-            self.font.render("0: 欢迎使用 %s" % self.get_window_caption(), True, constant_config.BLACK)
+            self.font.render("0: %s %s" % (_("欢迎使用"), self.get_window_caption()), True, constant_config.BLACK)
         ]
         self.msg_line_id = 1
 
@@ -52,9 +53,9 @@ class Knotpen2GameObject(GameObject.GameObject):
         return constant_config.APP_NAME + "_" + constant_config.APP_VERSION
 
     def handle_quit(self):
-        self.leave_message("自动保存中，请不要关闭窗口 ...", constant_config.YELLOW)
+        self.leave_message(_("自动保存中，请不要关闭窗口 ..."), constant_config.YELLOW)
         self.memory_object.dump_object(constant_config.AUTOSAVE_FILE) # 自动保存
-        self.leave_message("自动保存成功", constant_config.GREEN)
+        self.leave_message(_("自动保存成功"), constant_config.GREEN)
 
         self.status = "quit"
     
@@ -104,10 +105,10 @@ class Knotpen2GameObject(GameObject.GameObject):
         return "%s/%s/%s" % (outter_name, foldername, filename)
 
     def output_answer(self):
-        self.leave_message("开始计算 PD_CODE", constant_config.YELLOW)
+        self.leave_message(_("开始计算 PD_CODE"), constant_config.YELLOW)
         degree_check_list = self.algo.degree_check()
         if len(degree_check_list) > 0: # 发现了有些节点度不为 2
-            self.leave_message("%d 个节点度数不为 2，请注意灰色标出的节点" % len(degree_check_list), constant_config.RED)
+            self.leave_message(_("%d 个节点度数不为 2，请注意灰色标出的节点") % len(degree_check_list), constant_config.RED)
             return
         adj_list, block_list        = self.algo.get_connected_components()           # 计算出所有连通分支
         suc, msg, baseL, dirL, nntc = self.algo.check_base_dir(adj_list, block_list) # 检查每个连通分支是否都有 base 和 dir 节点，检查节点数是否大于等于 3
@@ -123,29 +124,29 @@ class Knotpen2GameObject(GameObject.GameObject):
 
         # 保存文本文件的 PD_CODE
         filename = self.save_answer(str(pd_code_to_show))
-        self.leave_message("PD_CODE 计算成功", constant_config.GREEN)
-        self.leave_message("保存在 %s" % filename, constant_config.GREEN)
+        self.leave_message(_("PD_CODE 计算成功"), constant_config.GREEN)
+        self.leave_message(_("保存在 %s") % filename, constant_config.GREEN)
 
         # 生成 svg 文件格式的扭结图片（不带有弧线编号信息）
         svg_filename = filename.split("/")[-1].replace(".txt", ".nonum.svg")
         svg_text = self.algo.calculate_svg(block_list, parts, False, False)
         svg_return_name = self.save_svg_answer(svg_filename, svg_text)
-        self.leave_message("扭结图像（不带弧线编号信息）生成成功", constant_config.GREEN)
-        self.leave_message("保存在 %s" % svg_return_name, constant_config.GREEN)
+        self.leave_message(_("扭结图像（不带弧线编号信息）生成成功"), constant_config.GREEN)
+        self.leave_message(_("保存在 %s") % svg_return_name, constant_config.GREEN)
 
         # 生成 svg 文件格式的扭结图片（带有弧线编号信息）
         svg_filename = filename.split("/")[-1].replace(".txt", ".num.svg")
         svg_text = self.algo.calculate_svg(block_list, parts, True, False)
         svg_return_name = self.save_svg_answer(svg_filename, svg_text)
-        self.leave_message("扭结图像（带弧线编号信息）生成成功", constant_config.GREEN)
-        self.leave_message("保存在 %s" % svg_return_name, constant_config.GREEN)
+        self.leave_message(_("扭结图像（带弧线编号信息）生成成功"), constant_config.GREEN)
+        self.leave_message(_("保存在 %s") % svg_return_name, constant_config.GREEN)
 
         # 生成 svg 文件格式的扭结图片（带有弧线方向信息）
         svg_filename = filename.split("/")[-1].replace(".txt", ".arrow.svg")
         svg_text = self.algo.calculate_svg(block_list, parts, False, True)
         svg_return_name = self.save_svg_answer(svg_filename, svg_text)
-        self.leave_message("扭结图像（带弧线方向信息）生成成功", constant_config.GREEN)
-        self.leave_message("保存在 %s" % svg_return_name, constant_config.GREEN)
+        self.leave_message(_("扭结图像（带弧线方向信息）生成成功"), constant_config.GREEN)
+        self.leave_message(_("保存在 %s") % svg_return_name, constant_config.GREEN)
     
     def handle_key_down(self, key, mod, unicode): # 处理键盘事件
         super().handle_key_down(key, mod, unicode)
@@ -212,8 +213,8 @@ class Knotpen2GameObject(GameObject.GameObject):
                 self.actually_moved = False
 
     
-    def handle_mouse_move(self, x, y):
-        super().handle_mouse_move(x, y)
+    def handle_mouse_move(self, x, y, show_log=False):
+        super().handle_mouse_move(x, y, show_log)
 
         if self.status == "move_dot" and self.focus_dot is not None:
             self.memory_object.set_dot_position(self.focus_dot, x, y)
@@ -300,10 +301,10 @@ class Knotpen2GameObject(GameObject.GameObject):
 
         time_now = time.time()
         if time_now - self.last_backup > constant_config.BACKUP_TIME:     # 自动保存
-            self.leave_message("正在自动保存请不要关闭软件 ...", constant_config.YELLOW)
+            self.leave_message(_("正在自动保存请不要关闭软件 ..."), constant_config.YELLOW)
             self.memory_object.auto_backup()                              # 保存一个时间戳对应的文件
             self.memory_object.dump_object(constant_config.AUTOSAVE_FILE) # 保存一个 auto_save
-            self.leave_message("自动保存成功", constant_config.GREEN, replace=True)
+            self.leave_message(_("自动保存成功"), constant_config.GREEN, replace=True)
             self.last_backup = time_now
 
         if self.memory_object.base_dot is not None: # 绘制起始点

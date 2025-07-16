@@ -1,6 +1,7 @@
 import pygame
 import os
 import traceback
+from gettext import gettext as _
 
 DIRNOW = os.path.dirname(os.path.abspath(__file__))
 import sys; sys.path=[DIRNOW] + sys.path;
@@ -19,7 +20,7 @@ def set_pygame_icon(icon_path:str):
         icon = pygame.image.load(icon_path)  # 替换为你的图标文件路径
         pygame.display.set_icon(icon)
     except pygame.error:
-        print("无法加载图标图像，请检查文件路径和格式！")
+        print(_("无法加载图标图像，请检查文件路径和格式！"))
 
 def test_main():
     pygame.init()
@@ -43,5 +44,5 @@ if __name__ == "__main__":
         print(error_info)
 
         filepath = error_log.error_log(error_info) # 记录错误信息并退出
-        print("错误日志信息已经保存到：%s" % filepath)
+        print(_("错误日志信息已经保存到：%s") % filepath)
         sys.exit(1)

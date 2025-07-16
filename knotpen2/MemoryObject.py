@@ -1,5 +1,6 @@
 import numpy
 import os
+from gettext import gettext as _
 
 # 相对导入
 import math_utils
@@ -11,11 +12,11 @@ class MemoryObject:
         self.empty_info = self.get_all_info()
 
         if auto_load and os.path.isfile(constant_config.AUTOSAVE_FILE): # 自动加载存档
-            print("正在加载自动保存的存档 ...")
+            print(_("正在加载自动保存的存档 ..."))
             try:
                 self.load_object(constant_config.AUTOSAVE_FILE)
             except:
-                print("加载失败，自动存档文件故障")
+                print(_("加载失败，自动存档文件故障"))
 
     def clear(self): # 初始化为空白状态
         self.dot_id_max = 0
@@ -86,7 +87,7 @@ class MemoryObject:
             if open(lastfile).read() == open(nextfile).read():
                 try:
                     os.remove(lastfile)
-                    print("由于没有修改，因此最后一次自动保存被删除")
+                    print(_("由于没有修改，因此最后一次自动保存被删除"))
                 except:
                     pass
 
@@ -287,7 +288,7 @@ class MemoryObject:
         for line_id in self.line_dict:
             frm1, eto1 = self.line_dict[line_id]
             if frm1 == dot_id_1 and eto1 == dot_id_2: # 找到了一个旧的一样的边
-                print("old edge found: %s" % line_id)
+                print(_("找到一条原有的边：%s") % line_id)
                 return line_id
         
         while self.line_dict.get("line_%d" % self.line_id_max):
@@ -298,7 +299,7 @@ class MemoryObject:
         self.degree[dot_id_1] += 1
         self.degree[dot_id_2] += 1
 
-        print("create new edge: %s" % new_id)
+        print(_("创建了一条新的边: %s") % new_id)
         return new_id
 
     def erase_dot(self, dot_id:str): # 删除节点的时候，记得删除相应的边，以及边之间的逆序关系

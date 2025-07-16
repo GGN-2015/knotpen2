@@ -88,13 +88,13 @@ def point_to_line_segment_distance(point, line_start, line_end):
     """
     计算二维点到二维线段的最小距离
     
-    参数:
-    point (tuple): 待计算的点，格式为 (x, y)
-    line_start (tuple): 线段起点，格式为 (x, y)
-    line_end (tuple): 线段终点，格式为 (x, y)
+    Args:
+        point (tuple): 待计算的点，格式为 (x, y)
+        line_start (tuple): 线段起点，格式为 (x, y)
+        line_end (tuple): 线段终点，格式为 (x, y)
     
-    返回:
-    float: 点到线段的最小距离
+    Returns:
+        float: 点到线段的最小距离
     """
     # 线段的向量
     line_vec = (line_end[0] - line_start[0], line_end[1] - line_start[1])
@@ -133,14 +133,14 @@ def bezier_midpoint_and_tangent(start, control, end):
     计算二次贝塞尔曲线的中点和中点处的切向量
     
     Args:
-        - start(tuple): 起点坐标 (x, y)
-        - control(tuple): 控制点坐标 (x, y)
-        - end(tuple): 终点坐标 (x, y)
+        start(tuple): 起点坐标 (x, y)
+        control(tuple): 控制点坐标 (x, y)
+        end(tuple): 终点坐标 (x, y)
     
     Returns:
-        - (midpoint, tangent)
-        - midpoint(tuple): 曲线中点坐标 (x, y)
-        - tangent(tuple): 中点处的切向量 (dx, dy)，已归一化
+        (midpoint, tangent)
+        midpoint(tuple): 曲线中点坐标 (x, y)
+        tangent(tuple): 中点处的切向量 (dx, dy)，已归一化
     """
     # 转换为numpy数组以便计算
     start = np.array(start)

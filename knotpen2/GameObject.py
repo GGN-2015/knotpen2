@@ -1,4 +1,5 @@
 import pygame
+from gettext import gettext as _
 
 # handle_mouse_down(button, x, y): 鼠标按下回调函数
 #   button: 1=左键, 2=中键, 3=右键, 4=滚轮上滚, 5=滚轮下滚
@@ -23,9 +24,9 @@ class GameObject:
 
     def handle_mouse_down(self, button, x, y):
         self.mouse_x, self.mouse_y = x, y
-        button_names = {1: "左键", 2: "中键", 3: "右键", 4: "滚轮上滚", 5: "滚轮下滚"}
-        button_name = button_names.get(button, f"未知按钮({button})")
-        print(f"鼠标按下: {button_name} @ ({x}, {y})")
+        button_names = {1: _("左键"), 2: _("中键"), 3: _("右键"), 4: _("滚轮上滚"), 5: _("滚轮下滚")}
+        button_name = button_names.get(button, _("未知按钮") + f"({button})")
+        print(_("鼠标按下: ") + f"{button_name} @ ({x}, {y})")
 
         # 示例：处理键盘事件的回调函数
     def handle_key_down(self, key, mod, unicode):
@@ -38,33 +39,35 @@ class GameObject:
         if mod & pygame.KMOD_ALT:
             modifiers.append("Alt")
         
-        mod_str = "+".join(modifiers) if modifiers else "无"
-        print(f"按键按下: {key_name} (Unicode: {unicode}, 修饰键: {mod_str})")
+        mod_str = "+".join(modifiers) if modifiers else _("无修饰键")
+        print(_("按键按下: ") + f"{key_name} (Unicode: {unicode}, " + _("修饰键: ") + f"{mod_str})")
     
     def handle_key_up(self, key, mod):
         key_name = pygame.key.name(key)
-        print(f"按键释放: {key_name}")
+        print(_("按键释放: ") + f"{key_name}")
     
     def handle_mouse_up(self, button, x, y):
         self.mouse_x, self.mouse_y = x, y
-        button_names = {1: "左键", 2: "中键", 3: "右键"}
+        button_names = {1: _("左键"), 2: _("中键"), 3: _("右键")}
         if button in button_names:  # 只处理真正的按键抬起事件
-            print(f"鼠标抬起: {button_names[button]} @ ({x}, {y})")
+            print(_("鼠标抬起：") + f"{button_names[button]} @ ({x}, {y})")
     
     def handle_quit(self):
         self.quit_cnt += 1
-        print("尝试关闭窗口（第 %d 次）" % self.quit_cnt)
+        print(_("尝试关闭窗口（第 %d 次）") % self.quit_cnt)
     
     def get_mouse_pos(self): # 获得鼠标的位置
         return self.mouse_x, self.mouse_y
 
     def die_check(self):
         if self.quit_cnt >= 3:
-            print("尝试关闭窗口（第 %d 次），游戏退出" % self.quit_cnt)
+            print(_("尝试关闭窗口（第 %d 次），游戏退出") % self.quit_cnt)
             return True # 窗口已经死了
         else:
             return False # 窗口还没死
         
-    def handle_mouse_move(self, x, y): # 鼠标移动事件
+    def handle_mouse_move(self, x, y, show_log=False): # 鼠标移动事件
         self.mouse_x, self.mouse_y = x, y
-        # print(f"鼠标移动：({x}, {y})")
+        
+        if show_log:
+            print(_("鼠标移动：") + f"({x}, {y})")

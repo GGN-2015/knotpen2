@@ -1,4 +1,5 @@
 import numpy as np
+from gettext import gettext as _
 
 # 相对导入
 import MemoryObject
@@ -74,23 +75,23 @@ class MyAlgorithm:
                     block_id_to_dir_dot[i].append(node_now)
 
         if len(self.memory_object.get_dot_dict()) <= 2:
-            return False, "你至少要放置 3 个节点才能计算 PD_CODE", None, None, []
+            return False, _("你至少要放置 3 个节点才能计算 PD_CODE"), None, None, []
     
         for i in range(len(block_list)): # 返回检查到的错误信息
             rep     = block_list[i][0]
             rep_num = int(rep.split("_")[-1]) # 代表元
 
             if len(block_id_to_base_dot[i]) == 0:
-                return False, "节点 %d 所在的连通分支没有定义起始点" % rep_num, None, None, [rep]
+                return False, _("节点 %d 所在的连通分支没有定义起始点") % rep_num, None, None, [rep]
             
             if len(block_id_to_base_dot[i]) >= 2:
-                return False, "节点 %d 所在的连通分支没有定义了太多起始点" % rep_num, None, None, [rep]
+                return False, _("节点 %d 所在的连通分支没有定义了太多起始点") % rep_num, None, None, [rep]
             
             if len(block_id_to_dir_dot[i]) == 0:
-                return False, "节点 %d 所在的连通分支没有定义方向点" % rep_num, None, None, [rep]
+                return False, _("节点 %d 所在的连通分支没有定义方向点") % rep_num, None, None, [rep]
             
             if len(block_id_to_dir_dot[i]) >= 2:
-                return False, "节点 %d 所在的连通分支没有定义了太多方向点" % rep_num, None, None, [rep]
+                return False, _("节点 %d 所在的连通分支没有定义了太多方向点") % rep_num, None, None, [rep]
             
             base = block_id_to_base_dot[i][0]
             dirx  = block_id_to_dir_dot[i][0]
@@ -98,7 +99,7 @@ class MyAlgorithm:
             if dirx not in adj_list[base]:
                 base_num = int(base.split("_")[-1])
                 dirx_num = int(dirx.split("_")[-1])
-                return False, "起始点 %d 与方向点 %d 在同一连通分支但并不相邻" % (base_num, dirx_num), None, None, [base, dirx]
+                return False, _("起始点 {base_num} 与方向点 {dirx_num} 在同一连通分支但并不相邻").format(base_num=base_num, dirx_num=dirx_num), None, None, [base, dirx]
         
         return True, "", block_id_to_base_dot, block_id_to_dir_dot, [] # 没有检查到错误
 
@@ -212,7 +213,8 @@ class MyAlgorithm:
 
                 crossing_list.append((pos, nid11, t1, nid21, t2, line_id_1, line_id_2)) # 使用七元组描述所有找到的交叉点
         
-        leave_msg("总计找到了 %d 个交叉点" % len(crossing_list))
+        from gettext import gettext as _
+        leave_msg(_("总计找到了 %d 个交叉点") % len(crossing_list))
 
         # 考虑交叉点所在的弧线段，并给所有弧线段进行编号
         parts = [[] for _ in range(len(block_list))] # 为每一个连通分支，记录它上面有哪些交点
@@ -233,7 +235,8 @@ class MyAlgorithm:
         cid_half_id_to_bid_arc_id = {}
         for bid in range(len(block_list)): # 对所有分界点进行排序
             parts[bid] = sorted(parts[bid])
-            leave_msg("连通分支 %d 被分割成了 %d 段" % (bid, len(parts[bid])))
+            from gettext import gettext as _
+            leave_msg(_("连通分支 {bid} 被分割成了 {pts} 段").format(bid=bid, pts=len(parts[bid])))
 
             for arc_id, half_crossing in enumerate(parts[bid]):
                 _, _, cid, half_id, _ = half_crossing
