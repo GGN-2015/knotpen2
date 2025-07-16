@@ -328,7 +328,7 @@ class MyAlgorithm:
     # block_list 记录了每个连通分支的控制点
     # parts 记录了每个连通分支的交叉点的位置
     # need_number 指出了是否需要在生成的 svg 图片中引入弧线的数字编号
-    def calculate_svg(self, block_list, parts, need_number=True):
+    def calculate_svg(self, block_list, parts, need_number, need_arrow):
         # 根据 block_list 计算节点的前驱后继关系
         # 这里的节点以 dot_id 的形式记录（即节点的默认编号）
         get_next_dot = {}
@@ -441,19 +441,32 @@ class MyAlgorithm:
                     arc_list += get_arc_list_between_two_crossing(i, begin_arc, end_arc)
 
         # 生成一个 SVG 二次曲线
-        def create_svg_path(pos_from, pos_mid, pos_to, status) -> str:
+        def create_svg_path(pos_from, pos_mid, pos_to, status, need_arrow) -> str:
             shrink_1 = status[0]
             shrink_2 = status[1]
             xfrom, yftom = self.memory_object.get_interpos(pos_from[0], pos_from[1], pos_from[2], shrink_1)
             xmid,  ymid  = self.memory_object.get_interpos(pos_mid [0], pos_mid [1], pos_mid [2])
             xto,   yto   = self.memory_object.get_interpos(pos_to  [0], pos_to  [1], pos_to  [2], shrink_2)
-            return "    " + '<path d="M %f %f Q %f %f, %f %f" fill="none" stroke="%s" stroke-width="%d" />' % (
+            arc_text = "    " + '<path d="M %f %f Q %f %f, %f %f" fill="none" stroke="%s" stroke-width="%d" />' % (
                 xfrom, yftom,
                 xmid, ymid,
                 xto, yto,
                 constant_config.SVG_STROKE_COLOR,
                 constant_config.SVG_STROKE_WIDTH,
             )
+            if need_arrow: # 在中点附近加小箭头
+                midpoint, tangent = math_utils.bezier_midpoint_and_tangent((xfrom, yftom), (xmid, ymid), (xto, yto))
+                xm, ym = midpoint
+                xt, yt = tangent
+                xn, yn = -yt, xt # 法线方向是切线方向的垂直方向
+                arrow_text1 = '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke="black" stroke-width="1" />' % (
+                    xm, ym, xm + (xn - xt) * constant_config.ARROW_SIZE, ym + (yn - yt) * constant_config.ARROW_SIZE
+                )
+                arrow_text2 = '<line x1="%f" y1="%f" x2="%f" y2="%f" stroke="black" stroke-width="1" />' % (
+                    xm, ym, xm + (-xn - xt) * constant_config.ARROW_SIZE, ym + (-yn - yt) * constant_config.ARROW_SIZE
+                )
+                arc_text += "\n    " + arrow_text1 + "\n    " + arrow_text2
+            return arc_text
 
         # 基于 arc_list 生成 svg 图像文本格式
         def generate_svg_text_based_on_arc_list(arc_list) -> list:
@@ -465,7 +478,7 @@ class MyAlgorithm:
             svg_path_list = []
             for term in arc_list:
                 pos_from, pos_mid, pos_to, status = term
-                svg_path_list.append(create_svg_path(pos_from, pos_mid, pos_to, status))
+                svg_path_list.append(create_svg_path(pos_from, pos_mid, pos_to, status, need_arrow)) # need_arrow 在最外层引入
             return svg_path_list
         
         # 不负责存储，仅仅负责计算

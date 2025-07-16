@@ -1,4 +1,5 @@
 import math
+import numpy as np
 import datetime
 
 def ccw(A, B, C):
@@ -126,3 +127,34 @@ def get_formatted_datetime() -> str:
     now = datetime.datetime.now()
     formatted = now.strftime("%Y-%m-%d_%H-%M-%S")
     return formatted
+
+def bezier_midpoint_and_tangent(start, control, end):
+    """
+    计算二次贝塞尔曲线的中点和中点处的切向量
+    
+    Args:
+        - start(tuple): 起点坐标 (x, y)
+        - control(tuple): 控制点坐标 (x, y)
+        - end(tuple): 终点坐标 (x, y)
+    
+    Returns:
+        - (midpoint, tangent)
+        - midpoint(tuple): 曲线中点坐标 (x, y)
+        - tangent(tuple): 中点处的切向量 (dx, dy)，已归一化
+    """
+    # 转换为numpy数组以便计算
+    start = np.array(start)
+    control = np.array(control)
+    end = np.array(end)
+    
+    # 计算中点 (t=0.5)
+    midpoint = 0.25 * start + 0.5 * control + 0.25 * end
+    
+    # 计算中点处的切向量 (导数)
+    tangent = 2 * (0.5 * (control - start) + 0.5 * (end - control))
+    
+    # 归一化切向量
+    if np.linalg.norm(tangent) > 0:
+        tangent = tangent / np.linalg.norm(tangent)
+    
+    return tuple(midpoint), tuple(tangent)
