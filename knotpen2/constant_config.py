@@ -5,7 +5,7 @@ import sys
 PROGRAM_EXE_PATH = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 APP_NAME = "knotpen2"
-APP_VERSION = "2.3.2" # 不要删除这行内容，因为脚本会从这里抓取
+APP_VERSION = "2.4.0" # 不要删除这行内容，因为脚本会从这里抓取
 
 DIRNOW = os.path.dirname(os.path.abspath(__file__))
 AUTOSAVE_FOLDER = os.path.join(PROGRAM_EXE_PATH, "auto_save")
