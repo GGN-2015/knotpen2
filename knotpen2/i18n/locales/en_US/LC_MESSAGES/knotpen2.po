@@ -1,0 +1,197 @@
+# English translations for knotpen package.
+# Copyright (C) 2025 THE knotpen'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the knotpen package.
+# neko <premierbob@qq.com>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: knotpen 2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-16 13:52+0800\n"
+"PO-Revision-Date: 2025-07-16 14:00+0800\n"
+"Last-Translator: neko <premierbob@qq.com>\n"
+"Language-Team: English\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../GameObject.py:27 ../GameObject.py:51
+msgid "左键"
+msgstr "Left mouse button"
+
+#: ../GameObject.py:27 ../GameObject.py:51
+msgid "中键"
+msgstr "Middle mouse button"
+
+#: ../GameObject.py:27 ../GameObject.py:51
+msgid "右键"
+msgstr "Right mouse button"
+
+#: ../GameObject.py:27
+msgid "滚轮上滚"
+msgstr "Scroll wheel up"
+
+#: ../GameObject.py:27
+msgid "滚轮下滚"
+msgstr "Scroll wheel down"
+
+#: ../GameObject.py:28
+msgid "未知按钮"
+msgstr "Unknown button"
+
+#: ../GameObject.py:29
+msgid "鼠标按下: "
+msgstr "Mouse pressed: "
+
+#: ../GameObject.py:42
+msgid "无修饰键"
+msgstr "Unmodified"
+
+#: ../GameObject.py:43
+msgid "按键按下: "
+msgstr "Key pressed: "
+
+#: ../GameObject.py:43
+msgid "修饰键: "
+msgstr "Modifier key: "
+
+#: ../GameObject.py:47
+msgid "按键释放: "
+msgstr "Key released: "
+
+#: ../GameObject.py:53
+msgid "鼠标抬起："
+msgstr "Mouse released: "
+
+#: ../GameObject.py:57
+#, python-format
+msgid "尝试关闭窗口（第 %d 次）"
+msgstr "Attempting to close the window (attempt %d)"
+
+#: ../GameObject.py:64
+#, python-format
+msgid "尝试关闭窗口（第 %d 次），游戏退出"
+msgstr "Attempting to close the window (attempt %d), game exiting"
+
+#: ../GameObject.py:73
+msgid "鼠标移动："
+msgstr "Mouse moved: "
+
+#: ../Knotpen2GameObject.py:29
+msgid "欢迎使用"
+msgstr "Welcome, this is"
+
+#: ../Knotpen2GameObject.py:56
+msgid "自动保存中，请不要关闭窗口 ..."
+msgstr "Auto-saving in progress, please do not force to quit ..."
+
+#: ../Knotpen2GameObject.py:58 ../Knotpen2GameObject.py:307
+msgid "自动保存成功"
+msgstr "Auto-save successful"
+
+#: ../Knotpen2GameObject.py:108
+msgid "开始计算 PD_CODE"
+msgstr "Start calculating PD_CODE"
+
+#: ../Knotpen2GameObject.py:111
+#, python-format
+msgid "%d 个节点度数不为 2，请注意灰色标出的节点"
+msgstr "%d nodes have a degree not equal to 2. Please note the nodes marked in gray"
+
+#: ../Knotpen2GameObject.py:127
+msgid "PD_CODE 计算成功"
+msgstr "PD_CODE calculation successful"
+
+#: ../Knotpen2GameObject.py:128 ../Knotpen2GameObject.py:135
+#: ../Knotpen2GameObject.py:142 ../Knotpen2GameObject.py:149
+#, python-format
+msgid "保存在 %s"
+msgstr "Saved as %s"
+
+#: ../Knotpen2GameObject.py:134
+msgid "扭结图像（不带弧线编号信息）生成成功"
+msgstr "Knot diagram (without PD_CODE) generated successfully"
+
+#: ../Knotpen2GameObject.py:141
+msgid "扭结图像（带弧线编号信息）生成成功"
+msgstr "Knot diagram (with PD_CODE) generated successfully"
+
+#: ../Knotpen2GameObject.py:148
+msgid "扭结图像（带弧线方向信息）生成成功"
+msgstr "Knot image (directed arc) generated successfully"
+
+#: ../Knotpen2GameObject.py:304
+msgid "正在自动保存请不要关闭软件 ..."
+msgstr "Auto-saving in progress, please do not force to quit ..."
+
+#: ../MemoryObject.py:15
+msgid "正在加载自动保存的存档 ..."
+msgstr "Loading auto-saved archive ..."
+
+#: ../MemoryObject.py:19
+msgid "加载失败，自动存档文件故障"
+msgstr "Loading failed, auto-saved file is corrupted"
+
+#: ../MemoryObject.py:90
+msgid "由于没有修改，因此最后一次自动保存被删除"
+msgstr "No modifications, last auto-save ignored"
+
+#: ../MemoryObject.py:291
+#, python-format
+msgid "找到一条原有的边：%s"
+msgstr "Existing edge found: %s"
+
+#: ../MemoryObject.py:302
+#, python-format
+msgid "创建了一条新的边: %s"
+msgstr "New edge created: %s"
+
+#: ../MyAlgorithm.py:78
+msgid "你至少要放置 3 个节点才能计算 PD_CODE"
+msgstr "To calculate PD_CODE, at least 3 nodes are needed"
+
+#: ../MyAlgorithm.py:85
+#, python-format
+msgid "节点 %d 所在的连通分支没有定义起始点"
+msgstr "Component(begins with node %d) has no base node"
+
+#: ../MyAlgorithm.py:88
+#, python-format
+msgid "节点 %d 所在的连通分支没有定义了太多起始点"
+msgstr "Component(begins with node %d) has more than one base node"
+
+#: ../MyAlgorithm.py:91
+#, python-format
+msgid "节点 %d 所在的连通分支没有定义方向点"
+msgstr "Component(begins with node %d) has no target node"
+
+#: ../MyAlgorithm.py:94
+#, python-format
+msgid "节点 %d 所在的连通分支没有定义了太多方向点"
+msgstr "Component(begins with node %d) has more than one target node"
+
+#: ../MyAlgorithm.py:102
+#, python-brace-format
+msgid "起始点 {base_num} 与方向点 {dirx_num} 在同一连通分支但并不相邻"
+msgstr "Base node {base_num} and target node {dirx_num} should be adjacent"
+
+#: ../MyAlgorithm.py:217
+#, python-format
+msgid "总计找到了 %d 个交叉点"
+msgstr "totally %d crossing found"
+
+#: ../MyAlgorithm.py:239
+#, python-brace-format
+msgid "连通分支 {bid} 被分割成了 {pts} 段"
+msgstr "Component {bid} has been seperated into {pts} segments"
+
+#: ../test_main.py:23
+msgid "无法加载图标图像，请检查文件路径和格式！"
+msgstr "Icon image file corrupted"
+
+#: ../test_main.py:47
+#, python-format
+msgid "错误日志信息已经保存到：%s"
+msgstr "Error log saved as: %s"

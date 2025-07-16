@@ -1,0 +1,197 @@
+# Chinese translations for knotpen package
+# knotpen 软件包简体中文翻译.
+# Copyright (C) 2025 THE knotpen'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the knotpen package.
+# neko <premierbob@qq.com>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: knotpen 2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-07-16 13:52+0800\n"
+"PO-Revision-Date: 2025-07-16 14:00+0800\n"
+"Last-Translator: neko <premierbob@qq.com>\n"
+"Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../GameObject.py:27 ../GameObject.py:51
+msgid "左键"
+msgstr "左键"
+
+#: ../GameObject.py:27 ../GameObject.py:51
+msgid "中键"
+msgstr "中键"
+
+#: ../GameObject.py:27 ../GameObject.py:51
+msgid "右键"
+msgstr "右键"
+
+#: ../GameObject.py:27
+msgid "滚轮上滚"
+msgstr "滚轮上滚"
+
+#: ../GameObject.py:27
+msgid "滚轮下滚"
+msgstr "滚轮下滚"
+
+#: ../GameObject.py:28
+msgid "未知按钮"
+msgstr "未知按钮"
+
+#: ../GameObject.py:29
+msgid "鼠标按下: "
+msgstr "鼠标按下: "
+
+#: ../GameObject.py:42
+msgid "无修饰键"
+msgstr "无修饰键"
+
+#: ../GameObject.py:43
+msgid "按键按下: "
+msgstr "按键按下: "
+
+#: ../GameObject.py:43
+msgid "修饰键: "
+msgstr "修饰键: "
+
+#: ../GameObject.py:47
+msgid "按键释放: "
+msgstr "按键释放: "
+
+#: ../GameObject.py:53
+msgid "鼠标抬起："
+msgstr "鼠标抬起："
+
+#: ../GameObject.py:57
+#, python-format
+msgid "尝试关闭窗口（第 %d 次）"
+msgstr "尝试关闭窗口（第 %d 次）"
+
+#: ../GameObject.py:64
+#, python-format
+msgid "尝试关闭窗口（第 %d 次），游戏退出"
+msgstr "尝试关闭窗口（第 %d 次），游戏退出"
+
+#: ../GameObject.py:73
+msgid "鼠标移动："
+msgstr "鼠标移动："
+
+#: ../Knotpen2GameObject.py:29
+msgid "欢迎使用"
+msgstr "欢迎使用"
+
+#: ../Knotpen2GameObject.py:56
+msgid "自动保存中，请不要关闭窗口 ..."
+msgstr "自动保存中，请不要关闭窗口 ..."
+
+#: ../Knotpen2GameObject.py:58 ../Knotpen2GameObject.py:307
+msgid "自动保存成功"
+msgstr "自动保存成功"
+
+#: ../Knotpen2GameObject.py:108
+msgid "开始计算 PD_CODE"
+msgstr "开始计算 PD_CODE"
+
+#: ../Knotpen2GameObject.py:111
+#, python-format
+msgid "%d 个节点度数不为 2，请注意灰色标出的节点"
+msgstr "%d 个节点度数不为 2，请注意灰色标出的节点"
+
+#: ../Knotpen2GameObject.py:127
+msgid "PD_CODE 计算成功"
+msgstr "PD_CODE 计算成功"
+
+#: ../Knotpen2GameObject.py:128 ../Knotpen2GameObject.py:135
+#: ../Knotpen2GameObject.py:142 ../Knotpen2GameObject.py:149
+#, python-format
+msgid "保存在 %s"
+msgstr "保存在 %s"
+
+#: ../Knotpen2GameObject.py:134
+msgid "扭结图像（不带弧线编号信息）生成成功"
+msgstr "扭结图像（不带弧线编号信息）生成成功"
+
+#: ../Knotpen2GameObject.py:141
+msgid "扭结图像（带弧线编号信息）生成成功"
+msgstr "扭结图像（带弧线编号信息）生成成功"
+
+#: ../Knotpen2GameObject.py:148
+msgid "扭结图像（带弧线方向信息）生成成功"
+msgstr "扭结图像（带弧线方向信息）生成成功"
+
+#: ../Knotpen2GameObject.py:304
+msgid "正在自动保存请不要关闭软件 ..."
+msgstr "正在自动保存请不要关闭软件 ..."
+
+#: ../MemoryObject.py:15
+msgid "正在加载自动保存的存档 ..."
+msgstr "正在加载自动保存的存档 ..."
+
+#: ../MemoryObject.py:19
+msgid "加载失败，自动存档文件故障"
+msgstr "加载失败，自动存档文件故障"
+
+#: ../MemoryObject.py:90
+msgid "由于没有修改，因此最后一次自动保存被删除"
+msgstr "由于没有修改，因此最后一次自动保存被删除"
+
+#: ../MemoryObject.py:291
+#, python-format
+msgid "找到一条原有的边：%s"
+msgstr "找到一条原有的边：%s"
+
+#: ../MemoryObject.py:302
+#, python-format
+msgid "创建了一条新的边: %s"
+msgstr "创建了一条新的边: %s"
+
+#: ../MyAlgorithm.py:78
+msgid "你至少要放置 3 个节点才能计算 PD_CODE"
+msgstr "你至少要放置 3 个节点才能计算 PD_CODE"
+
+#: ../MyAlgorithm.py:85
+#, python-format
+msgid "节点 %d 所在的连通分支没有定义起始点"
+msgstr "节点 %d 所在的连通分支没有定义起始点"
+
+#: ../MyAlgorithm.py:88
+#, python-format
+msgid "节点 %d 所在的连通分支没有定义了太多起始点"
+msgstr "节点 %d 所在的连通分支没有定义了太多起始点"
+
+#: ../MyAlgorithm.py:91
+#, python-format
+msgid "节点 %d 所在的连通分支没有定义方向点"
+msgstr "节点 %d 所在的连通分支没有定义方向点"
+
+#: ../MyAlgorithm.py:94
+#, python-format
+msgid "节点 %d 所在的连通分支没有定义了太多方向点"
+msgstr "节点 %d 所在的连通分支没有定义了太多方向点"
+
+#: ../MyAlgorithm.py:102
+#, python-brace-format
+msgid "起始点 {base_num} 与方向点 {dirx_num} 在同一连通分支但并不相邻"
+msgstr "起始点 {base_num} 与方向点 {dirx_num} 在同一连通分支但并不相邻"
+
+#: ../MyAlgorithm.py:217
+#, python-format
+msgid "总计找到了 %d 个交叉点"
+msgstr "总计找到了 %d 个交叉点"
+
+#: ../MyAlgorithm.py:239
+#, python-brace-format
+msgid "连通分支 {bid} 被分割成了 {pts} 段"
+msgstr "连通分支 {bid} 被分割成了 {pts} 段"
+
+#: ../test_main.py:23
+msgid "无法加载图标图像，请检查文件路径和格式！"
+msgstr "无法加载图标图像，请检查文件路径和格式！"
+
+#: ../test_main.py:47
+#, python-format
+msgid "错误日志信息已经保存到：%s"
+msgstr "错误日志信息已经保存到：%s"
