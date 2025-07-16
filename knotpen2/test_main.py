@@ -7,7 +7,11 @@ import sys; sys.path=[DIRNOW] + sys.path;
 
 # 强制输出 utf-8
 import io
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stdout = io.TextIOWrapper(
+    sys.stdout.buffer, 
+    encoding='utf-8',
+    line_buffering=True  # 启用行缓冲，恢复每行自动flush的行为
+)
 
 # 相对导入
 from i18n import _
