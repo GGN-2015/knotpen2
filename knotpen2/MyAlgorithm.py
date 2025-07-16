@@ -483,7 +483,7 @@ class MyAlgorithm:
         
         # 不负责存储，仅仅负责计算
         xmin, ymin, xmax, ymax = self.memory_object.get_view_box()
-        header = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="%d %d %d %d">' % (xmin, ymin, xmax, ymax)
+        header = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="%d %d %d %d" width="%d" height="%d">' % (xmin, ymin, xmax, ymax, xmax-xmin, ymax-ymin)
         footer = '</svg>'
         svg_text_list = [header] + generate_svg_text_based_on_arc_list(arc_list)
 
