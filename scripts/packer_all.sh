@@ -14,6 +14,9 @@ if [ -z "$linux_installer_path" ]; then
     exit 1
 fi
 
+# 构建 i18n mo 文件
+bash ../knotpen2/i18n/compile_po.sh
+
 # 构建 linux 下的目标文件
 rm -rf dist # 删除上次构建的结果
 mkdir -p dist

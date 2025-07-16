@@ -5,6 +5,10 @@ import traceback
 DIRNOW = os.path.dirname(os.path.abspath(__file__))
 import sys; sys.path=[DIRNOW] + sys.path;
 
+# 强制输出 utf-8
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 # 相对导入
 from i18n import _
 import constant_config
