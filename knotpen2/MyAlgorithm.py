@@ -322,7 +322,6 @@ class MyAlgorithm:
             pd_code_to_show.append(anti_clock_wise)
         
         # 返回最终 pd_code
-        print(pd_code_final)
         return sorted(pd_code_to_show), pd_code_final, parts
     
     # block_list 记录了每个连通分支的控制点
@@ -483,8 +482,12 @@ class MyAlgorithm:
         
         # 不负责存储，仅仅负责计算
         xmin, ymin, xmax, ymax = self.memory_object.get_view_box()
-        header = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="%d %d %d %d" width="%d" height="%d">' % (xmin, ymin, xmax, ymax, xmax-xmin, ymax-ymin)
-        footer = '</svg>'
+        header  = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+        header += '<svg xmlns="http://www.w3.org/2000/svg" viewBox="%g %g %g %g" width="%d" height="%d">' % (
+            xmin, ymin, xmax-xmin, ymax-ymin, 
+            round((xmax-xmin) * constant_config.SVG_EXPAND_RATIO), 
+            round((ymax-ymin) * constant_config.SVG_EXPAND_RATIO))
+        footer  = '</svg>'
         svg_text_list = [header] + generate_svg_text_based_on_arc_list(arc_list)
 
         if need_number: # 添加数字

@@ -37,6 +37,7 @@ SVG_STROKE_WIDTH = 3
 SVG_FONT_SIZE = SMALL_TEXT_SIZE
 SVG_TEXT_DELTA_Y = 15 # 对 SVG 文件中的文字位置进行微调
 ARROW_SIZE = 5 # SVG 图片中箭头的大小
+SVG_EXPAND_RATIO = 3 # 放大倍数
 
 DOUBLE_CLICK_TIME = 0.25 # 双击时两次点击的最大间隔
 
