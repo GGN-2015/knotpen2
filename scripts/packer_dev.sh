@@ -19,4 +19,6 @@ echo "正在生成整环境 zip 压缩包 ..."
 cd ../..
 zip -r knotpen2.zip knotpen2/
 mkdir -p knotpen2/scripts/dist
-mv knotpen2.zip knotpen2/scripts/dist/knotpen2_dev.zip
+
+version=$(python knotpen2/scripts/get_version.py)
+mv knotpen2.zip knotpen2/scripts/dist/knotpen2_${version}_dev.zip

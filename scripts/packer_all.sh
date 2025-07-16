@@ -17,7 +17,11 @@ fi
 # 构建 linux 下的目标文件
 rm -rf dist # 删除上次构建的结果
 mkdir -p dist
-bash packer_linux.sh
-cp ../knotpen2/dist/knotpen2_linux_x86-64.zip dist
+
+# 默认不再对 linux 下进行打包
+# bash packer_linux.sh
+# cp ../knotpen2/dist/knotpen2_linux_x86-64.zip dist
+
 WINEDEBUG=-all wine packer_windows.bat # 使用 WINEDEBUG=-all  禁用 wine 日志
-cp ../knotpen2/dist/knotpen2_win32_x86-64.zip dist
+version=$(python get_version.py)
+cp ../knotpen2/dist/knotpen2_win32_x86-64.zip dist/knotpen2_${version}_win32_x86-64.zip
