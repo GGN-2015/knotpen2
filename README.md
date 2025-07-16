@@ -1,6 +1,7 @@
 # knotpen2
 
-![](img/sample.svg)
+![](img/sample_1.svg)
+![](img/sample_2.svg)
 
 扭结与链环的绘制、PD_CODE 计算工具
 
