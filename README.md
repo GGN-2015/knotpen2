@@ -67,6 +67,7 @@
   - 报错时请提供相关错误日志与错误复现流程，日志文件位于可执行文件同目录的 error_log 文件夹
 
 ## 如何引用
+
 ```text
 @misc{knotpen2,
   author = {Guo, Guannan},
