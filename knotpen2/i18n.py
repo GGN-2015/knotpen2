@@ -45,6 +45,10 @@ def set_language(lang_code: str):
     return _raw
 
 # 设置默认语言
+if not os.path.isfile(DEFAULT_LANG_FILE):
+    with open(DEFAULT_LANG_FILE, "w", encoding="utf-8") as fp:
+        fp.write(constant_config.LANG_CODE_SET[0])
+        
 assert os.path.isfile(DEFAULT_LANG_FILE)
 set_language(get_default_lang())
 
