@@ -2,10 +2,16 @@ import numpy as np
 
 
 # 相对导入
-from i18n import _
-import MemoryObject
-import math_utils
-import constant_config
+try:
+    from .i18n import _
+    from . import MemoryObject
+    from . import math_utils
+    from . import constant_config
+except ImportError:
+    from i18n import _
+    import MemoryObject
+    import math_utils
+    import constant_config
 
 class MyAlgorithm:
     def __init__(self, memory_object:MemoryObject.MemoryObject) -> None:

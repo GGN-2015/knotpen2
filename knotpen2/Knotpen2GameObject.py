@@ -5,15 +5,26 @@ import functools
 import os
 
 # 相对导入
-import i18n
-from i18n import _
-import GameObject
-import MemoryObject
-import MyAlgorithm
-import constant_config
-import font_utils
-import pygame_utils
-import math_utils
+try:
+    from . import i18n
+    from .i18n import _
+    from . import GameObject
+    from . import MemoryObject
+    from . import MyAlgorithm
+    from . import constant_config
+    from . import font_utils
+    from . import pygame_utils
+    from . import math_utils
+except ImportError:
+    import i18n
+    from i18n import _
+    import GameObject
+    import MemoryObject
+    import MyAlgorithm
+    import constant_config
+    import font_utils
+    import pygame_utils
+    import math_utils
 
 STATUS_LIST = [
     "free",        # 自由状态

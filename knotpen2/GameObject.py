@@ -1,5 +1,9 @@
 import pygame
-from i18n import _
+
+try:
+    from .i18n import _
+except ImportError:
+    from i18n import _
 
 # handle_mouse_down(button, x, y): 鼠标按下回调函数
 #   button: 1=左键, 2=中键, 3=右键, 4=滚轮上滚, 5=滚轮下滚

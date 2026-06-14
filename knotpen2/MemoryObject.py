@@ -1,10 +1,15 @@
 import numpy
 import os
-from i18n import _
 
 # 相对导入
-import math_utils
-import constant_config
+try:
+    from .i18n import _
+    from . import math_utils
+    from . import constant_config
+except ImportError:
+    from i18n import _
+    import math_utils
+    import constant_config
 
 class MemoryObject:
     def __init__(self, auto_load=True) -> None:

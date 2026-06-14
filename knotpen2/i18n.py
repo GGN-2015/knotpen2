@@ -1,6 +1,10 @@
 import gettext
 import os
-import constant_config
+
+try:
+    from . import constant_config
+except ImportError:
+    import constant_config
 
 # 设置 locale 目录（存放翻译文件的路径）
 localedir = constant_config.LOCALE_DIR
@@ -13,11 +17,13 @@ domain = constant_config.APP_NAME
 current_locale = constant_config.LANG_CODE_SET[0]
 _raw = lambda x: x  # 默认使用原始字符串(不翻译)
 
-# 默认语言目录
-DEFAULT_LANG_FILE = os.path.abspath(os.path.join(constant_config.LOCALE_DIR, "..", "default_lang.txt"))
+# 默认语言配置写入用户数据目录，避免 pip 安装后尝试修改 site-packages。
+DEFAULT_LANG_FILE = os.path.join(constant_config.USER_DATA_DIR, "default_lang.txt")
 
 # 获取当前设置的默认语言
 def get_default_lang() -> str:
+    if not os.path.isfile(DEFAULT_LANG_FILE):
+        return constant_config.LANG_CODE_SET[0]
     return open(DEFAULT_LANG_FILE, "r", encoding="utf-8").read().strip()
 
 def set_language(lang_code: str):
@@ -40,12 +46,14 @@ def set_language(lang_code: str):
 
     # 缓存默认语言文件
     if get_default_lang() != lang_code:
+        os.makedirs(os.path.dirname(DEFAULT_LANG_FILE), exist_ok=True)
         with open(DEFAULT_LANG_FILE, "w", encoding="utf-8") as fp:
             fp.write(lang_code)
     return _raw
 
 # 设置默认语言
 if not os.path.isfile(DEFAULT_LANG_FILE):
+    os.makedirs(os.path.dirname(DEFAULT_LANG_FILE), exist_ok=True)
     with open(DEFAULT_LANG_FILE, "w", encoding="utf-8") as fp:
         fp.write(constant_config.LANG_CODE_SET[0])
         

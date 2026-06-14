@@ -15,6 +15,8 @@ The supported packaging target is:
 
 The repository does not currently provide a Linux or macOS release build script.
 
+The Python package itself is cross-platform. Any platform that can install `pygame` and `numpy` can run Knotpen2 through pip.
+
 ## Requirements
 
 Use 64-bit Python on Windows.
@@ -40,9 +42,61 @@ Optional flags:
 - `--skip-i18n`: skip recompiling `.po` files into `.mo` files.
 - `--no-clean`: keep previous build folders before packaging.
 
+## Python Package
+
+Knotpen2 is also a standard Python project with `pyproject.toml`.
+
+Install from a local checkout:
+
+```bash
+python -m pip install .
+```
+
+Run the installed command:
+
+```bash
+knotpen2
+```
+
+Or run it as a module:
+
+```bash
+python -m knotpen2
+```
+
+The package declares these runtime dependencies:
+
+- `pygame`
+- `numpy`
+
+Package data includes the application icon and compiled translation files under `knotpen2/i18n/locales/`.
+
+## PyPI Build
+
+To build distributions for PyPI:
+
+```bash
+python -m pip install build twine
+pyproject-build
+```
+
+Use the `pyproject-build` command because this repository also has a Windows executable script named `build.py`.
+
+This creates files under `dist/`, usually a source distribution and a wheel. Check them before uploading:
+
+```bash
+python -m twine check dist/*
+```
+
+Upload after verification:
+
+```bash
+python -m twine upload dist/*
+```
+
 ## Changing The Version
 
-The release version is defined in `knotpen2/constant_config.py`:
+The application release version is defined in `knotpen2/constant_config.py`:
 
 ```python
 APP_VERSION = "2.5.0"
@@ -52,6 +106,12 @@ Change that value before running `python build.py`. The build script reads `APP_
 
 ```text
 dist/knotpen2_<version>_win32_x86-64.zip
+```
+
+For PyPI releases, also update the matching `version` value in `pyproject.toml` before building distributions:
+
+```toml
+version = "2.5.0"
 ```
 
 ## What The Build Script Does
@@ -80,7 +140,13 @@ dist/knotpen2_<version>_win32_x86-64.zip
 
 Knotpen2 uses `SourceHanSansSC-VF.ttf`. If it is missing, the build script and runtime code download it from Adobe's Source Han Sans repository on GitHub.
 
-The font is placed at:
+During normal pip/source runs, the runtime download is stored in the writable user data directory. Print that directory with:
+
+```bash
+knotpen2 --data-dir
+```
+
+During Windows executable packaging, the build script copies the font into:
 
 ```text
 knotpen2/font/SourceHanSansSC-VF.ttf
@@ -137,7 +203,7 @@ python -m pip install pyinstaller
 
 ### Font download fails
 
-Check network access to GitHub. You may also manually download `SourceHanSansSC-VF.ttf` and place it at:
+Check network access to GitHub. You may also manually download `SourceHanSansSC-VF.ttf` and place it in the user data directory's `font/` folder for normal runs, or at this path before packaging:
 
 ```text
 knotpen2/font/SourceHanSansSC-VF.ttf

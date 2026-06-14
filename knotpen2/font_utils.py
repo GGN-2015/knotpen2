@@ -4,7 +4,10 @@ import sys
 import urllib.request
 from pathlib import Path
 
-import constant_config
+try:
+    from . import constant_config
+except ImportError:
+    import constant_config
 
 
 FONT_FILENAME = "SourceHanSansSC-VF.ttf"
@@ -18,9 +21,7 @@ CHUNK_SIZE = 1024 * 1024
 
 
 def _default_download_path() -> Path:
-    if getattr(sys, "_MEIPASS", None):
-        return Path(constant_config.PROGRAM_EXE_PATH) / "font" / FONT_FILENAME
-    return Path(constant_config.FONT_TTF)
+    return Path(constant_config.USER_DATA_DIR) / "font" / FONT_FILENAME
 
 
 def _unique_paths(paths):

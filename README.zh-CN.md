@@ -25,6 +25,34 @@ python knotpen2/test_main.py
 
 如果缺少 `SourceHanSansSC-VF.ttf` 字体文件，程序会在首次启动时自动下载。
 
+可以用下面的命令查看默认项目、日志和运行时下载资源使用的可写数据目录：
+
+```bash
+python knotpen2/test_main.py --data-dir
+```
+
+### 使用 pip 安装
+
+从发布包安装：
+
+```bash
+python -m pip install knotpen2
+knotpen2
+```
+
+从本地仓库安装：
+
+```bash
+python -m pip install .
+knotpen2
+```
+
+也可以用下面的方式启动已安装的包：
+
+```bash
+python -m knotpen2
+```
+
 ### 运行打包版本
 
 解压发布包后，双击 `main.exe`。
@@ -75,7 +103,7 @@ dist/knotpen2_<version>_win32_x86-64.zip
 
 如果应用闪退，请在本 GitHub 项目提交 issue，并附上错误日志与复现步骤。
 
-错误日志位于被执行程序同目录下的 `error_log` 文件夹。
+通过 pip 或源码运行时，错误日志位于 `knotpen2 --data-dir` 输出的用户数据目录下。Windows 打包版的错误日志位于 `main.exe` 旁边的 `error_log` 文件夹。
 
 ## 如何引用
 

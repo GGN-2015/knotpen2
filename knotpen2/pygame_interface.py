@@ -1,6 +1,32 @@
 import pygame
 
-import constant_config
+try:
+    from . import constant_config
+except ImportError:
+    import constant_config
+
+
+def get_initial_window_size(width=None, height=None):
+    desktop_sizes = pygame.display.get_desktop_sizes()
+    if desktop_sizes:
+        primary_width, primary_height = desktop_sizes[0]
+    else:
+        primary_width = constant_config.MIN_WINDOW_WIDTH + constant_config.WINDOW_MARGIN
+        primary_height = constant_config.MIN_WINDOW_HEIGHT + constant_config.WINDOW_MARGIN
+
+    max_width = max(320, primary_width - constant_config.WINDOW_MARGIN)
+    max_height = max(240, primary_height - constant_config.WINDOW_MARGIN)
+
+    if width is None:
+        width = max_width
+
+    if height is None:
+        height = max_height
+
+    width = min(max(width, min(constant_config.MIN_WINDOW_WIDTH, max_width)), max_width)
+    height = min(max(height, min(constant_config.MIN_WINDOW_HEIGHT, max_height)), max_height)
+    return width, height
+
 
 # handle_mouse_down(button, x, y): 鼠标按下回调函数
 #   button: 1=左键, 2=中键, 3=右键, 4=滚轮上滚, 5=滚轮下滚
@@ -18,21 +44,7 @@ def pygame_interface(handle_mouse_down=None, handle_mouse_up=None,
 
     pygame.key.stop_text_input()  # 禁用输入法
     pygame.event.set_blocked(pygame.TEXTINPUT) # 禁用文本输入模式
-    
-    # 获取屏幕分辨率
-    desktop_sizes = pygame.display.get_desktop_sizes()
-    primary_width, primary_height = desktop_sizes[0] # 获取主屏幕分辨率
-    max_width = max(320, primary_width - constant_config.WINDOW_MARGIN)
-    max_height = max(240, primary_height - constant_config.WINDOW_MARGIN)
-
-    if width is None:
-        width = max_width
-
-    if height is None:
-        height = max_height
-
-    width = min(max(width, min(constant_config.MIN_WINDOW_WIDTH, max_width)), max_width)
-    height = min(max(height, min(constant_config.MIN_WINDOW_HEIGHT, max_height)), max_height)
+    width, height = get_initial_window_size(width, height)
 
     # 设置窗口尺寸
     screen = pygame.display.set_mode((width, height))

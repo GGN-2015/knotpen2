@@ -25,6 +25,34 @@ python knotpen2/test_main.py
 
 The program automatically downloads `SourceHanSansSC-VF.ttf` on first launch if the font file is missing.
 
+To inspect the writable data directory used for default projects, logs, and downloaded runtime assets:
+
+```bash
+python knotpen2/test_main.py --data-dir
+```
+
+### Install With pip
+
+From a released package:
+
+```bash
+python -m pip install knotpen2
+knotpen2
+```
+
+From a local checkout:
+
+```bash
+python -m pip install .
+knotpen2
+```
+
+You can also run the installed package with:
+
+```bash
+python -m knotpen2
+```
+
 ### Run A Packaged Build
 
 Extract the release package and double-click `main.exe`.
@@ -75,7 +103,7 @@ For details, see the [Windows Packaging Guide](./docs/packaging-guide.md).
 
 If the app crashes, open an issue in this GitHub project. Include the error log and reproduction steps.
 
-Error logs are stored in the `error_log` folder next to the executed program.
+For pip/source runs, error logs are stored under the user data directory printed by `knotpen2 --data-dir`. For the packaged Windows executable, they are stored in the `error_log` folder next to `main.exe`.
 
 ## Citation
 

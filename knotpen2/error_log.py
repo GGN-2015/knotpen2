@@ -1,8 +1,12 @@
 import os
 
 # 相对引入
-import constant_config
-import math_utils
+try:
+    from . import constant_config
+    from . import math_utils
+except ImportError:
+    import constant_config
+    import math_utils
 
 def error_log(error_info:str) -> str:
     filename = math_utils.get_formatted_datetime() + ".log"

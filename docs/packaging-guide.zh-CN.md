@@ -15,6 +15,8 @@
 
 仓库目前不提供 Linux 或 macOS 发布构建脚本。
 
+Python 包本身支持多平台。任何能够安装 `pygame` 和 `numpy` 的平台，都可以通过 pip 运行 Knotpen2。
+
 ## 环境要求
 
 请在 Windows 上使用 64 位 Python。
@@ -40,9 +42,61 @@ python build.py
 - `--skip-i18n`：跳过将 `.po` 编译为 `.mo`。
 - `--no-clean`：打包前不删除上一次构建目录。
 
+## Python 包
+
+Knotpen2 现在也是一个带 `pyproject.toml` 的标准 Python 项目。
+
+从本地仓库安装：
+
+```bash
+python -m pip install .
+```
+
+运行安装后的命令：
+
+```bash
+knotpen2
+```
+
+也可以作为模块运行：
+
+```bash
+python -m knotpen2
+```
+
+包声明了以下运行依赖：
+
+- `pygame`
+- `numpy`
+
+包数据包含应用图标，以及 `knotpen2/i18n/locales/` 下已经编译好的翻译文件。
+
+## PyPI 构建
+
+构建用于 PyPI 的发布文件：
+
+```bash
+python -m pip install build twine
+pyproject-build
+```
+
+这里使用 `pyproject-build` 命令，是因为本仓库同时有一个用于 Windows 可执行文件打包的 `build.py`。
+
+生成结果会位于 `dist/` 下，通常包含源码包和 wheel。上传前先检查：
+
+```bash
+python -m twine check dist/*
+```
+
+确认无误后上传：
+
+```bash
+python -m twine upload dist/*
+```
+
 ## 修改版本号
 
-发布版本号定义在 `knotpen2/constant_config.py`：
+应用发布版本号定义在 `knotpen2/constant_config.py`：
 
 ```python
 APP_VERSION = "2.5.0"
@@ -52,6 +106,12 @@ APP_VERSION = "2.5.0"
 
 ```text
 dist/knotpen2_<version>_win32_x86-64.zip
+```
+
+如果要发布到 PyPI，还需要在构建发布文件前同步修改 `pyproject.toml` 中的 `version`：
+
+```toml
+version = "2.5.0"
 ```
 
 ## 打包脚本流程
@@ -80,7 +140,13 @@ dist/knotpen2_<version>_win32_x86-64.zip
 
 Knotpen2 使用 `SourceHanSansSC-VF.ttf`。如果字体缺失，打包脚本和运行时代码都会从 GitHub 上 Adobe Source Han Sans 仓库下载它。
 
-字体保存到：
+通过 pip 或源码正常运行时，运行时代码会把下载的字体保存到可写用户数据目录。可以用下面的命令查看：
+
+```bash
+knotpen2 --data-dir
+```
+
+打包 Windows 可执行文件时，打包脚本会把字体复制到：
 
 ```text
 knotpen2/font/SourceHanSansSC-VF.ttf
@@ -137,7 +203,7 @@ python -m pip install pyinstaller
 
 ### 字体下载失败
 
-检查是否能访问 GitHub。也可以手动下载 `SourceHanSansSC-VF.ttf`，放到：
+检查是否能访问 GitHub。也可以手动下载 `SourceHanSansSC-VF.ttf`，正常运行时放到用户数据目录的 `font/` 文件夹中；打包前也可以放到：
 
 ```text
 knotpen2/font/SourceHanSansSC-VF.ttf

@@ -19,7 +19,9 @@ Knotpen2 stores user work in project folders. Each project folder contains:
 - `auto_save/auto_save.json`: the latest automatic save written during normal use and on exit.
 - `answer/`: PD_CODE text and SVG outputs for that project.
 
-The default project is created under `projects/default/` next to the executed program. Crash logs remain under the executed program's `error_log/` folder.
+The default project is created under `projects/default/` in the writable user data directory. Crash logs are stored under that directory's `error_log/` folder. You can print the directory with `knotpen2 --data-dir` after installation or `python knotpen2/test_main.py --data-dir` from a source checkout.
+
+For the packaged Windows executable, the writable data directory is the folder containing `main.exe`, so default projects and crash logs remain next to the executable.
 
 Use **New project**, **Open project**, **Save project**, and **Save as project** in the interface to manage project folders. These actions create or read `project.json` inside the selected folder.
 
