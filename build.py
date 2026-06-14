@@ -18,10 +18,15 @@ ROOT_DIST_DIR = ROOT_DIR / "dist"
 PACKAGE_DIR = ROOT_DIST_DIR / "knotpen2"
 APP_NAME = "main.exe"
 ARCHIVE_ARCH = "win32_x86-64"
-PACKAGE_ROOT_DOCUMENT_FILES = [
-    Path("README.md"),
-    Path("README.zh-CN.md"),
-]
+PACKAGE_ROOT_DOCUMENT_SOURCES = {
+    Path("README.md"): Path("RELEASE_README.md"),
+    Path("README.zh-CN.md"): Path("RELEASE_README.zh-CN.md"),
+}
+PACKAGE_ROOT_DOCUMENT_FILES = list(PACKAGE_ROOT_DOCUMENT_SOURCES)
+PACKAGE_README_LINK_REPLACEMENTS = {
+    "./RELEASE_README.zh-CN.md": "./README.zh-CN.md",
+    "./RELEASE_README.md": "./README.md",
+}
 REQUIRED_MANUAL_DOC_FILES = [
     Path("docs") / "Savings.md",
     Path("docs") / "algorithm-manual.md",
@@ -34,7 +39,7 @@ REQUIRED_MANUAL_DOC_FILES = [
     Path("docs") / "storage-format.zh-CN.md",
 ]
 REQUIRED_DOCUMENT_FILES = [
-    *PACKAGE_ROOT_DOCUMENT_FILES,
+    *PACKAGE_ROOT_DOCUMENT_SOURCES.values(),
     *REQUIRED_MANUAL_DOC_FILES,
 ]
 
@@ -259,12 +264,19 @@ def copy_tree(src: Path, dst: Path):
     shutil.copytree(src, dst, ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.pyo"))
 
 
+def copy_release_readme(src: Path, dst: Path):
+    text = src.read_text(encoding="utf-8")
+    for old, new in PACKAGE_README_LINK_REPLACEMENTS.items():
+        text = text.replace(old, new)
+    dst.write_text(text, encoding="utf-8", newline="\n")
+
+
 def assemble_package(executable: Path):
     PACKAGE_DIR.mkdir(parents=True, exist_ok=True)
 
     shutil.copy2(executable, PACKAGE_DIR / APP_NAME)
-    shutil.copy2(ROOT_DIR / "README.md", PACKAGE_DIR / "README.md")
-    shutil.copy2(ROOT_DIR / "README.zh-CN.md", PACKAGE_DIR / "README.zh-CN.md")
+    for output_path, source_path in PACKAGE_ROOT_DOCUMENT_SOURCES.items():
+        copy_release_readme(ROOT_DIR / source_path, PACKAGE_DIR / output_path)
     copy_tree(ROOT_DIR / "docs", PACKAGE_DIR / "docs")
     copy_tree(ROOT_DIR / "img", PACKAGE_DIR / "img")
     copy_tree(APP_DIR / "i18n", PACKAGE_DIR / "i18n")

@@ -127,8 +127,8 @@ version = "2.5.0"
 7. Runs PyInstaller in one-file mode.
 8. Assembles a release folder containing:
    - `main.exe`
-   - `README.md`
-   - `README.zh-CN.md`
+   - end-user `README.md`
+   - end-user `README.zh-CN.md`
    - `docs/`
    - `img/`
    - `i18n/`
@@ -178,7 +178,7 @@ The executable bundles:
 - `logo.ico`
 - `i18n/`
 
-The release archive also includes `README.md`, `README.zh-CN.md`, `docs/`, and `img/` next to `main.exe`.
+The release archive also includes end-user `README.md`, end-user `README.zh-CN.md`, `docs/`, and `img/` next to `main.exe`. These root README files are generated from `RELEASE_README.md` and `RELEASE_README.zh-CN.md`, not from the repository project README files.
 
 The `docs/` directory contains both English and Chinese versions of:
 

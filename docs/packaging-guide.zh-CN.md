@@ -127,8 +127,8 @@ version = "2.5.0"
 7. 使用 PyInstaller 以单文件模式构建。
 8. 组装发布目录，包含：
    - `main.exe`
-   - `README.md`
-   - `README.zh-CN.md`
+   - 面向用户的 `README.md`
+   - 面向用户的 `README.zh-CN.md`
    - `docs/`
    - `img/`
    - `i18n/`
@@ -178,7 +178,7 @@ knotpen2/i18n/locales/<lang>/LC_MESSAGES/knotpen2.mo
 - `logo.ico`
 - `i18n/`
 
-发布压缩包还会把 `README.md`、`README.zh-CN.md`、`docs/` 和 `img/` 放在 `main.exe` 旁边。
+发布压缩包还会把面向用户的 `README.md`、面向用户的 `README.zh-CN.md`、`docs/` 和 `img/` 放在 `main.exe` 旁边。根目录的 README 文件由 `RELEASE_README.md` 和 `RELEASE_README.zh-CN.md` 生成，不是仓库根目录中的项目 README。
 
 `docs/` 目录包含以下内容的英文和中文版本：
 
