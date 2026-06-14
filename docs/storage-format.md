@@ -12,19 +12,22 @@ Current save files are not strict JSON. They are Python literal text generated w
 
 ## File Locations
 
-Runtime folders are created next to the executed program:
+Knotpen2 stores user work in project folders. Each project folder contains:
 
-- `auto_save/`: automatic save files.
-- `auto_save/auto_save.json`: save file written when the app exits.
-- `answer/`: PD_CODE text and SVG outputs.
-- `error_log/`: crash logs.
+- `project.json`: the main project save file.
+- `auto_save/`: automatic save snapshots for that project.
+- `auto_save/auto_save.json`: the latest automatic save written during normal use and on exit.
+- `answer/`: PD_CODE text and SVG outputs for that project.
 
-When running from source, these folders are usually created under `knotpen2/`. When running a packaged executable, they are created next to `main.exe`.
+The default project is created under `projects/default/` next to the executed program. Crash logs remain under the executed program's `error_log/` folder.
+
+Use **New project**, **Open project**, **Save project**, and **Save as project** in the interface to manage project folders. These actions create or read `project.json` inside the selected folder.
 
 ## Encoding And Extension
 
 - Save files use UTF-8 text.
-- The file extension is lowercase `.json`.
+- The project file name is `project.json`.
+- Automatic save snapshots use the lowercase `.json` extension.
 - The file content must evaluate to a Python `dict`.
 
 ## Top-Level Object

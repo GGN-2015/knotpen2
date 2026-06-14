@@ -8,11 +8,13 @@ APP_NAME = "knotpen2"
 APP_VERSION = "2.5.0" # 不要删除这行内容，因为脚本会从这里抓取
 
 DIRNOW = os.path.dirname(os.path.abspath(__file__))
-AUTOSAVE_FOLDER = os.path.join(PROGRAM_EXE_PATH, "auto_save")
-AUTOSAVE_FILE = os.path.join(AUTOSAVE_FOLDER, "auto_save.json") # 自动保存位置
+AUTOSAVE_FILE_NAME = "auto_save.json"
 
-ANSWER_FOLDER = os.path.join(PROGRAM_EXE_PATH, "answer") # 答案存储位置
 ERROR_LOG_FOLDER = os.path.join(PROGRAM_EXE_PATH, "error_log")
+DEFAULT_PROJECTS_FOLDER = os.path.join(PROGRAM_EXE_PATH, "projects")
+PROJECT_FILE_NAME = "project.json"
+PROJECT_AUTOSAVE_FOLDER_NAME = "auto_save"
+PROJECT_ANSWER_FOLDER_NAME = "answer"
 
 CIRCLE_RADIUS = 12
 LINE_WIDTH = 8
@@ -32,12 +34,12 @@ FONT_TTF = os.path.join(DIRNOW, "font", "SourceHanSansSC-VF.ttf")
 MAX_MESSAGE_CNT = 40
 MESSAGE_SIZE = 18
 SMALL_TEXT_SIZE = 14
-BUTTON_FONT_SIZE = 15
+BUTTON_FONT_SIZE = 14
 BUTTON_WIDTH = 150
 BUTTON_HEIGHT = 34
 BUTTON_GAP = 6
-MIN_BUTTON_HEIGHT = 24
-MIN_BUTTON_GAP = 4
+MIN_BUTTON_HEIGHT = 20
+MIN_BUTTON_GAP = 3
 BUTTON_MARGIN = 10
 BUTTON_BORDER_RADIUS = 4
 BUTTON_PANEL_PADDING = 8

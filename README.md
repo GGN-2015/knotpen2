@@ -42,14 +42,15 @@ Each manual has an English page and a Chinese counterpart.
 
 The right side of the window contains all command buttons. The drawing canvas uses mouse operations for direct diagram editing.
 
+- Use **New project**, **Open project**, **Save project**, and **Save as project** at the top of the command panel to manage project folders.
 - Use **Move view up**, **Move view down**, **Move view left**, and **Move view right** to pan the diagram.
 - Use **Help** to open the in-app help page. Click **Close help** to return to editing.
 - Use **Increase window** and **Decrease window** to resize the window. The window is kept within the screen bounds.
 - Use **Switch language** to switch between English and Chinese UI text.
 - Select a node, then use **Set base node**, **Set direction node**, or **Delete selected**.
 - Use **Clear all** to back up and clear the diagram.
-- Use **Recover save** to load the latest automatic save.
-- Use **Calculate PD_CODE** to generate the PD_CODE text and SVG outputs.
+- Use **Recover save** to load the latest automatic save from the current project.
+- Use **Calculate PD_CODE** to generate the PD_CODE text and SVG outputs in the current project's `answer` folder.
 
 For the full workflow, see the [Interface User Manual](./docs/interface-user-manual.md).
 

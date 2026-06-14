@@ -331,3 +331,119 @@ msgstr "Icon image file corrupted"
 #, python-format
 msgid "错误日志信息已经保存到：%s"
 msgstr "Error log saved as: %s"
+
+#: generated
+msgid "正在加载项目存档 ..."
+msgstr "Loading project file ..."
+
+#: generated
+msgid "加载失败，项目存档文件故障"
+msgstr "Loading failed, project file is corrupted"
+
+#: generated
+msgid "确认覆盖项目"
+msgstr "Confirm project overwrite"
+
+#: generated
+msgid "所选文件夹已经包含项目文件。是否覆盖它？"
+msgstr "The selected folder already contains a project file. Overwrite it?"
+
+#: generated
+msgid "所选文件夹已有内容。是否在这里创建或覆盖项目？"
+msgstr "The selected folder already has content. Create or overwrite the project here?"
+
+#: generated
+msgid "选择新项目文件夹"
+msgstr "Select a new project folder"
+
+#: generated
+msgid "已取消新建项目"
+msgstr "New project cancelled"
+
+#: generated
+msgid "新建项目失败：无法写入所选文件夹"
+msgstr "New project failed: cannot write to the selected folder"
+
+#: generated
+msgid "已新建项目：%s"
+msgstr "New project created: %s"
+
+#: generated
+msgid "选择要打开的项目文件夹"
+msgstr "Select the project folder to open"
+
+#: generated
+msgid "已取消打开项目"
+msgstr "Open project cancelled"
+
+#: generated
+msgid "所选文件夹不是 Knotpen2 项目：缺少 project.json"
+msgstr "The selected folder is not a Knotpen2 project: project.json is missing"
+
+#: generated
+msgid "打开项目失败：项目文件损坏或格式不支持"
+msgstr "Open project failed: the project file is corrupted or unsupported"
+
+#: generated
+msgid "已打开项目：%s"
+msgstr "Project opened: %s"
+
+#: generated
+msgid "项目已保存：%s"
+msgstr "Project saved: %s"
+
+#: generated
+msgid "保存项目失败：无法写入项目文件夹"
+msgstr "Save project failed: cannot write to the project folder"
+
+#: generated
+msgid "选择另存为项目文件夹"
+msgstr "Select a folder to save the project as"
+
+#: generated
+msgid "已取消另存为项目"
+msgstr "Save project as cancelled"
+
+#: generated
+msgid "项目已另存为：%s"
+msgstr "Project saved as: %s"
+
+#: generated
+msgid "另存为项目失败：无法写入所选文件夹"
+msgstr "Save project as failed: cannot write to the selected folder"
+
+#: generated
+msgid "新建项目"
+msgstr "New project"
+
+#: generated
+msgid "打开项目"
+msgstr "Open project"
+
+#: generated
+msgid "保存项目"
+msgstr "Save project"
+
+#: generated
+msgid "另存为项目"
+msgstr "Save as project"
+
+#: generated
+msgid "项目管理"
+msgstr "Project management"
+
+#: generated
+msgid "右侧顶部按钮用于新建、打开、保存和另存为项目。"
+msgstr "Use the top buttons on the right to create, open, save, and save projects as another folder."
+
+#: generated
+msgid "项目是一个文件夹，项目数据保存在其中的 project.json。"
+msgstr "A project is a folder; project data is stored in project.json inside it."
+
+#: generated
+msgid "计算结果会保存到当前项目文件夹内的 answer 文件夹。"
+msgstr "Calculation results are saved in the answer folder inside the current project folder."
+
+#: generated
+msgid "清空全部会先自动备份；恢复存档会读取当前项目的上一次自动保存。"
+msgstr "Clear all creates a backup first; recover save loads the latest auto-save in the current project."

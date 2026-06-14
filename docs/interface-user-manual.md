@@ -15,6 +15,23 @@ Clicks inside the command panel background are treated as UI clicks, even when t
 
 The window size adapts to the current screen on startup. Use **Increase window** and **Decrease window** to resize it later; the application keeps the window inside the screen bounds.
 
+## Projects
+
+Knotpen2 works with project folders. A project folder contains:
+
+- `project.json`: the current project data.
+- `auto_save/`: automatic save snapshots for that project.
+- `answer/`: PD_CODE text and SVG outputs for that project.
+
+The project buttons are placed at the top of the right-side command panel:
+
+- **New project** asks you to choose a folder, clears the canvas, and creates `project.json` in that folder.
+- **Open project** asks you to choose an existing project folder that already contains `project.json`.
+- **Save project** writes the current canvas to the current project's `project.json`.
+- **Save as project** asks you to choose another folder, then writes the current canvas as a separate project there.
+
+Folder selection uses the operating system's directory picker. If the selected folder already has a `project.json`, Knotpen2 asks before overwriting it.
+
 ## Language And Help
 
 - **Switch language** changes future UI labels and help text between English and Chinese.
@@ -75,9 +92,9 @@ The base node and direction node must be adjacent in the same connected componen
 ## Clear And Recover
 
 - **Clear all** creates an automatic backup first, then clears all diagram data.
-- **Recover save** loads the latest automatic save file.
+- **Recover save** loads the latest automatic save file from the current project.
 
-Automatic saves are stored next to the executed program in the `auto_save` folder.
+Automatic saves are stored in the current project's `auto_save` folder.
 
 ## PD_CODE Calculation
 
@@ -88,7 +105,7 @@ Before clicking **Calculate PD_CODE**, make sure:
 - The base node and direction node are adjacent.
 - No point has three segments meeting there. The program does not currently check this condition automatically.
 
-When calculation succeeds, output is written under the `answer` folder next to the executed program.
+When calculation succeeds, output is written under the current project's `answer` folder.
 
 The generated files include:
 

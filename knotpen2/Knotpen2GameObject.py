@@ -26,6 +26,9 @@ class Knotpen2GameObject(GameObject.GameObject):
     def __init__(self, memory_object:MemoryObject.MemoryObject, algo:MyAlgorithm.MyAlgorithm) -> None:
         super().__init__()
 
+        self.memory_object   = memory_object
+        self.algo            = algo
+
         font_path    = font_utils.ensure_font_exists()
         self.font    = pygame.font.Font(font_path, constant_config.MESSAGE_SIZE)
         self.msg_txt = [
@@ -44,8 +47,6 @@ class Knotpen2GameObject(GameObject.GameObject):
             return self.button_font.render(s, True, color)
         self.get_button_text = get_button_text
 
-        self.memory_object   = memory_object
-        self.algo            = algo
         self.status          = "free"
         self.focus_dot       = None
         self.left_mouse_down = False
@@ -57,13 +58,143 @@ class Knotpen2GameObject(GameObject.GameObject):
         self.button_rects = []
         self.button_panel_rect = None
         self.help_visible = False
+        self.update_window_caption()
     
     def get_window_caption(self) -> str:
-        return constant_config.APP_NAME + "_" + constant_config.APP_VERSION
+        project_name = self.memory_object.get_project_name()
+        return "%s_%s - %s" % (constant_config.APP_NAME, constant_config.APP_VERSION, project_name)
+
+    def update_window_caption(self):
+        pygame.display.set_caption(self.get_window_caption())
+
+    def choose_project_dir(self, title, initialdir=None, mustexist=False):
+        import tkinter
+        import tkinter.filedialog
+
+        root = tkinter.Tk()
+        root.withdraw()
+        root.attributes("-topmost", True)
+        try:
+            selected = tkinter.filedialog.askdirectory(
+                title=title,
+                initialdir=initialdir or constant_config.DEFAULT_PROJECTS_FOLDER,
+                mustexist=mustexist,
+                parent=root,
+            )
+        finally:
+            root.destroy()
+
+        if selected:
+            return selected
+        return None
+
+    def confirm_project_overwrite(self, project_dir):
+        project_file = os.path.join(project_dir, constant_config.PROJECT_FILE_NAME)
+        folder_has_content = os.path.isdir(project_dir) and len(os.listdir(project_dir)) > 0
+        if not os.path.exists(project_file) and not folder_has_content:
+            return True
+
+        import tkinter
+        import tkinter.messagebox
+
+        root = tkinter.Tk()
+        root.withdraw()
+        root.attributes("-topmost", True)
+        try:
+            return tkinter.messagebox.askyesno(
+                _("确认覆盖项目"),
+                _("所选文件夹已有内容。是否在这里创建或覆盖项目？"),
+                parent=root,
+            )
+        finally:
+            root.destroy()
+
+    def reset_after_project_change(self):
+        self.status = "free"
+        self.focus_dot = None
+        self.notice_node = []
+        self.help_visible = False
+        self.end_left_mouse_operation()
+        self.update_window_caption()
+
+    def create_new_project(self):
+        project_dir = self.choose_project_dir(
+            _("选择新项目文件夹"),
+            initialdir=constant_config.DEFAULT_PROJECTS_FOLDER,
+            mustexist=False,
+        )
+        if not project_dir:
+            self.leave_message(_("已取消新建项目"), constant_config.GREY)
+            return
+
+        if not self.confirm_project_overwrite(project_dir):
+            self.leave_message(_("已取消新建项目"), constant_config.GREY)
+            return
+
+        try:
+            self.memory_object.new_project(project_dir)
+        except Exception:
+            self.leave_message(_("新建项目失败：无法写入所选文件夹"), constant_config.RED)
+            return
+        self.reset_after_project_change()
+        self.leave_message(_("已新建项目：%s") % self.memory_object.get_project_name(), constant_config.GREEN)
+
+    def open_project(self):
+        project_dir = self.choose_project_dir(
+            _("选择要打开的项目文件夹"),
+            initialdir=constant_config.DEFAULT_PROJECTS_FOLDER,
+            mustexist=True,
+        )
+        if not project_dir:
+            self.leave_message(_("已取消打开项目"), constant_config.GREY)
+            return
+
+        try:
+            self.memory_object.open_project(project_dir)
+        except FileNotFoundError:
+            self.leave_message(_("所选文件夹不是 Knotpen2 项目：缺少 project.json"), constant_config.RED)
+            return
+        except Exception:
+            self.leave_message(_("打开项目失败：项目文件损坏或格式不支持"), constant_config.RED)
+            return
+
+        self.reset_after_project_change()
+        self.leave_message(_("已打开项目：%s") % self.memory_object.get_project_name(), constant_config.GREEN)
+
+    def save_project(self):
+        try:
+            self.memory_object.save_project()
+        except Exception:
+            self.leave_message(_("保存项目失败：无法写入项目文件夹"), constant_config.RED)
+            return
+        self.leave_message(_("项目已保存：%s") % self.memory_object.get_project_file(), constant_config.GREEN)
+
+    def save_project_as(self):
+        project_dir = self.choose_project_dir(
+            _("选择另存为项目文件夹"),
+            initialdir=constant_config.DEFAULT_PROJECTS_FOLDER,
+            mustexist=False,
+        )
+        if not project_dir:
+            self.leave_message(_("已取消另存为项目"), constant_config.GREY)
+            return
+
+        if not self.confirm_project_overwrite(project_dir):
+            self.leave_message(_("已取消另存为项目"), constant_config.GREY)
+            return
+
+        try:
+            self.memory_object.save_project_as(project_dir)
+        except Exception:
+            self.leave_message(_("另存为项目失败：无法写入所选文件夹"), constant_config.RED)
+            return
+        self.reset_after_project_change()
+        self.leave_message(_("项目已另存为：%s") % self.memory_object.get_project_name(), constant_config.GREEN)
 
     def handle_quit(self):
         self.leave_message(_("自动保存中，请不要关闭窗口 ..."), constant_config.YELLOW)
-        self.memory_object.dump_object(constant_config.AUTOSAVE_FILE) # 自动保存
+        self.memory_object.save_project()
+        self.memory_object.dump_object(self.memory_object.autosave_file) # 自动保存
         self.leave_message(_("自动保存成功"), constant_config.GREEN)
 
         self.status = "quit"
@@ -98,25 +229,27 @@ class Knotpen2GameObject(GameObject.GameObject):
             self.msg_txt = self.msg_txt[1:]
 
     def save_answer(self, s:str):
-        os.makedirs(constant_config.ANSWER_FOLDER, exist_ok=True)
-        foldername  = os.path.basename(constant_config.ANSWER_FOLDER) # 文件夹名称
-        outter_name = os.path.basename(os.path.dirname(constant_config.ANSWER_FOLDER))
+        answer_folder = self.memory_object.get_answer_folder()
+        os.makedirs(answer_folder, exist_ok=True)
+        foldername  = os.path.basename(answer_folder) # 文件夹名称
+        outter_name = os.path.basename(os.path.dirname(answer_folder))
         filename    = math_utils.get_formatted_datetime() + ".txt"
-        filepath    = os.path.join(constant_config.ANSWER_FOLDER, filename)
+        filepath    = os.path.join(answer_folder, filename)
 
-        with open(filepath, "w") as fp:
+        with open(filepath, "w", encoding="utf-8") as fp:
             fp.write(s)
 
         return "%s/%s/%s" % (outter_name, foldername, filename)
 
     def save_svg_answer(self, svg_filename:str, s):
-        os.makedirs(constant_config.ANSWER_FOLDER, exist_ok=True)
-        foldername  = os.path.basename(constant_config.ANSWER_FOLDER) # 文件夹名称
-        outter_name = os.path.basename(os.path.dirname(constant_config.ANSWER_FOLDER))
+        answer_folder = self.memory_object.get_answer_folder()
+        os.makedirs(answer_folder, exist_ok=True)
+        foldername  = os.path.basename(answer_folder) # 文件夹名称
+        outter_name = os.path.basename(os.path.dirname(answer_folder))
         filename    = svg_filename
-        filepath    = os.path.join(constant_config.ANSWER_FOLDER, filename)
+        filepath    = os.path.join(answer_folder, filename)
 
-        with open(filepath, "w") as fp:
+        with open(filepath, "w", encoding="utf-8") as fp:
             fp.write(s)
 
         return "%s/%s/%s" % (outter_name, foldername, filename)
@@ -247,6 +380,10 @@ class Knotpen2GameObject(GameObject.GameObject):
         can_edit = not self.help_visible
         help_label = _("关闭帮助") if self.help_visible else _("帮助")
         return [
+            ("new_project", _("新建项目"), self.create_new_project, True, "project"),
+            ("open_project", _("打开项目"), self.open_project, True, "project"),
+            ("save_project", _("保存项目"), self.save_project, True, "project"),
+            ("save_project_as", _("另存为项目"), self.save_project_as, True, "project"),
             ("move_up", _("上移视图"), self.move_view_up, can_edit),
             ("move_left", _("左移视图"), self.move_view_left, can_edit),
             ("move_down", _("下移视图"), self.move_view_down, can_edit),
@@ -308,13 +445,16 @@ class Knotpen2GameObject(GameObject.GameObject):
         button_height = layout["button_height"]
         button_gap = layout["button_gap"]
         rects = []
-        for action_id, label, callback, enabled in self.get_button_specs():
+        for spec in self.get_button_specs():
+            action_id, label, callback, enabled = spec[:4]
+            group = spec[4] if len(spec) >= 5 else "normal"
             rect = pygame.Rect(x, y, constant_config.BUTTON_WIDTH, button_height)
             rects.append({
                 "action_id": action_id,
                 "label": label,
                 "callback": callback,
                 "enabled": enabled,
+                "group": group,
                 "rect": rect,
             })
             y += button_height + button_gap
@@ -493,7 +633,8 @@ class Knotpen2GameObject(GameObject.GameObject):
         if time_now - self.last_backup > constant_config.BACKUP_TIME:     # 自动保存
             self.leave_message(_("正在自动保存请不要关闭软件 ..."), constant_config.YELLOW)
             self.memory_object.auto_backup()                              # 保存一个时间戳对应的文件
-            self.memory_object.dump_object(constant_config.AUTOSAVE_FILE) # 保存一个 auto_save
+            self.memory_object.save_project()
+            self.memory_object.dump_object(self.memory_object.autosave_file) # 保存一个 auto_save
             self.leave_message(_("自动保存成功"), constant_config.GREEN, replace=True)
             self.last_backup = time_now
 
@@ -578,6 +719,11 @@ class Knotpen2GameObject(GameObject.GameObject):
                 _("双击边的中点可以拆分边。"),
                 _("点击交叉点可以切换相交线段的上下关系。"),
             ]),
+            (_("项目管理"), [
+                _("右侧顶部按钮用于新建、打开、保存和另存为项目。"),
+                _("项目是一个文件夹，项目数据保存在其中的 project.json。"),
+                _("计算结果会保存到当前项目文件夹内的 answer 文件夹。"),
+            ]),
             (_("连续创建"), [
                 _("点击节点进入连续创建模式，红色节点是当前选中点。"),
                 _("在空白处继续左键点击会创建新节点并自动连边。"),
@@ -586,7 +732,7 @@ class Knotpen2GameObject(GameObject.GameObject):
             (_("右侧按钮"), [
                 _("使用视图移动按钮平移画面。"),
                 _("选中节点后可以设为起始点或方向点，也可以删除选中点。"),
-                _("清空全部会先自动备份；恢复存档会读取上一次自动保存。"),
+                _("清空全部会先自动备份；恢复存档会读取当前项目的上一次自动保存。"),
                 _("增大窗口和减小窗口会调整窗口尺寸，并保持窗口不超过屏幕范围。"),
                 _("切换语言会影响之后绘制的按钮和帮助文字。"),
             ]),
@@ -690,6 +836,9 @@ class Knotpen2GameObject(GameObject.GameObject):
             elif hovering:
                 fill_color = (232, 242, 255)
                 border_color = (45, 105, 180)
+            elif button_info.get("group") == "project":
+                fill_color = (224, 238, 250)
+                border_color = (35, 105, 160)
 
             pygame.draw.rect(screen, fill_color, rect, border_radius=constant_config.BUTTON_BORDER_RADIUS)
             pygame.draw.rect(screen, border_color, rect, 1, border_radius=constant_config.BUTTON_BORDER_RADIUS)

@@ -8,15 +8,85 @@ import constant_config
 
 class MemoryObject:
     def __init__(self, auto_load=True) -> None:
+        self.project_dir = None
         self.clear()
         self.empty_info = self.get_all_info()
 
-        if auto_load and os.path.isfile(constant_config.AUTOSAVE_FILE): # 自动加载存档
-            print(_("正在加载自动保存的存档 ..."))
+        default_project_dir = os.path.join(constant_config.DEFAULT_PROJECTS_FOLDER, "default")
+        self.set_project_dir(default_project_dir)
+
+        if auto_load and os.path.isfile(self.project_file): # 自动加载项目存档
+            print(_("正在加载项目存档 ..."))
             try:
-                self.load_object(constant_config.AUTOSAVE_FILE)
+                self.load_object(self.project_file)
             except:
-                print(_("加载失败，自动存档文件故障"))
+                print(_("加载失败，项目存档文件故障"))
+        else:
+            self.save_project()
+
+    def get_project_paths(self, project_dir:str):
+        project_dir = os.path.abspath(project_dir)
+        return {
+            "project_dir": project_dir,
+            "project_file": os.path.join(project_dir, constant_config.PROJECT_FILE_NAME),
+            "autosave_folder": os.path.join(project_dir, constant_config.PROJECT_AUTOSAVE_FOLDER_NAME),
+            "autosave_file": os.path.join(project_dir, constant_config.PROJECT_AUTOSAVE_FOLDER_NAME, constant_config.AUTOSAVE_FILE_NAME),
+            "answer_folder": os.path.join(project_dir, constant_config.PROJECT_ANSWER_FOLDER_NAME),
+        }
+
+    def ensure_project_dirs_for(self, paths:dict):
+        os.makedirs(paths["project_dir"], exist_ok=True)
+        os.makedirs(paths["autosave_folder"], exist_ok=True)
+        os.makedirs(paths["answer_folder"], exist_ok=True)
+
+    def set_project_dir(self, project_dir:str):
+        paths = self.get_project_paths(project_dir)
+        self.ensure_project_dirs_for(paths)
+        self.project_dir = paths["project_dir"]
+        self.project_file = paths["project_file"]
+        self.autosave_folder = paths["autosave_folder"]
+        self.autosave_file = paths["autosave_file"]
+        self.answer_folder = paths["answer_folder"]
+
+    def ensure_project_dirs(self):
+        os.makedirs(self.project_dir, exist_ok=True)
+        os.makedirs(self.autosave_folder, exist_ok=True)
+        os.makedirs(self.answer_folder, exist_ok=True)
+
+    def get_project_name(self):
+        return os.path.basename(self.project_dir) or self.project_dir
+
+    def get_project_file(self):
+        return self.project_file
+
+    def get_answer_folder(self):
+        return self.answer_folder
+
+    def new_project(self, project_dir:str):
+        paths = self.get_project_paths(project_dir)
+        self.ensure_project_dirs_for(paths)
+        empty_info = self.create_empty_info()
+        self.dump_info(paths["project_file"], empty_info)
+        self.set_project_dir(project_dir)
+        self.apply_info(empty_info)
+
+    def open_project(self, project_dir:str):
+        project_dir = os.path.abspath(project_dir)
+        project_file = os.path.join(project_dir, constant_config.PROJECT_FILE_NAME)
+        if not os.path.isfile(project_file):
+            raise FileNotFoundError(project_file)
+        obj = self.read_object(project_file)
+        self.set_project_dir(project_dir)
+        self.apply_info(obj)
+
+    def save_project(self):
+        self.dump_object(self.project_file)
+
+    def save_project_as(self, project_dir:str):
+        paths = self.get_project_paths(project_dir)
+        self.ensure_project_dirs_for(paths)
+        self.dump_object(paths["project_file"])
+        self.set_project_dir(project_dir)
 
     def clear(self): # 初始化为空白状态
         self.dot_id_max = 0
@@ -30,6 +100,19 @@ class MemoryObject:
         self.base_dot = [] # 记录起始位置
         self.dir_dot = []  # 记录定向位置
         self.pd_code_final = None # 用于确定 pd_code 渲染信息，任何操作都会导致这个 info 被清空
+
+    def create_empty_info(self):
+        return {
+            "dot_id_max": 0,
+            "line_id_max": 0,
+            "dot_dict": {},
+            "line_dict": {},
+            "inverse_pairs": {},
+            "degree": {},
+            "base_dot": [],
+            "dir_dot": [],
+            "pd_code_final": None,
+        }
 
     def set_pd_code_final_info(self, new_info): # 记录这个 final_info
         self.pd_code_final = new_info
@@ -66,8 +149,8 @@ class MemoryObject:
     
     def get_all_auto_save(self):
         arr = []
-        for file in os.listdir(constant_config.AUTOSAVE_FOLDER):
-            if file != os.path.basename(constant_config.AUTOSAVE_FILE):
+        for file in os.listdir(self.autosave_folder):
+            if file != os.path.basename(self.autosave_file):
                 arr.append(file)
         arr = sorted(arr)
         return arr
@@ -75,14 +158,14 @@ class MemoryObject:
     def load_last_auto_save(self):
         arr = self.get_all_auto_save()
         if len(arr) >= 1:
-            lastfile = os.path.join(constant_config.AUTOSAVE_FOLDER, arr[-1])
+            lastfile = os.path.join(self.autosave_folder, arr[-1])
             self.load_object(lastfile)
 
     def auto_delete_duplicate(self):
         arr = self.get_all_auto_save()
         if len(arr) >= 2:
-            lastfile = os.path.join(constant_config.AUTOSAVE_FOLDER, arr[-1]) # 倒数第一个
-            nextfile = os.path.join(constant_config.AUTOSAVE_FOLDER, arr[-2]) # 倒数第二个
+            lastfile = os.path.join(self.autosave_folder, arr[-1]) # 倒数第一个
+            nextfile = os.path.join(self.autosave_folder, arr[-2]) # 倒数第二个
 
             if open(lastfile).read() == open(nextfile).read():
                 try:
@@ -94,24 +177,29 @@ class MemoryObject:
     def auto_backup(self): # 自动保存时，不允许保持空白状态，但是退出时的自动保存可以保存空白状态
         if self.get_all_info() != self.empty_info: 
             filename = math_utils.get_formatted_datetime() + ".json"
-            folder = constant_config.AUTOSAVE_FOLDER
+            folder = self.autosave_folder
             filepath = os.path.join(folder, filename)
             self.dump_object(filepath) # 保存一个备份文件，每隔一段时间自动保存一次
 
             self.auto_delete_duplicate() # 自动删除重复的
 
     def dump_object(self, filepath:str):
+        self.dump_info(filepath, self.get_all_info())
+
+    def dump_info(self, filepath:str, info:dict):
         folder = os.path.dirname(os.path.abspath(filepath)) # 创建文件路径
         os.makedirs(folder, exist_ok=True)
         assert os.path.isdir(folder)
 
-        with open(filepath, "w") as fp:
-            fp.write(repr(self.get_all_info())) # 这种序列化方式有点不安全
+        with open(filepath, "w", encoding="utf-8") as fp:
+            fp.write(repr(info)) # 这种序列化方式有点不安全
 
-    def load_object(self, filepath:str):
+    def read_object(self, filepath:str):
         assert os.path.isfile(filepath)
-        with open(filepath, "r") as fp:
-            obj = eval(fp.read()) # 这种序列化方式有点不安全
+        with open(filepath, "r", encoding="utf-8") as fp:
+            return eval(fp.read()) # 这种序列化方式有点不安全
+
+    def apply_info(self, obj:dict):
         self.dot_id_max = obj["dot_id_max"]
         self.line_id_max = obj["line_id_max"]
         self.dot_dict = obj["dot_dict"]
@@ -121,6 +209,9 @@ class MemoryObject:
         self.base_dot = obj["base_dot"]
         self.dir_dot = obj["dir_dot"]
         self.pd_code_final = obj["pd_code_final"]
+
+    def load_object(self, filepath:str):
+        self.apply_info(self.read_object(filepath))
 
     def get_inverse_pairs(self):
         return self.inverse_pairs

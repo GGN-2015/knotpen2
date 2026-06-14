@@ -41,8 +41,7 @@ def test_main():
     cb.mainloop()
 
 if __name__ == "__main__":
-    os.makedirs(constant_config.ANSWER_FOLDER, exist_ok=True)
-    os.makedirs(constant_config.AUTOSAVE_FOLDER, exist_ok=True)
+    os.makedirs(constant_config.DEFAULT_PROJECTS_FOLDER, exist_ok=True)
     os.makedirs(constant_config.ERROR_LOG_FOLDER, exist_ok=True)
 
     try:
