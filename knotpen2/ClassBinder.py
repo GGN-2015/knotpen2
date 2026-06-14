@@ -12,8 +12,6 @@ class ClassBinder:
         pygame_interface.pygame_interface(
             handle_mouse_down=self.game_object.handle_mouse_down,
             handle_mouse_up=self.game_object.handle_mouse_up,
-            handle_key_down=self.game_object.handle_key_down,
-            handle_key_up=self.game_object.handle_key_up,
             handle_quit=self.game_object.handle_quit,
             draw_screen=self.game_object.draw_screen,
             die_check=self.game_object.die_check,

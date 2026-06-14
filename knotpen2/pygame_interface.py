@@ -1,5 +1,7 @@
 import pygame
 
+import constant_config
+
 # handle_mouse_down(button, x, y): 鼠标按下回调函数
 #   button: 1=左键, 2=中键, 3=右键, 4=滚轮上滚, 5=滚轮下滚
 # handle_mouse_up(button, x, y): 鼠标抬起回调函数
@@ -20,12 +22,17 @@ def pygame_interface(handle_mouse_down=None, handle_mouse_up=None,
     # 获取屏幕分辨率
     desktop_sizes = pygame.display.get_desktop_sizes()
     primary_width, primary_height = desktop_sizes[0] # 获取主屏幕分辨率
+    max_width = max(320, primary_width - constant_config.WINDOW_MARGIN)
+    max_height = max(240, primary_height - constant_config.WINDOW_MARGIN)
 
     if width is None:
-        width = primary_width - 100
+        width = max_width
 
     if height is None:
-        height = primary_height - 100
+        height = max_height
+
+    width = min(max(width, min(constant_config.MIN_WINDOW_WIDTH, max_width)), max_width)
+    height = min(max(height, min(constant_config.MIN_WINDOW_HEIGHT, max_height)), max_height)
 
     # 设置窗口尺寸
     screen = pygame.display.set_mode((width, height))
@@ -81,6 +88,10 @@ def pygame_interface(handle_mouse_down=None, handle_mouse_up=None,
                 if handle_key_up is not None:
                     handle_key_up(key, mod)
         
+        current_screen = pygame.display.get_surface()
+        if current_screen is not None:
+            screen = current_screen
+
         if draw_screen is None:
             screen.fill((255, 255, 255)) # 填充白色背景
         else:

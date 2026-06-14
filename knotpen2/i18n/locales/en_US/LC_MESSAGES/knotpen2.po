@@ -122,6 +122,142 @@ msgstr "Knot diagram (with PD_CODE) generated successfully"
 msgid "扭结图像（带弧线方向信息）生成成功"
 msgstr "Knot image (directed arc) generated successfully"
 
+#: ../Knotpen2GameObject.py:209
+msgid "上移视图"
+msgstr "Move view up"
+
+#: ../Knotpen2GameObject.py:210
+msgid "左移视图"
+msgstr "Move view left"
+
+#: ../Knotpen2GameObject.py:211
+msgid "下移视图"
+msgstr "Move view down"
+
+#: ../Knotpen2GameObject.py:212
+msgid "右移视图"
+msgstr "Move view right"
+
+#: ../Knotpen2GameObject.py:213
+msgid "设为起始点"
+msgstr "Set base node"
+
+#: ../Knotpen2GameObject.py:214
+msgid "设为方向点"
+msgstr "Set direction node"
+
+#: ../Knotpen2GameObject.py:215
+msgid "删除选中点"
+msgstr "Delete selected"
+
+#: ../Knotpen2GameObject.py:216
+msgid "清空全部"
+msgstr "Clear all"
+
+#: ../Knotpen2GameObject.py:217
+msgid "恢复存档"
+msgstr "Recover save"
+
+#: ../Knotpen2GameObject.py:218
+msgid "切换语言"
+msgstr "Switch language"
+
+#: ../Knotpen2GameObject.py:219
+msgid "帮助"
+msgstr "Help"
+
+#: ../Knotpen2GameObject.py:219
+msgid "关闭帮助"
+msgstr "Close help"
+
+#: ../Knotpen2GameObject.py:219
+msgid "增大窗口"
+msgstr "Increase window"
+
+#: ../Knotpen2GameObject.py:219
+msgid "减小窗口"
+msgstr "Decrease window"
+
+#: ../Knotpen2GameObject.py:219
+msgid "计算 PD_CODE"
+msgstr "Calculate PD_CODE"
+
+#: ../Knotpen2GameObject.py:470
+msgid "基础编辑"
+msgstr "Basic editing"
+
+#: ../Knotpen2GameObject.py:471
+msgid "左键空白处创建节点；拖拽节点可以移动。"
+msgstr "Left-click empty space to create a node; drag a node to move it."
+
+#: ../Knotpen2GameObject.py:472
+msgid "右键节点或边可以删除。"
+msgstr "Right-click a node or edge to delete it."
+
+#: ../Knotpen2GameObject.py:473
+msgid "双击边的中点可以拆分边。"
+msgstr "Double-click the middle of an edge to split it."
+
+#: ../Knotpen2GameObject.py:474
+msgid "点击交叉点可以切换相交线段的上下关系。"
+msgstr "Click a crossing to switch which segment is above the other."
+
+#: ../Knotpen2GameObject.py:476
+msgid "连续创建"
+msgstr "Continuous creation"
+
+#: ../Knotpen2GameObject.py:477
+msgid "点击节点进入连续创建模式，红色节点是当前选中点。"
+msgstr "Click a node to enter continuous creation mode; the red node is selected."
+
+#: ../Knotpen2GameObject.py:478
+msgid "在空白处继续左键点击会创建新节点并自动连边。"
+msgstr "Left-click empty space to create another node and connect it automatically."
+
+#: ../Knotpen2GameObject.py:479
+msgid "点击现有节点可以闭合曲线并退出连续创建模式。"
+msgstr "Click an existing node to close the curve and leave continuous creation mode."
+
+#: ../Knotpen2GameObject.py:481
+msgid "右侧按钮"
+msgstr "Right-side buttons"
+
+#: ../Knotpen2GameObject.py:482
+msgid "使用视图移动按钮平移画面。"
+msgstr "Use the view movement buttons to pan the diagram."
+
+#: ../Knotpen2GameObject.py:483
+msgid "选中节点后可以设为起始点或方向点，也可以删除选中点。"
+msgstr "After selecting a node, set it as the base or direction node, or delete it."
+
+#: ../Knotpen2GameObject.py:484
+msgid "清空全部会先自动备份；恢复存档会读取上一次自动保存。"
+msgstr "Clear all creates a backup first; recover save loads the latest auto-save."
+
+#: ../Knotpen2GameObject.py:485
+msgid "增大窗口和减小窗口会调整窗口尺寸，并保持窗口不超过屏幕范围。"
+msgstr "Increase window and decrease window resize the window while keeping it within the screen."
+
+#: ../Knotpen2GameObject.py:486
+msgid "切换语言会影响之后绘制的按钮和帮助文字。"
+msgstr "Switch language affects buttons and help text drawn afterward."
+
+#: ../Knotpen2GameObject.py:488
+msgid "计算前请确保每个节点恰好有两条边。"
+msgstr "Before calculating, make sure every node has exactly two edges."
+
+#: ../Knotpen2GameObject.py:489
+msgid "每个连通分支必须有相邻的起始点和方向点。"
+msgstr "Each connected component must have adjacent base and direction nodes."
+
+#: ../Knotpen2GameObject.py:490
+msgid "请人工确认没有三线共点。"
+msgstr "Manually confirm that no three segments meet at one point."
+
+#: ../Knotpen2GameObject.py:530
+msgid "再次点击右侧的帮助按钮关闭此页面。"
+msgstr "Click the help button on the right again to close this page."
+
 #: ../Knotpen2GameObject.py:304
 msgid "正在自动保存请不要关闭软件 ..."
 msgstr "Auto-saving in progress, please do not force to quit ..."

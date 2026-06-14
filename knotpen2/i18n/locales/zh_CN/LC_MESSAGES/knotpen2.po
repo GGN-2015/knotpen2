@@ -122,6 +122,142 @@ msgstr "扭结图像（带弧线编号信息）生成成功"
 msgid "扭结图像（带弧线方向信息）生成成功"
 msgstr "扭结图像（带弧线方向信息）生成成功"
 
+#: ../Knotpen2GameObject.py:209
+msgid "上移视图"
+msgstr "上移视图"
+
+#: ../Knotpen2GameObject.py:210
+msgid "左移视图"
+msgstr "左移视图"
+
+#: ../Knotpen2GameObject.py:211
+msgid "下移视图"
+msgstr "下移视图"
+
+#: ../Knotpen2GameObject.py:212
+msgid "右移视图"
+msgstr "右移视图"
+
+#: ../Knotpen2GameObject.py:213
+msgid "设为起始点"
+msgstr "设为起始点"
+
+#: ../Knotpen2GameObject.py:214
+msgid "设为方向点"
+msgstr "设为方向点"
+
+#: ../Knotpen2GameObject.py:215
+msgid "删除选中点"
+msgstr "删除选中点"
+
+#: ../Knotpen2GameObject.py:216
+msgid "清空全部"
+msgstr "清空全部"
+
+#: ../Knotpen2GameObject.py:217
+msgid "恢复存档"
+msgstr "恢复存档"
+
+#: ../Knotpen2GameObject.py:218
+msgid "切换语言"
+msgstr "切换语言"
+
+#: ../Knotpen2GameObject.py:219
+msgid "帮助"
+msgstr "帮助"
+
+#: ../Knotpen2GameObject.py:219
+msgid "关闭帮助"
+msgstr "关闭帮助"
+
+#: ../Knotpen2GameObject.py:219
+msgid "增大窗口"
+msgstr "增大窗口"
+
+#: ../Knotpen2GameObject.py:219
+msgid "减小窗口"
+msgstr "减小窗口"
+
+#: ../Knotpen2GameObject.py:219
+msgid "计算 PD_CODE"
+msgstr "计算 PD_CODE"
+
+#: ../Knotpen2GameObject.py:470
+msgid "基础编辑"
+msgstr "基础编辑"
+
+#: ../Knotpen2GameObject.py:471
+msgid "左键空白处创建节点；拖拽节点可以移动。"
+msgstr "左键空白处创建节点；拖拽节点可以移动。"
+
+#: ../Knotpen2GameObject.py:472
+msgid "右键节点或边可以删除。"
+msgstr "右键节点或边可以删除。"
+
+#: ../Knotpen2GameObject.py:473
+msgid "双击边的中点可以拆分边。"
+msgstr "双击边的中点可以拆分边。"
+
+#: ../Knotpen2GameObject.py:474
+msgid "点击交叉点可以切换相交线段的上下关系。"
+msgstr "点击交叉点可以切换相交线段的上下关系。"
+
+#: ../Knotpen2GameObject.py:476
+msgid "连续创建"
+msgstr "连续创建"
+
+#: ../Knotpen2GameObject.py:477
+msgid "点击节点进入连续创建模式，红色节点是当前选中点。"
+msgstr "点击节点进入连续创建模式，红色节点是当前选中点。"
+
+#: ../Knotpen2GameObject.py:478
+msgid "在空白处继续左键点击会创建新节点并自动连边。"
+msgstr "在空白处继续左键点击会创建新节点并自动连边。"
+
+#: ../Knotpen2GameObject.py:479
+msgid "点击现有节点可以闭合曲线并退出连续创建模式。"
+msgstr "点击现有节点可以闭合曲线并退出连续创建模式。"
+
+#: ../Knotpen2GameObject.py:481
+msgid "右侧按钮"
+msgstr "右侧按钮"
+
+#: ../Knotpen2GameObject.py:482
+msgid "使用视图移动按钮平移画面。"
+msgstr "使用视图移动按钮平移画面。"
+
+#: ../Knotpen2GameObject.py:483
+msgid "选中节点后可以设为起始点或方向点，也可以删除选中点。"
+msgstr "选中节点后可以设为起始点或方向点，也可以删除选中点。"
+
+#: ../Knotpen2GameObject.py:484
+msgid "清空全部会先自动备份；恢复存档会读取上一次自动保存。"
+msgstr "清空全部会先自动备份；恢复存档会读取上一次自动保存。"
+
+#: ../Knotpen2GameObject.py:485
+msgid "增大窗口和减小窗口会调整窗口尺寸，并保持窗口不超过屏幕范围。"
+msgstr "增大窗口和减小窗口会调整窗口尺寸，并保持窗口不超过屏幕范围。"
+
+#: ../Knotpen2GameObject.py:486
+msgid "切换语言会影响之后绘制的按钮和帮助文字。"
+msgstr "切换语言会影响之后绘制的按钮和帮助文字。"
+
+#: ../Knotpen2GameObject.py:488
+msgid "计算前请确保每个节点恰好有两条边。"
+msgstr "计算前请确保每个节点恰好有两条边。"
+
+#: ../Knotpen2GameObject.py:489
+msgid "每个连通分支必须有相邻的起始点和方向点。"
+msgstr "每个连通分支必须有相邻的起始点和方向点。"
+
+#: ../Knotpen2GameObject.py:490
+msgid "请人工确认没有三线共点。"
+msgstr "请人工确认没有三线共点。"
+
+#: ../Knotpen2GameObject.py:530
+msgid "再次点击右侧的帮助按钮关闭此页面。"
+msgstr "再次点击右侧的帮助按钮关闭此页面。"
+
 #: ../Knotpen2GameObject.py:304
 msgid "正在自动保存请不要关闭软件 ..."
 msgstr "正在自动保存请不要关闭软件 ..."
