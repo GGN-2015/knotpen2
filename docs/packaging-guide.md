@@ -54,9 +54,13 @@ Optional flags:
 8. Assembles a release folder containing:
    - `main.exe`
    - `README.md`
+   - `README.zh-CN.md`
+   - `docs/`
    - `img/`
    - `i18n/`
-9. Compresses the release folder into `dist/knotpen2_<version>_win32_x86-64.zip`.
+9. Verifies that all English and Chinese manual files are present in the release folder.
+10. Compresses the release folder into `dist/knotpen2_<version>_win32_x86-64.zip`.
+11. Verifies that all English and Chinese manual files are present in the final archive.
 
 ## Font Handling
 
@@ -94,7 +98,14 @@ The executable bundles:
 - `logo.ico`
 - `i18n/`
 
-The release archive also includes `README.md` and `img/` next to `main.exe`.
+The release archive also includes `README.md`, `README.zh-CN.md`, `docs/`, and `img/` next to `main.exe`.
+
+The `docs/` directory contains both English and Chinese versions of:
+
+- interface user manual
+- storage file format manual
+- Windows packaging guide
+- project algorithm manual
 
 ## Common Failures
 

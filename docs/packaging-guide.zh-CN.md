@@ -54,9 +54,13 @@ python build.py
 8. 组装发布目录，包含：
    - `main.exe`
    - `README.md`
+   - `README.zh-CN.md`
+   - `docs/`
    - `img/`
    - `i18n/`
-9. 将发布目录压缩为 `dist/knotpen2_<version>_win32_x86-64.zip`。
+9. 校验发布目录中是否包含全部英文和中文手册文件。
+10. 将发布目录压缩为 `dist/knotpen2_<version>_win32_x86-64.zip`。
+11. 校验最终压缩包中是否包含全部英文和中文手册文件。
 
 ## 字体处理
 
@@ -94,7 +98,14 @@ knotpen2/i18n/locales/<lang>/LC_MESSAGES/knotpen2.mo
 - `logo.ico`
 - `i18n/`
 
-发布压缩包还会把 `README.md` 和 `img/` 放在 `main.exe` 旁边。
+发布压缩包还会把 `README.md`、`README.zh-CN.md`、`docs/` 和 `img/` 放在 `main.exe` 旁边。
+
+`docs/` 目录包含以下内容的英文和中文版本：
+
+- 界面使用手册
+- 存储文件格式手册
+- Windows 打包指南
+- 项目算法手册
 
 ## 常见问题
 

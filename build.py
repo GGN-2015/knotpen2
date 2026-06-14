@@ -18,6 +18,25 @@ ROOT_DIST_DIR = ROOT_DIR / "dist"
 PACKAGE_DIR = ROOT_DIST_DIR / "knotpen2"
 APP_NAME = "main.exe"
 ARCHIVE_ARCH = "win32_x86-64"
+PACKAGE_ROOT_DOCUMENT_FILES = [
+    Path("README.md"),
+    Path("README.zh-CN.md"),
+]
+REQUIRED_MANUAL_DOC_FILES = [
+    Path("docs") / "Savings.md",
+    Path("docs") / "algorithm-manual.md",
+    Path("docs") / "algorithm-manual.zh-CN.md",
+    Path("docs") / "interface-user-manual.md",
+    Path("docs") / "interface-user-manual.zh-CN.md",
+    Path("docs") / "packaging-guide.md",
+    Path("docs") / "packaging-guide.zh-CN.md",
+    Path("docs") / "storage-format.md",
+    Path("docs") / "storage-format.zh-CN.md",
+]
+REQUIRED_DOCUMENT_FILES = [
+    *PACKAGE_ROOT_DOCUMENT_FILES,
+    *REQUIRED_MANUAL_DOC_FILES,
+]
 
 
 class BuildError(RuntimeError):
@@ -179,7 +198,7 @@ def ensure_required_files():
         APP_DIR / "logo.ico",
         APP_DIR / "i18n" / "locales" / "zh_CN" / "LC_MESSAGES" / "knotpen2.po",
         APP_DIR / "i18n" / "locales" / "en_US" / "LC_MESSAGES" / "knotpen2.po",
-        ROOT_DIR / "README.md",
+        *(ROOT_DIR / path for path in REQUIRED_DOCUMENT_FILES),
     ]
 
     missing = [path for path in required_files if not path.exists()]
@@ -245,8 +264,32 @@ def assemble_package(executable: Path):
 
     shutil.copy2(executable, PACKAGE_DIR / APP_NAME)
     shutil.copy2(ROOT_DIR / "README.md", PACKAGE_DIR / "README.md")
+    shutil.copy2(ROOT_DIR / "README.zh-CN.md", PACKAGE_DIR / "README.zh-CN.md")
+    copy_tree(ROOT_DIR / "docs", PACKAGE_DIR / "docs")
     copy_tree(ROOT_DIR / "img", PACKAGE_DIR / "img")
     copy_tree(APP_DIR / "i18n", PACKAGE_DIR / "i18n")
+
+
+def package_document_files() -> list[Path]:
+    docs_dir = ROOT_DIR / "docs"
+    docs_files = []
+    if docs_dir.is_dir():
+        docs_files = [
+            path.relative_to(ROOT_DIR)
+            for path in sorted(docs_dir.rglob("*.md"))
+        ]
+    return [*PACKAGE_ROOT_DOCUMENT_FILES, *docs_files]
+
+
+def verify_packaged_documents():
+    missing = [
+        PACKAGE_DIR / path
+        for path in package_document_files()
+        if not (PACKAGE_DIR / path).is_file()
+    ]
+    if missing:
+        details = "\n".join(f"  - {path}" for path in missing)
+        raise BuildError(f"packaged documentation files are missing:\n{details}")
 
 
 def write_zip(version: str) -> Path:
@@ -260,6 +303,20 @@ def write_zip(version: str) -> Path:
                 zipf.write(path, path.relative_to(ROOT_DIST_DIR))
 
     return archive_path
+
+
+def verify_archive_documents(archive_path: Path):
+    expected = {
+        (Path(PACKAGE_DIR.name) / path).as_posix()
+        for path in package_document_files()
+    }
+    with zipfile.ZipFile(archive_path, "r") as zipf:
+        archived = set(zipf.namelist())
+
+    missing = sorted(expected - archived)
+    if missing:
+        details = "\n".join(f"  - {path}" for path in missing)
+        raise BuildError(f"archive documentation files are missing:\n{details}")
 
 
 def parse_args():
@@ -295,7 +352,9 @@ def main():
 
         executable = build_executable()
         assemble_package(executable)
+        verify_packaged_documents()
         archive_path = write_zip(version)
+        verify_archive_documents(archive_path)
         log(f"created {archive_path.relative_to(ROOT_DIR)}")
     except subprocess.CalledProcessError as exc:
         raise SystemExit(exc.returncode) from exc
