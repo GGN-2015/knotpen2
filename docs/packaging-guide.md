@@ -40,6 +40,20 @@ Optional flags:
 - `--skip-i18n`: skip recompiling `.po` files into `.mo` files.
 - `--no-clean`: keep previous build folders before packaging.
 
+## Changing The Version
+
+The release version is defined in `knotpen2/constant_config.py`:
+
+```python
+APP_VERSION = "2.5.0"
+```
+
+Change that value before running `python build.py`. The build script reads `APP_VERSION` and uses it in the output archive name:
+
+```text
+dist/knotpen2_<version>_win32_x86-64.zip
+```
+
 ## What The Build Script Does
 
 `build.py` performs these steps:

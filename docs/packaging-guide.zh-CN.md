@@ -40,6 +40,20 @@ python build.py
 - `--skip-i18n`：跳过将 `.po` 编译为 `.mo`。
 - `--no-clean`：打包前不删除上一次构建目录。
 
+## 修改版本号
+
+发布版本号定义在 `knotpen2/constant_config.py`：
+
+```python
+APP_VERSION = "2.5.0"
+```
+
+请在运行 `python build.py` 前修改这个值。打包脚本会读取 `APP_VERSION`，并把它用于输出压缩包名称：
+
+```text
+dist/knotpen2_<version>_win32_x86-64.zip
+```
+
 ## 打包脚本流程
 
 `build.py` 会执行以下步骤：
